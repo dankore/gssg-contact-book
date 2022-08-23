@@ -4,7 +4,7 @@ const express = require("express"),
   MongoStore = require("connect-mongo")(session),
   flash = require("connect-flash"),
   server = express(),
-  { markdown } = require("marked"),
+  { marked } = require("marked"),
   sanitizeHTML = require("sanitize-html"),
   bodyParser = require("body-parser"),
   router = require("./router"),
@@ -176,7 +176,7 @@ server.use("/favicon.ico", express.static("public/favicon.ico"));
 server.use(async (req, res, next) => {
   // MAKE MARKDOWN AVAILABLE GLOBALLY
   res.locals.filterUserHTML = content => {
-    return sanitizeHTML(markdown.parse(content), {
+    return sanitizeHTML(marked.parse(content), {
       allowedTags: [
         "p",
         "br",
