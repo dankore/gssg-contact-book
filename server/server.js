@@ -176,7 +176,7 @@ server.use("/favicon.ico", express.static("public/favicon.ico"));
 server.use(async (req, res, next) => {
   // MAKE MARKDOWN AVAILABLE GLOBALLY
   res.locals.filterUserHTML = content => {
-    return sanitizeHTML(markdown(content), {
+    return sanitizeHTML(markdown.parse(content), {
       allowedTags: [
         "p",
         "br",
