@@ -1,17 +1,10 @@
-<div class="pl-1 sm:pl-32 mt-4 sm:mt-0">
-  <section id="filter-section" class="mr-5">
-    <div class="flex mr-5">
-      <div class="label-onlick-bg-color flex items-center text-md cursor-pointer mr-4" id="filter-icon-container">
-        <img src="../../static/filter.svg" alt="filter-icon" />
-        <label class="label-onlick-bg-color ml-1 cursor-pointer">Filter</label>
-      </div>
-      <div id="bar-chart-icon-container" class="label-onlick-bg-color flex">
-        <img src="../../static/bar-chart.svg" alt="bar-chart-icon" />
-        <label class="ml-1 cursor-pointer">Stats</label>
-      </div>
+  <section id="filter-section" class="flex justify-center relative">
+    <div class="label-onlick-bg-color flex items-center text-md cursor-pointer mr-4" id="filter-icon-container">
+      <img src="../../static/filter.svg" alt="filter-icon" />
+      <label class="label-onlick-bg-color ml-1 cursor-pointer">Filter</label>
     </div>
 
-    <div id="form-container" style="display: none">
+    <div id="form-container" style="display: none" class="absolute mt-8">
       <form action="/sort" method="POST" class="pt-1">
         <button value="-1" name="q" class="mr-2">
           <p class="px-2">Newer profiles first</p>
@@ -22,72 +15,3 @@
       </form>
     </div>
   </section>
-
-  <section id="chart-section">
-    <!--CHART -->
-    <div style="width: 80%; min-width: 50%">
-      <canvas class="absolute bg-white z-10 border border-green-300 shadow-lg p-2" id="myChart" style="display: none"> </canvas>
-    </div>
-
-    <script>
-      var ctx = document.getElementById("myChart").getContext("2d");
-      var myChart = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: <% - JSON.stringify(statsByYear[0]) %>,
-          datasets: [
-            {
-              label: 'profiles',
-              data: <% - JSON.stringify(statsByYear[1]) %>,
-              backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(54, 162, 235, 0.2)",
-                "rgba(255, 206, 86, 0.2)",
-                "rgba(75, 192, 192, 0.2)",
-                "rgba(153, 102, 255, 0.2)",
-                "rgba(255, 159, 64, 0.2)",
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(54, 162, 235, 0.2)",
-                "rgba(255, 206, 86, 0.2)",
-                "rgba(75, 192, 192, 0.2)",
-                "rgba(153, 102, 255, 0.2)",
-                "rgba(255, 159, 64, 0.2)"
-              ],
-              borderColor: [
-                "rgba(255, 99, 132, 1)",
-                "rgba(54, 162, 235, 1)",
-                "rgba(255, 206, 86, 1)",
-                "rgba(75, 192, 192, 1)",
-                "rgba(153, 102, 255, 1)",
-                "rgba(255, 159, 64, 1)",
-                "rgba(255, 99, 132, 1)",
-                "rgba(54, 162, 235, 1)",
-                "rgba(255, 206, 86, 1)",
-                "rgba(75, 192, 192, 1)",
-                "rgba(153, 102, 255, 1)",
-                "rgba(255, 159, 64, 1)"
-              ],
-              borderWidth: 1
-            }
-          ]
-        },
-        options: {
-          legend: { display: false },
-          title: {
-            display: true,
-            text: 'Number of profiles per graduation year for ' + <%= profiles.length %> + ' profiles'
-          },
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true
-              }
-            }]
-          }
-        }
-      });
-    </script>
-
-    <!--CHART ENDS-->
-  </section>
-</div>

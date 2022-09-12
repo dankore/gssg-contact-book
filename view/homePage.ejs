@@ -13,7 +13,7 @@
 
 <%- include('includes/searchBar') %>
 <%- include('includes/sort') %>
-<div id="anchor-tag" class="flex flex-wrap justify-center">
+<div id="anchor-tag" class="flex flex-wrap justify-center mt-12">
   <% if(profiles.length){ %> <% profiles.forEach(profile => { %>
   <a  class="m-4" href="/profile/<%= profile.email %>">
     <%- include('includes/profileShared', {profile: profile}) %>
