@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "watch": "webpack --watch",
-    "start": "nodemon db"
+    "start": "nodemon db",
+    "tailwind": "npx tailwindcss -i ./public/tailwindcss/input.css -o ./public/tailwindcss/output.css --watch --minify"
   },
   "repository": {
     "type": "git",
@@ -47,5 +48,8 @@
     "validator": "^13.7.0",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.1.8"
   }
 }

@@ -1,13 +1,35 @@
 <!-- MODAL -->
-<div id="profile-image-modal" class="fixed pin flex relative items-center justify-center bg-white" style="display: none">
-  <div class="flex justify-between items-center px-2 py-2" style="max-height: 75vh; right: 0; left: 0">
-    <div><%= profile.firstName %> <%= profile.lastName %></div>
-    <div id="close-image" class="cursor-pointer rounded-full bg-gray-900 text-white hover:bg-gray-800 px-2 text-2xl bg-white">&#10005;</div>
+<div id="profile-image-modal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+  <div class="fixed inset-0 z-10 overflow-y-auto">
+    <button id="close-image" class="flex items-center mr-5 absolute right-4 top-4 px-4 py-2 bg-red-500 text-white rounded-md">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+      close
+    </button>
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+        <div class="space-y-4">
+          <div class="aspect-w-3 aspect-h-2 cursor-pointer">
+            <img class="rounded-lg object-cover shadow-lg" src="<%= profile.photo %>" alt="<%= profile.firstName %> <%= profile.lastName %>" />
+          </div>
+
+          <div class="space-y-2">
+            <div class="space-y-1 text-lg font-medium leading-6">
+              <h3><%= profile.firstName %> <%= profile.lastName %></h3>
+              <p class="text-indigo-600"><%= profile.year %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <img src="<%= profile.photo %>" class="absolute z-50" alt="" srcset="<%= profile.photo %>" />
 </div>
 <!-- MODAL ENDS -->
-<div class="mx-auto text-sm rounded overflow-hidden shadow-lg bg-white" style="height: 25rem; width: 18rem">
+
+<div class="mx-auto text-sm rounded overflow-hidden shadow-lg bg-white -z-50" style="height: 25rem; width: 18rem">
   <% if(profile.photo){ %>
   <img id="profile-image" class="w-full h-48 object-cover" title="<%= profile.firstName %>" src="<%= profile.photo %>" alt="profile picture" importance="high" srcset="<%= profile.photo %>" />
   <% } else { %>
