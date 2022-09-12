@@ -1,6 +1,5 @@
 import ToggleProfile from "./modules/toggleProfile";
 import ToggleEditPage from "./modules/toggleEditPage";
-import ToggleStats from "./modules/toggleStats";
 import ToggleImage from "./modules/show_bigger_profile_image";
 import ConfirmDelete from "./modules/confirmDelete";
 import RegistrationFormLiveValidation from "./modules/registrationFormLiveValidation";
@@ -13,9 +12,7 @@ import AddComment from "./modules/addComments";
 
 document.querySelector("#more-profile-btn") && new ToggleProfile();
 document.querySelector("#btn-optional-fields") && new ToggleEditPage();
-document.querySelector("#bar-chart-icon-container") && new ToggleStats();
 document.querySelector("#profile-image") && new ToggleImage();
-document.querySelector("#anchor-tag") && new ToggleImage();
 document.querySelector("#delete-profile") && new ConfirmDelete();
 document.querySelector("#registration-form") &&
   new RegistrationFormLiveValidation();
