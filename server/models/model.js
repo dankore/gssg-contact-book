@@ -775,7 +775,7 @@ User.doesEmailExists = email => {
   });
 };
 
-// FACEBOOK
+
 User.addSocialUser = data => {
   return new Promise(async (resolve, reject) => {
     try {

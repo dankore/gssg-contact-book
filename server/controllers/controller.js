@@ -329,35 +329,6 @@ exports.doesEmailExists = async (req, res) => {
   res.json(emailBool);
 };
 
-//FACEBOOK LOGIN
-exports.facebookLogin = async (req, res) => {
-  if (req.user.returningUser) {
-    req.session.user = {
-      email: req.user.email
-    };
-    req.session.save(async () => {
-      await res.redirect("/");
-    });
-  } else {
-    await User.addSocialUser(req.user)
-      .then(successMessage => {
-        req.flash("success", successMessage);
-        req.session.user = {
-          email: req.user.email
-        };
-        req.session.save(async () => {
-          await res.redirect("/");
-        });
-      })
-      .catch(error => {
-        req.flash("errors", error);
-        req.session.save(async () => {
-          await res.redirect("/register");
-        });
-      });
-  }
-};
-
 // GOOGLE LOGIN
 exports.googleLogin = async (req, res) => {
   if (req.user.returningUser) {
