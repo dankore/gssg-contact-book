@@ -1,35 +1,26 @@
 const User = require('../models/model'),
   helpers = require('../misc/helpers'),
-  sanitizeHMTL = require('sanitize-html'),
   ObjectId = require('mongodb').ObjectID;
 
 exports.home = async (req, res) => {
-  let profiles = await User.allProfiles();
-  // SORT BY TOTAL NUMBER OF COMMENTS AND LIKES
-  profiles = helpers.sortProfiles(profiles);
-  res.render('homePage', {
-    profiles: profiles,
-    statsByYear: helpers.statsByYear(profiles),
-  });
-};
-
-exports.searchOrSort = async (req, res) => {
   try {
-    if (req.body.sort) {
-      let sortedProfiles = await User.sortProfiles(req.body.q);
-      res.render('homePage', {
-        profiles: sortedProfiles,
-      });
+    let profiles;
+
+    if (req.query.sort) {
+      profiles = await User.sortProfiles(req.query.sort);
+    } else if (req.query.q) {
+      profiles = await User.search(req.query.q);
     } else {
-      let searchResultsArray = await User.search(req.body.q);
+      profiles = await User.allProfiles();
       // SORT BY TOTAL NUMBER OF COMMENTS AND LIKES
-      searchResultsArray = helpers.sortProfiles(searchResultsArray);
-      res.render('homePage', {
-        profiles: searchResultsArray,
-      });
+      profiles = helpers.sortProfiles(profiles);
     }
-  } catch {
-    req.flash('errors', `${req.body.sort ? 'Sorry, we had an issue sorting your request' : 'Sorry, we had an issue providing your search results.'}. Please try again.`);
+
+    res.render('homePage', {
+      profiles: profiles,
+    });
+  } catch (error) {
+    req.flash('errors', error);
     req.session.save(() => res.redirect('/'));
   }
 };
