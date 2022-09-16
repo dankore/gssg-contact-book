@@ -366,8 +366,8 @@ User.delete = function (requestedEmail, sessionEmail) {
   });
 };
 
-User.allProfiles = function () {
-  return new Promise(async (resolve, reject) => {
+User.allProfiles = async function () {
+  return await new Promise(async resolve => {
     let allProfiles = await usersCollection.find({}).toArray();
 
     allProfiles = allProfiles.map(eachDoc => {
@@ -396,9 +396,32 @@ User.allProfiles = function () {
         likes_received_from: eachDoc.likes_received_from,
         likes_given_to: eachDoc.likes_given_to,
       };
+
       return eachDoc;
     });
     resolve(allProfiles);
+  });
+};
+
+User.getRecentProfiles = async function () {
+  return new Promise(async resolve => {
+    let recentProfiles = await usersCollection.find({}).limit(9).sort({ $natural: -1 }).toArray();
+
+    recentProfiles.map(eachDoc => {
+      eachDoc = {
+        firstName: eachDoc.firstName,
+        lastName: eachDoc.lastName,
+        year: eachDoc.year,
+        email: eachDoc.email,
+        nickname: eachDoc.nickname,
+        photo: eachDoc.photo,
+        phone: eachDoc.phone,
+      };
+
+      return eachDoc;
+    });
+
+    resolve(recentProfiles);
   });
 };
 
