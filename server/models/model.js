@@ -405,7 +405,7 @@ User.allProfiles = async function () {
 
 User.getRecentProfiles = async function () {
   return new Promise(async resolve => {
-    let recentProfiles = await usersCollection.find({}).limit(9).sort({ $natural: -1 }).toArray();
+    let recentProfiles = await usersCollection.find({}).limit(8).sort({ $natural: -1 }).toArray();
 
     recentProfiles.map(eachDoc => {
       eachDoc = {

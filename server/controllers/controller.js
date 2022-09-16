@@ -15,7 +15,20 @@ exports.home = async (req, res) => {
   } catch (error) {
     console.log({ error });
     req.flash('errors', error);
-    // req.session.save(() => res.redirect('/'));
+    req.session.save(() => res.redirect('/'));
+  }
+};
+
+exports.new = async (req, res) => {
+  try {
+    const profiles = await User.getRecentProfiles();
+    res.render('new', {
+      profiles: profiles,
+    });
+  } catch (error) {
+    console.log({ error });
+    req.flash('errors', error);
+    req.session.save(() => res.redirect('/'));
   }
 };
 

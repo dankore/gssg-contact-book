@@ -8,6 +8,7 @@ const passport = require('passport');
 
 // HOME, REGISTER, LOGIN
 router.get('/', controller.home);
+router.get('/new', controller.new);
 router.get('/contacts', controller.contacts);
 router.get('/register', photoUrls, controller.registrationPage);
 router.post('/register', controller.registrationSubmission);
