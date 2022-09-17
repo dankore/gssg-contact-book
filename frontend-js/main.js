@@ -9,6 +9,7 @@ import Likes from './modules/likes';
 import ShowNames from './modules/show-those-liked-a-profile';
 import ClickToComment from './modules/clickToComment';
 import AddComment from './modules/addComments';
+import ToggleMobileMenu from './modules/toggleMobileMenu';
 
 document.querySelector('#more-profile-btn') && new ToggleProfile();
 document.querySelector('#btn-optional-fields') && new ToggleEditPage();
@@ -22,3 +23,4 @@ document.querySelector('#likes-button') && new Likes();
 document.querySelector('#likes-container') && new ShowNames();
 document.getElementById('click-to-comment') && new ClickToComment();
 document.getElementById('add-comment-button') && new AddComment();
+document.getElementById('open-mobile-menu') && new ToggleMobileMenu();
