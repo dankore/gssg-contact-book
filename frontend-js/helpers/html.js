@@ -5,126 +5,92 @@ export default class ReuseableHtml {
 }
 
 ReuseableHtml.prototype.li = data => {
-  const li = document.createElement("li");
-  li.id = "li-comment";
-  li.classList.add("my-2", "p-2", "rounded");
+  const li = document.createElement('li');
+  li.id = 'li-comment';
+  li.classList.add('my-2', 'p-2', 'rounded');
 
-  const divCommentPhoto = document.createElement("div");
-  divCommentPhoto.classList.add("flex");
+  const divCommentPhoto = document.createElement('div');
+  divCommentPhoto.classList.add('flex');
 
-  const divPhoto = document.createElement("div");
-  divPhoto.classList.add("flex", "mr-1");
+  const divPhoto = document.createElement('div');
+  divPhoto.classList.add('flex', 'mr-1');
 
-  const link = document.createElement("a");
-  link.setAttribute("href", `/profile/${data.visitorEmail}`);
+  const link = document.createElement('a');
+  link.setAttribute('href', `/profile/${data.visitorEmail}`);
 
-  const img = document.createElement("img");
-  img.setAttribute("src", `${data.photo}`);
-  img.classList.add("w-8", "h-8", "rounded-full");
-  img.setAttribute("alt", "profile pic");
+  const img = document.createElement('img');
+  img.setAttribute('src', `${data.photo}`);
+  img.classList.add('w-8', 'h-8', 'rounded-full');
+  img.setAttribute('alt', 'profile pic');
 
   // DIV FIRST NAME AND COMMENT AND LINK
-  const firstNameCommentDiv = document.createElement("div");
-  firstNameCommentDiv.classList.add("rounded", "px-2");
-  firstNameCommentDiv.setAttribute(
-    "style",
-    "overflow-wrap:break-word;min-width:0px;width:15rem;background-color:#F2F3F5;"
-  );
-  const link2 = document.createElement("a");
-  link2.setAttribute("href", "/profile/".concat(data.visitorEmail));
-  link2.classList.add("font-medium");
+  const firstNameCommentDiv = document.createElement('div');
+  firstNameCommentDiv.classList.add('rounded', 'px-2');
+  firstNameCommentDiv.setAttribute('style', 'overflow-wrap:break-word;min-width:0px;width:15rem;background-color:#F2F3F5;');
+  const link2 = document.createElement('a');
+  link2.setAttribute('href', '/profile/'.concat(data.visitorEmail));
+  link2.classList.add('font-medium');
   link2.innerText = `${data.visitorFirstName}`;
-  const commentBox = document.createElement("p");
+  const commentBox = document.createElement('p');
   commentBox.innerText = `${data.comment}`;
 
   // DATE, EDIT, DELETE
   // WRAPPER DIV
-  const dateEditDeleteDiv = document.createElement("div");
-  dateEditDeleteDiv.classList.add(
-    "flex",
-    "justify-between",
-    "items-center",
-    "mt-2",
-    "text-xs"
-  );
+  const dateEditDeleteDiv = document.createElement('div');
+  dateEditDeleteDiv.classList.add('flex', 'justify-between', 'items-center', 'mt-2', 'text-xs');
   // COMMENT DATE CONTAINER
-  const commentDateBox = document.createElement("p");
+  const commentDateBox = document.createElement('p');
   commentDateBox.innerText = `${data.commentDate}`;
 
   // EDIT AND DELETE BUTTONS WRAPPER
-  const editDeleteWrapper = document.createElement("div");
-  editDeleteWrapper.classList.add("flex");
+  const editDeleteWrapper = document.createElement('div');
+  editDeleteWrapper.classList.add('flex');
 
   // EDIT BUTTON
-  const inputEdit = document.createElement("input");
-  inputEdit.setAttribute("type", "button");
-  inputEdit.setAttribute("value", "Edit");
-  inputEdit.id = "edit-comment-button";
-  inputEdit.classList.add("flex", "bg-white", "items-center", "cursor-pointer");
+  const inputEdit = document.createElement('input');
+  inputEdit.setAttribute('type', 'button');
+  inputEdit.setAttribute('value', 'Edit');
+  inputEdit.id = 'edit-comment-button';
+  inputEdit.classList.add('flex', 'bg-white', 'items-center', 'cursor-pointer');
 
   // DELETE BUTTON
-  const inputDelete = document.createElement("input");
-  inputDelete.setAttribute("type", "button");
-  inputDelete.setAttribute("value", "Delete");
-  inputDelete.setAttribute("data-id", `${data.commentId}`);
-  inputDelete.id = "delete-comment-button";
-  inputDelete.classList.add(
-    "flex",
-    "ml-3",
-    "bg-white",
-    "text-red-600",
-    "items-center",
-    "cursor-pointer"
-  );
+  const inputDelete = document.createElement('input');
+  inputDelete.setAttribute('type', 'button');
+  inputDelete.setAttribute('value', 'Delete');
+  inputDelete.setAttribute('data-id', `${data.commentId}`);
+  inputDelete.id = 'delete-comment-button';
+  inputDelete.classList.add('flex', 'ml-3', 'bg-white', 'text-red-600', 'items-center', 'cursor-pointer');
   // DATE, EDIT, DELETE ENDS
 
   // EDIT COMMENT FORM
-  const editCommentWrapper = document.createElement("div");
-  editCommentWrapper.id = "edit-comment-container";
-  editCommentWrapper.classList.add("modal");
-  editCommentWrapper.style.display = "none";
+  const editCommentWrapper = document.createElement('div');
+  editCommentWrapper.id = 'edit-comment-container';
+  editCommentWrapper.classList.add('modal');
+  editCommentWrapper.style.display = 'none';
   // TEXT-AREA
-  const editcommentInput = document.createElement("textarea");
-  editcommentInput.id = "input-comment";
+  const editcommentInput = document.createElement('textarea');
+  editcommentInput.id = 'input-comment';
   editcommentInput.innerText = `${data.comment}`;
-  editcommentInput.setAttribute("data-id", `${data.commentId}`);
-  editcommentInput.setAttribute("style", "background-color: #F2F3F5; white-space:pre-wrap; overflow: hidden;");
-  editcommentInput.classList.add(
-    "w-full",
-    "p-2",
-    "border",
-    "border-blue-400",
-    "rounded"
-  );
+  editcommentInput.setAttribute('data-id', `${data.commentId}`);
+  editcommentInput.setAttribute('style', 'background-color: #F2F3F5; white-space:pre-wrap; overflow: hidden;');
+  editcommentInput.classList.add('w-full', 'p-2', 'border', 'border-green-400', 'rounded');
 
   // CANCEL AND UPDATE BUTTONS
   // WRAPPER
-  const editCommentControlsWrapper = document.createElement("div");
-  editCommentControlsWrapper.classList.add("flex", "justify-between", "py-4");
+  const editCommentControlsWrapper = document.createElement('div');
+  editCommentControlsWrapper.classList.add('flex', 'justify-between', 'py-4');
   // CANCEL BUTTON
-  const editCommentCancelButton = document.createElement("button");
-  editCommentCancelButton.id = "cancel-comment-button";
-  editCommentCancelButton.classList.add(
-    "bg-green-600",
-    "text-white",
-    "px-2",
-    "rounded",
-    "hover:bg-green-800"
-  );
-  const editCommentCancelButtonText = document.createTextNode("Cancel");
+  const editCommentCancelButton = document.createElement('button');
+  editCommentCancelButton.id = 'cancel-comment-button';
+  editCommentCancelButton.classList.add('bg-green-600', 'text-white', 'px-2', 'rounded', 'hover:bg-green-800');
+  const editCommentCancelButtonText = document.createTextNode('Cancel');
   editCommentCancelButton.appendChild(editCommentCancelButtonText);
   // UPDATE BUTTON
-  const editCommentUpdateButton = document.createElement("button");
-  editCommentUpdateButton.id = "update-comment-button";
-  editCommentUpdateButton.setAttribute("data-id", `${data.commentId}`);
-  editCommentUpdateButton.classList.add(
-    "bg-blue-600",
-    "text-white",
-    "px-2",
-    "rounded",
-    "hover:bg-blue-800"
-  );
-  const editCommentUpdateButtonText = document.createTextNode("Update");
+  const editCommentUpdateButton = document.createElement('button');
+  editCommentUpdateButton.id = 'update-comment-button';
+  editCommentUpdateButton.setAttribute('data-id', `${data.commentId}`);
+  editCommentUpdateButton.classList.add('bg-green-600', 'text-white', 'px-2', 'rounded', 'hover:bg-green-800');
+  const editCommentUpdateButtonText = document.createTextNode('Update');
   editCommentUpdateButton.appendChild(editCommentUpdateButtonText);
   // EDIT COMMENT FORM ENDS
 

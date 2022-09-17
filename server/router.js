@@ -8,11 +8,13 @@ const passport = require('passport');
 
 // HOME, REGISTER, LOGIN
 router.get('/', controller.home);
+router.get('/contacts', controller.contacts);
 router.get('/register', photoUrls, controller.registrationPage);
 router.post('/register', controller.registrationSubmission);
 router.get('/login', controller.loginPage);
 router.post('/login', controller.login);
 router.post('/logout', controller.logout);
+router.get('/about', controller.about);
 
 // PROFILE
 router.get('/profile/:email', controller.ifUserExists, controller.profileScreen);
@@ -50,12 +52,14 @@ router.post('/get-comments', controller.addComment);
 router.post('/delete-comment', controller.deleteComment);
 router.post('/edit-comment', controller.editComment);
 
-// NOT FOUND
-router.get('*', controller.notFound);
-
 // LIKES
 router.post('/likes', controller.likes);
 router.post('/get-visited-profile-doc', controller.getProfile);
+
+router.get('/contacts', controller.contacts);
+
+// NOT FOUND
+router.get('*', controller.notFound);
 
 // EXPORT CODE
 module.exports = router;

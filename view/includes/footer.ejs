@@ -1,10 +1,12 @@
-<!-- IF HOMEPAGE SHOW SCROLL-TO-TOP -->
-<% if( path == "/" ){ %>
-    <div style="scroll-behavior: smooth;" class="flex justify-end"><a href="#main-content"> &#8657 Scroll To Top &#8657</a></div>
-<% } %>
+
 <!-- FOOTER -->
-<footer class="text-center text-xs sm:text-lg mt-8">
+<footer class="text-center text-xs sm:text-lg">
+
   <hr class="border-t border-black mb-4" />
+    <!-- IF HOMEPAGE SHOW SCROLL-TO-TOP -->
+  <% if( path == "/" ){ %>
+      <div style="scroll-behavior: smooth;" class="flex justify-end"><a href="#main-content"> &#8657 Scroll To Top &#8657</a></div>
+  <% } %>
   <div class="flex px-4 justify-center items-center">
     <div class="text-center">
         <div>Contribute</div>

@@ -1,8 +1,4 @@
-<section
-  id="comments-section"
-  class="mx-auto mt-2 rounded"
-  style="width: 18rem;"
->
+<section id="comments-section" class="mx-auto mt-2 rounded" style="width: 18rem">
   <!-- ADD COMMENTS FORM -->
   <% if(user){ %>
   <div class="bg-white rounded">
@@ -10,33 +6,15 @@
       <div class="mr-1">
         <a href="/profile/<%= emailForComment %>">
           <% if(photoUrlForComment){ %>
-          <img
-            src="<%= photoUrlForComment %>"
-            class="w-8 h-8 rounded-full"
-            alt="profile pic"
-          />
+          <img src="<%= photoUrlForComment %>" class="w-8 h-8 rounded-full" alt="profile pic" />
           <% } else { %>
-          <img
-            src="../../static/blank.png"
-            class="w-8 h-8 rounded-full"
-            alt="profile picture"
-          />
+          <img src="../../static/blank.png" class="w-8 h-8 rounded-full" alt="profile picture" />
           <% }%>
         </a>
       </div>
-      <div style="width: 15rem;">
-        <textarea
-          id="input-comment"
-          class="focus:bg-gray-100 w-full rounded p-2"
-          placeholder="What's on your mind?"
-          style="background-color: #F2F3F5; white-space:pre-wrap; overflow: hidden;"
-          ></textarea>
-        <button
-          id="add-comment-button"
-          class="rounded bg-blue-600 hover:bg-blue-800 text-white w-full"
-        >
-          Submit
-        </button>
+      <div style="width: 15rem">
+        <textarea id="input-comment" class="focus:bg-gray-100 w-full rounded p-2" placeholder="What's on your mind?" style="background-color: #f2f3f5; white-space: pre-wrap; overflow: hidden"></textarea>
+        <button id="add-comment-button" class="rounded bg-green-600 hover:bg-green-800 text-white w-full">Submit</button>
       </div>
     </section>
   </div>
@@ -48,85 +26,42 @@
     SHOW NO COMMENT FOUND FOR BOTH IF FALSE
    -->
   <ul id="comment-container-ul" class="mb-6 bg-white">
-    <% if(profile.comments){ %> <% profile.comments.reverse().forEach(comment =>
-    { %>
+    <% if(profile.comments){ %> <% profile.comments.reverse().forEach(comment => { %>
     <li id="li-comment" class="my-2 p-2 rounded">
       <div class="flex">
         <div class="flex mr-1">
           <a href="/profile/<%= comment.visitorEmail %>">
             <% if(comment.photo){ %>
-            <img
-              src="<%= comment.photo %>"
-              class="w-8 h-8 rounded-full"
-              alt="profile pic"
-            />
+            <img src="<%= comment.photo %>" class="w-8 h-8 rounded-full" alt="profile pic" />
             <% } else { %>
-            <img
-              src="../../static/blank.png"
-              class="w-8 h-8 rounded-full"
-              alt="profile picture"
-            />
+            <img src="../../static/blank.png" class="w-8 h-8 rounded-full" alt="profile picture" />
             <%}%>
           </a>
         </div>
-        <div
-          class="rounded px-2"
-          style="overflow-wrap: break-word; min-width: 0px; width: 15rem; background-color: #F2F3F5;"
-        >
-          <a href="/profile/<%= comment.visitorEmail %>" class="font-medium"
-            ><%= comment.visitorFirstName %></a
-          >
+        <div class="rounded px-2" style="overflow-wrap: break-word; min-width: 0px; width: 15rem; background-color: #f2f3f5">
+          <a href="/profile/<%= comment.visitorEmail %>" class="font-medium"><%= comment.visitorFirstName %></a>
           <div><%- filterUserHTML(comment.comment) %></div>
         </div>
       </div>
       <div class="flex justify-between items-center mt-2 text-xs">
-        <p>
-          <%= comment.commentDate %>
-        </p>
+        <p><%= comment.commentDate %></p>
         <div class="flex">
           <% if(user){ %> <% if(comment.visitorEmail == user.email){ %>
           <!-- EDIT BUTTON -->
-          <input
-            type="button"
-            value="Edit"
-            id="edit-comment-button"
-            class="flex bg-white items-center cursor-pointer"
-          />
+          <input type="button" value="Edit" id="edit-comment-button" class="flex bg-white items-center cursor-pointer" />
           <!-- EDIT BUTTON ENDS-->
           <!-- DELETE BUTTON -->
-          <input
-            type="button"
-            value="Delete"
-            id="delete-comment-button"
-            data-id="<%- comment.commentId %>"
-            class="flex items-center text-red-600 bg-white cursor-pointer ml-3"
-          />
+          <input type="button" value="Delete" id="delete-comment-button" data-id="<%- comment.commentId %>" class="flex items-center text-red-600 bg-white cursor-pointer ml-3" />
           <!-- DELETE BUTTON ENDS -->
           <%}%> <%}%>
         </div>
       </div>
       <!-- EDIT COMMENT FORM -->
-      <div class="modal shadow-2xl" style="display: none;">
-        <textarea
-          id="input-comment"
-          data-id="<%= comment.commentId %>"
-          class="w-full p-2 border border-blue-400 rounded"
-          style="background-color: #F2F3F5; white-space:pre-wrap; overflow: hidden;"
-        ><%= comment.comment %></textarea>
+      <div class="modal shadow-2xl" style="display: none">
+        <textarea id="input-comment" data-id="<%= comment.commentId %>" class="w-full p-2 border border-green-400 rounded" style="background-color: #f2f3f5; white-space: pre-wrap; overflow: hidden"><%= comment.comment %></textarea>
         <div class="flex justify-between py-4">
-          <button
-            id="cancel-comment-button"
-            class="bg-green-600 text-white px-2 rounded hover:bg-green-800"
-          >
-            Cancel
-          </button>
-          <button
-            data-id="<%= comment.commentId %>"
-            id="update-comment-button"
-            class="bg-blue-600 text-white px-2 rounded hover:bg-blue-800"
-          >
-            Update
-          </button>
+          <button id="cancel-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Cancel</button>
+          <button data-id="<%= comment.commentId %>" id="update-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Update</button>
         </div>
       </div>
 

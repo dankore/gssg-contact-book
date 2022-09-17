@@ -27,8 +27,8 @@
   visibility: hidden;
   z-index: 1;
   -webkit-transform: translateY(100%);
-      -ms-transform: translateY(100%);
-          transform: translateY(100%);
+  -ms-transform: translateY(100%);
+  transform: translateY(100%);
   padding: 5px;
   opacity: 0;
 }
@@ -36,24 +36,24 @@
   visibility: visible;
   opacity: 1;
   -webkit-transform: translateY(0);
-      -ms-transform: translateY(0);
-          transform: translateY(0);
+  -ms-transform: translateY(0);
+  transform: translateY(0);
 }
 .top-bar {
   border-top-width: 2px;
-  border-color: #3182ce;
+  border-color: #16a34a;
 }
 .blueOnHover:hover {
-  color: #3182ce;
+  color: #16a34a;
 }
 .yes-like-color {
-  color: #3182ce;
+  color: #16a34a;
 }
 .no-like-color {
   color: black;
 }
 .yes-fill {
-  fill: #3182ce;
+  fill: #16a34a;
 }
 .no-fill {
   fill: white;
@@ -63,8 +63,8 @@ button:active {
   -o-transition: all 120ms ease-in-out;
   transition: all 120ms ease-in-out;
   -webkit-transform: translateY(1px);
-      -ms-transform: translateY(1px);
-          transform: translateY(1px);
+  -ms-transform: translateY(1px);
+  transform: translateY(1px);
 }
 .label-onlick-bg-color:active {
   background-color: #cbd5e0;
@@ -73,49 +73,49 @@ button:active {
   transition: all 200ms ease-in-out;
 }
 .modal-overlay {
-    background-color: silver;
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    opacity: 0;
-    filter: alpha(opacity=0); /* IE8 and lower */
-    zoom: 1; /* Triggers "hasLayout" in IE 7 and lower */
-    z-index: -1;
+  background-color: silver;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  opacity: 0;
+  filter: alpha(opacity=0); /* IE8 and lower */
+  zoom: 1; /* Triggers "hasLayout" in IE 7 and lower */
+  z-index: -1;
 }
 .modal-overlay.active {
   z-index: 0;
-    opacity: 0.5;
-    filter: alpha(opacity=50); /* IE8 and lower */
-    zoom: 1; /* Triggers "hasLayout" in IE 7 and lower */
-    cursor: pointer;
+  opacity: 0.5;
+  filter: alpha(opacity=50); /* IE8 and lower */
+  zoom: 1; /* Triggers "hasLayout" in IE 7 and lower */
+  cursor: pointer;
 }
 .modal {
-    padding: 10px 15px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%) scale(0);
-        -ms-transform: translate(-50%, -50%) scale(0);
-            transform: translate(-50%, -50%) scale(0);
-    -webkit-transition: 200ms ease-in-out;
-    -o-transition: 200ms ease-in-out;
-    transition: 200ms ease-in-out;
-    border-radius: 10px;
-    z-index: 0;
-    background-color: white;
-    width: 18rem;
-    max-width: 80%;
+  padding: 10px 15px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%) scale(0);
+  -ms-transform: translate(-50%, -50%) scale(0);
+  transform: translate(-50%, -50%) scale(0);
+  -webkit-transition: 200ms ease-in-out;
+  -o-transition: 200ms ease-in-out;
+  transition: 200ms ease-in-out;
+  border-radius: 10px;
+  z-index: 0;
+  background-color: white;
+  width: 18rem;
+  max-width: 80%;
 }
 .modal.active {
-    -webkit-transform: translate(-50%, -50%) scale(1);
-        -ms-transform: translate(-50%, -50%) scale(1);
-            transform: translate(-50%, -50%) scale(1);
-            z-index: 1;
+  -webkit-transform: translate(-50%, -50%) scale(1);
+  -ms-transform: translate(-50%, -50%) scale(1);
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 1;
 }
 .modal::before {
-  content: "Edit Comment";
+  content: 'Edit Comment';
   margin-top: 5px;
   margin-bottom: 10px;
   display: block;

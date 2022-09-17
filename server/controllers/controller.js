@@ -5,6 +5,22 @@ const User = require('../models/model'),
 exports.home = async (req, res) => {
   try {
     let profiles;
+    profiles = await User.getRecentProfiles();
+
+    res.render('homePage', {
+      profiles: profiles,
+    });
+  } catch (error) {
+    req.flash('errors', error);
+    req.session.save(() => res.redirect('/'));
+  }
+};
+
+exports.about = (_, res) => res.render('about');
+
+exports.contacts = async (req, res) => {
+  try {
+    let profiles;
 
     if (req.query.sort) {
       profiles = await User.sortProfiles(req.query.sort);
@@ -15,13 +31,12 @@ exports.home = async (req, res) => {
       // SORT BY TOTAL NUMBER OF COMMENTS AND LIKES
       profiles = helpers.sortProfiles(profiles);
     }
-
-    res.render('homePage', {
+    res.render('contacts', {
       profiles: profiles,
     });
   } catch (error) {
     req.flash('errors', error);
-    req.session.save(() => res.redirect('/'));
+    req.session.save(() => res.redirect('/contacts'));
   }
 };
 
