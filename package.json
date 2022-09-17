@@ -32,6 +32,7 @@
     "dotenv": "^8.2.0",
     "ejs": "^3.1.7",
     "express": "^4.17.1",
+    "express-rate-limit": "^6.6.0",
     "express-session": "^1.16.2",
     "marked": "^4.0.10",
     "mongodb": "^3.5.0",
