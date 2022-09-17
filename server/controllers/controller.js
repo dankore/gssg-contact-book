@@ -16,6 +16,8 @@ exports.home = async (req, res) => {
   }
 };
 
+exports.about = (_, res) => res.render('about');
+
 exports.contacts = async (req, res) => {
   try {
     let profiles;

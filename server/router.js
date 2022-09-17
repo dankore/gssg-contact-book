@@ -14,6 +14,7 @@ router.post('/register', controller.registrationSubmission);
 router.get('/login', controller.loginPage);
 router.post('/login', controller.login);
 router.post('/logout', controller.logout);
+router.get('/about', controller.about);
 
 // PROFILE
 router.get('/profile/:email', controller.ifUserExists, controller.profileScreen);
