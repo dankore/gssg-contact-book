@@ -5,28 +5,12 @@ const User = require('../models/model'),
 exports.home = async (req, res) => {
   try {
     let profiles;
-
     profiles = await User.getRecentProfiles();
-    // SORT BY TOTAL NUMBER OF COMMENTS AND LIKES
-    // profiles = helpers.sortProfiles(profiles);
+
     res.render('homePage', {
       profiles: profiles,
     });
   } catch (error) {
-    console.log({ error });
-    req.flash('errors', error);
-    req.session.save(() => res.redirect('/'));
-  }
-};
-
-exports.new = async (req, res) => {
-  try {
-    const profiles = await User.getRecentProfiles();
-    res.render('new', {
-      profiles: profiles,
-    });
-  } catch (error) {
-    console.log({ error });
     req.flash('errors', error);
     req.session.save(() => res.redirect('/'));
   }
