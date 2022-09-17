@@ -13,7 +13,7 @@ const express = require('express'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
   TwitterStrategy = require('passport-twitter').Strategy;
-// PASSPORT
+
 // TWITTER
 passport.use(
   new TwitterStrategy(
@@ -103,10 +103,6 @@ passport.deserializeUser(function (obj, cb) {
   cb(null, obj);
 });
 
-server.use(passport.initialize());
-server.use(passport.session());
-//PASSPORT ENDS
-
 // EXPRESS SESSIONS
 let sessionOptions = session({
   secret: 'Mental Model Programming',
@@ -116,6 +112,11 @@ let sessionOptions = session({
   cookie: { maxAge: 1000 * 60 * 60 * 24 * 14, httpOnly: true }, // COOKIES EXPIRE IN 14 DAYS
 });
 
+server.use(sessionOptions);
+server.use(passport.initialize());
+server.use(passport.session());
+//PASSPORT ENDS
+
 server.set('views', 'view');
 server.set('view engine', 'ejs');
 
@@ -123,7 +124,7 @@ server.use(bodyParser.urlencoded({ extended: true }));
 server.use(express.static('public'));
 server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
-server.use(sessionOptions);
+
 server.use(flash());
 server.use(compression());
 server.use('/favicon.ico', express.static('public/favicon.ico'));
