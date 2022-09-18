@@ -139,7 +139,25 @@ server.use('/profile/:email', async (req, res, next) => {
   next();
 });
 // SEO ENDS
+
 server.use('/', router);
+
+server.use(function (err, req, res, next) {
+  if (err.code !== 'EBADCSRFTOKEN') return next(err);
+
+  // handle CSRF token errors here
+  res.status(403);
+  res.send(`
+    <p>Error: Bad CSRF token</p>
+    <p>
+      We are so sorry but we suspected this form submission has been tampered with.
+    </p>
+    <p>
+      If you believe this should not happen please contact us at adamu.dankore@gmail.com.
+    </p>
+    <a style="color:green" href="/">Go to homepage</a>
+  `);
+});
 
 // EXPORT CODE
 module.exports = server;
