@@ -14,6 +14,7 @@ const express = require('express'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
   TwitterStrategy = require('passport-twitter').Strategy,
   cookieParser = require('cookie-parser');
+
 // TWITTER
 passport.use(
   new TwitterStrategy(
@@ -108,6 +109,7 @@ let sessionOptions = session({
   secret: process.env.SESSION_SECRET,
   store: new MongoStore({ client: require('../db') }),
   resave: false,
+  secure: true,
   saveUninitialized: false,
   cookie: { maxAge: 1000 * 60 * 60 * 24 * 14, httpOnly: true }, // COOKIES EXPIRE IN 14 DAYS
 });
