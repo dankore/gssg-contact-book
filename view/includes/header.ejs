@@ -75,6 +75,8 @@
           </nav>
           <div class="hidden items-center justify-end md:flex md:flex-1 lg:w-0">
             <% if (user) { %>
+            <a href="/profile/<%= user.email %>" class="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900">Go to profile</a>
+
             <form action="/logout" method="POST" class="flex flex-wrap">
               <label for="logout">
                 <input id="logout" value="Logout" type="submit" class="cursor-pointer ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700" />
