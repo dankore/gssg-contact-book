@@ -110,6 +110,8 @@ let sessionOptions = session({
   store: new MongoStore({ client: require('../db') }),
   resave: false,
   secure: true,
+  httpOnly: true,
+  domain: 'gssgcontactbook.com',
   saveUninitialized: false,
   cookie: { maxAge: 1000 * 60 * 60 * 24 * 14, httpOnly: true }, // COOKIES EXPIRE IN 14 DAYS
 });
