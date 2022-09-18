@@ -4,8 +4,8 @@ const usersCollection = require('../../db').db().collection('users'),
   crypto = require('crypto'),
   Email = require('../misc/emailNotifications'),
   helpers = require('../misc/helpers'),
-  ObjectId = require('mongodb').ObjectID;
-
+  ObjectId = require('mongodb').ObjectID,
+  _ = require('lodash');
 // CLASS
 let User = class user {
   constructor(data, photo, sessionEmail, requestedEmail) {
@@ -433,89 +433,87 @@ User.search = async function (searchedItem) {
         lastName: 'text',
         year: 'text',
       });
-      if (typeof searchedItem === 'string') {
-        let searchedResult = await usersCollection
-          .find(
-            {
-              $or: [
-                {
-                  firstName: { $regex: new RegExp(searchedItem, 'i') },
-                },
-                {
-                  lastName: { $regex: new RegExp(searchedItem, 'i') },
-                },
-                {
-                  year: { $regex: new RegExp(searchedItem, 'i') },
-                },
-                {
-                  email: { $regex: new RegExp(searchedItem, 'i') },
-                },
-                {
-                  nickname: { $regex: new RegExp(searchedItem, 'i') },
-                },
-                {
-                  residence: { $regex: new RegExp(searchedItem, 'i') },
-                },
-                {
-                  class: { $regex: new RegExp(searchedItem, 'i') },
-                },
-                {
-                  relationship: { $regex: new RegExp(searchedItem, 'i') },
-                },
-                {
-                  occupation: { $regex: new RegExp(searchedItem, 'i') },
-                },
-                {
-                  month: { $regex: new RegExp(searchedItem, 'i') },
-                },
-                {
-                  day: { $regex: new RegExp(searchedItem, 'i') },
-                },
-                {
-                  teacher: { $regex: new RegExp(searchedItem, 'i') },
-                },
-              ],
-            },
-            {
-              $project: { score: { $meta: 'textScore' } },
-              $sort: { score: { $meta: 'textScore' } },
-            }
-          )
-          .toArray();
+      const safeSearchedItem = _.escapeRegExp(searchedItem);
 
-        searchedResult = searchedResult.map(eachDoc => {
-          //clean up each document
-          eachDoc = {
-            firstName: eachDoc.firstName,
-            lastName: eachDoc.lastName,
-            year: eachDoc.year,
-            email: eachDoc.email,
-            photo: eachDoc.photo,
-            nickname: eachDoc.nickname,
-            residence: eachDoc.residence,
-            class: eachDoc.class,
-            occupation: eachDoc.occupation,
-            teacher: eachDoc.teacher,
-            month: eachDoc.month,
-            day: eachDoc.day,
-            phone: eachDoc.phone,
-            social_type_1: eachDoc.social_type_1,
-            link_social_type_1: eachDoc.link_social_type_1,
-            social_type_2: eachDoc.social_type_2,
-            link_social_type_2: eachDoc.link_social_type_2,
-            relationship: eachDoc.relationship,
-            comments: eachDoc.comments,
-            totalLikes: eachDoc.totalLikes,
-            likes_received_from: eachDoc.likes_received_from,
-            likes_given_to: eachDoc.likes_given_to,
-          };
-          return eachDoc;
-        });
+      let searchedResult = await usersCollection
+        .find(
+          {
+            $or: [
+              {
+                firstName: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+              {
+                lastName: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+              {
+                year: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+              {
+                email: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+              {
+                nickname: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+              {
+                residence: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+              {
+                class: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+              {
+                relationship: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+              {
+                occupation: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+              {
+                month: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+              {
+                day: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+              {
+                teacher: { $regex: new RegExp(safeSearchedItem, 'i') },
+              },
+            ],
+          },
+          {
+            $project: { score: { $meta: 'textScore' } },
+            $sort: { score: { $meta: 'textScore' } },
+          }
+        )
+        .toArray();
 
-        resolve(searchedResult);
-      } else {
-        reject();
-      }
+      searchedResult = searchedResult.map(eachDoc => {
+        //clean up each document
+        eachDoc = {
+          firstName: eachDoc.firstName,
+          lastName: eachDoc.lastName,
+          year: eachDoc.year,
+          email: eachDoc.email,
+          photo: eachDoc.photo,
+          nickname: eachDoc.nickname,
+          residence: eachDoc.residence,
+          class: eachDoc.class,
+          occupation: eachDoc.occupation,
+          teacher: eachDoc.teacher,
+          month: eachDoc.month,
+          day: eachDoc.day,
+          phone: eachDoc.phone,
+          social_type_1: eachDoc.social_type_1,
+          link_social_type_1: eachDoc.link_social_type_1,
+          social_type_2: eachDoc.social_type_2,
+          link_social_type_2: eachDoc.link_social_type_2,
+          relationship: eachDoc.relationship,
+          comments: eachDoc.comments,
+          totalLikes: eachDoc.totalLikes,
+          likes_received_from: eachDoc.likes_received_from,
+          likes_given_to: eachDoc.likes_given_to,
+        };
+        return eachDoc;
+      });
+
+      resolve(searchedResult);
     } catch {
       reject();
     }
