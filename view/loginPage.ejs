@@ -1,43 +1,91 @@
 <%- include('includes/header') %>
-<section class="max-w-sm px-2 mx-auto sm:px-0">
-  <div>
-    <a href="/" class="block my-6 text-2xl text-center">GSS Gwarinpa Contact Book</a>
-    <!-- TWITTER LOGIN LINK-->
-    <a href="/twitter-login">
-      <div class="flex justify-center items-center text-white rounded px-2 mb-4" style="background-color: #00acee">
-        <img src="../../static/twitter-icon.png" class="rounded mr-2" alt="twitter-icon" />
-        <p>Sign in with Twitter</p>
+
+<div class="flex min-h-full">
+  <div class="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+    <div class="mx-auto w-full max-w-sm lg:w-96">
+      <div>
+        <h1 class="mt-6 text-3xl font-bold tracking-tight text-gray-900">Sign in to your account</h1>
+        <p class="mt-2 text-sm text-gray-600">
+          Or
+          <a href="/register" class="font-medium text-green-600 hover:text-green-500">Add your contact</a>
+        </p>
       </div>
-    </a>
-    <!-- TWITTER LOGIN LINK ENDS-->
-    <!-- GOOGLE LOGIN LINK-->
-    <a href="/google-login">
-      <div class="flex justify-center items-center border border-red-400 bg-white rounded px-2">
-        <img src="../../static/google-btn.png" class="rounded mr-2" alt="google-icon" />
-        <p>Sign in with Google</p>
-      </div>
-    </a>
-    <!-- GOOGLE LOGIN LINK ENDS-->
-    <p class="my-5 text-center">Or Use Your Email</p>
-  </div>
-  <div class="bg-white rounded">
-    <form action="/login" method="POST" class="p-2 sm:p-4">
-      <%- include('includes/flash') %>
-      <div class="mb-4">
-        <label for="email" class="w-full text-xs font-bold block mb-1 uppercase tracking-wide text-gray-700">Enter Your Email</label>
-        <input id="email" name="email" type="text" class="w-full py-3 px-4 bg-gray-200 focus:outline-none focus:border-gray-500 focus:bg-white appearance-none border rounded text-gray-700 leading-tight" />
-      </div>
-      <div class="mb-4">
-        <div class="flex justify-between mb-1 text-xs uppercase font-bold tracking-wide text-gray-700">
-          <label for="password" class="">Enter Your Password </label>
-          <a href="/reset-password" class="inline-block text-green-600"> Forgot Your Password? </a>
+
+      <div class="mt-8">
+        <div>
+          <div>
+            <p class="text-sm font-medium text-gray-700">Sign in with</p>
+
+            <div class="mt-1 grid grid-cols-3 gap-3">
+              <div>
+                <a href="/twitter-login" class="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50">
+                  <span class="sr-only">Sign in with Twitter</span>
+                  <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
+                  </svg>
+                </a>
+              </div>
+
+              <div>
+                <a href="/google-login" class="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50">
+                  <span class="sr-only">Sign in with Google</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" viewBox="0 0 640 640">
+                    <path d="M326.331 274.255v109.761h181.49c-7.37 47.115-54.886 138.002-181.49 138.002-109.242 0-198.369-90.485-198.369-202.006 0-111.509 89.127-201.995 198.369-201.995 62.127 0 103.761 26.516 127.525 49.359l86.883-83.635C484.99 31.512 412.741-.012 326.378-.012 149.494-.012 6.366 143.116 6.366 320c0 176.884 143.128 320.012 320.012 320.012 184.644 0 307.256-129.876 307.256-312.653 0-21-2.244-36.993-5.008-52.997l-302.248-.13-.047.024z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative mt-6">
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+              <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="bg-white px-2 text-gray-500">Or continue with</span>
+            </div>
+          </div>
         </div>
-        <input id="password" name="password" type="password" autocomplete="current-password" class="w-full py-3 px-4 bg-gray-200 focus:outline-none focus:border-gray-500 focus:bg-white appearance-none border rounded text-gray-700 leading-tight" />
+
+        <div class="mt-6">
+          <form action="/login" method="POST" class="space-y-6">
+            <%- include('includes/flash') %>
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+              <div class="mt-1">
+                <input id="email" name="email" type="email" autocomplete="email" required class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-green-500 focus:outline-none focus:ring-green-500 sm:text-sm" />
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+              <div class="mt-1">
+                <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-green-500 focus:outline-none focus:ring-green-500 sm:text-sm" />
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500" />
+                <label for="remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
+              </div>
+
+              <div class="text-sm">
+                <a href="/reset-password" class="font-medium text-green-600 hover:text-green-500">Forgot your password?</a>
+              </div>
+            </div>
+
+            <div>
+              <button type="submit" class="flex w-full justify-center rounded-md border border-transparent bg-green-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">Sign in</button>
+            </div>
+          </form>
+        </div>
       </div>
-      <button class="w-full text-white rounded border border-white bg-green-600 hover:bg-green-800 px-2 py-3">Login</button>
-    </form>
+    </div>
   </div>
-  <a href="/register" class="block mt-3 px-4">Don't have an account? <span class="text-green-600">Create yours for free</span></a>
-</section>
+  <div class="relative hidden w-0 flex-1 lg:block">
+    <img class="absolute inset-0 h-full w-full object-cover" src="https://images.unsplash.com/photo-1505904267569-f02eaeb45a4c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80" alt="" />
+  </div>
+</div>
 
 <%- include('includes/footer') %>

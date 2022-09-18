@@ -1,7 +1,7 @@
 {
   "name": "gss-gwarinpa-contact-book",
-  "version": "2.0.0",
-  "description": "Photo book for gss gwarinpa students - past and present",
+  "version": "3.0.0",
+  "description": "Discover Present & Past GSS Gwarinpa Students",
   "main": "server.js",
   "scripts": {
     "watch": "webpack --watch",

@@ -3,7 +3,6 @@ const router = express.Router();
 const controller = require('./controllers/controller');
 const upload = require('./misc/file-upload');
 const singleUpload = upload.single('photo');
-const photoUrls = require('./middlewares/photo_urls');
 const passport = require('passport');
 const rateLimit = require('express-rate-limit');
 
@@ -17,7 +16,7 @@ const apiLimiter = rateLimit({
 // HOME, REGISTER, LOGIN
 router.get('/', controller.home);
 router.get('/contacts', controller.contacts);
-router.get('/register', photoUrls, controller.registrationPage);
+router.get('/register', controller.registrationPage);
 router.post('/register', controller.registrationSubmission);
 router.get('/login', controller.loginPage);
 router.post('/login', apiLimiter, controller.login);

@@ -1,19 +1,43 @@
-<%- include('includes/header') %> <%- include('includes/goToHomePage') %>
-<p class="text-center text-2xl mt-4">Change Your Password</p>
-<div class="w-full max-w-md sm:max-w-sm mx-auto mt-6">
-  <%- include('includes/flash') %>
-  <form action="/reset-password/<%= token %>" method="POST" class="bg-white shadow-md rounded px-4 pt-4 pb-8 m-4">
-    <div class="mb-4">
-      <p class="text-xl mb-4">Step 2 of 2:</p>
-      <label class="block uppercase text-gray-700 text-sm font-bold mb-2" for="new-password"> New Password </label>
-      <input name="new_password" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="new-password" type="password" />
+<%- include('includes/header') %>
+
+<div class="flex min-h-full">
+  <div class="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+    <div class="mx-auto w-full max-w-sm lg:w-96">
+      <div>
+        <h1 class="mt-6 text-3xl font-bold tracking-tight text-gray-900">Change Your Password</h1>
+        <p class="mt-2 text-sm text-gray-600">
+          Or
+          <a href="/login" class="font-medium text-green-600 hover:text-green-500">Sign in</a>
+        </p>
+      </div>
+
+      <div class="mt-8">
+        <div class="mt-6">
+          <form action="/reset-password/<%= token %>" method="POST" class="space-y-6">
+            <%- include('includes/flash') %>
+            <div>
+              <label for="new_password" class="block text-sm font-medium text-gray-700">New password</label>
+              <div class="mt-1">
+                <input id="new_password" name="new_password" type="password" autocomplete="password" class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-green-500 focus:outline-none focus:ring-green-500 sm:text-sm" />
+              </div>
+            </div>
+
+            <div>
+              <label for="confirm_new_password" class="block text-sm font-medium text-gray-700">Confirm New password</label>
+              <div class="mt-1">
+                <input id="confirm_new_password" name="confirm_new_password" type="password" autocomplete="password" class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-green-500 focus:outline-none focus:ring-green-500 sm:text-sm" />
+              </div>
+            </div>
+
+            <button type="submit" class="flex w-full justify-center rounded-md border border-transparent bg-green-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">Change Password</button>
+          </form>
+        </div>
+      </div>
     </div>
-    <div class="mb-1">
-      <label class="block uppercase text-gray-700 text-sm font-bold mb-2" for="confirm-new-password"> Confirm new Password </label>
-      <input name="confirm_new_password" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="confirm-new-password" type="password" />
-    </div>
-    <p class="text-red-600 text-xs mb-6 italic">New password should be a minimun of 6 characters</p>
-    <button class="bg-green-500 w-full hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Change Password</button>
-  </form>
+  </div>
+  <div class="relative hidden w-0 flex-1 lg:block">
+    <img class="absolute inset-0 h-full w-full object-cover" src="https://images.unsplash.com/photo-1505904267569-f02eaeb45a4c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80" alt="" />
+  </div>
 </div>
+
 <%- include('includes/footer') %>
