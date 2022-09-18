@@ -53,10 +53,6 @@ router.post('/doesEmailExists', controller.doesEmailExists);
 router.get('/google-login', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'] }));
 router.get('/google-login/callback', passport.authenticate('google', { failureRedirect: '/register' }), controller.googleLogin);
 
-// TWITTER
-router.get('/twitter-login', passport.authenticate('twitter'));
-router.get('/twitter-login/callback', passport.authenticate('twitter', { failureRedirect: '/register' }), controller.twitterLogin);
-
 // COMMENTS
 router.post('/get-comments', controller.addComment);
 router.post('/delete-comment', controller.deleteComment);

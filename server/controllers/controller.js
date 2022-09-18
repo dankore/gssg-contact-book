@@ -348,34 +348,6 @@ exports.googleLogin = async (req, res) => {
   }
 };
 
-exports.twitterLogin = async (req, res) => {
-  if (req.user.returningUser) {
-    req.session.user = {
-      email: req.user.email,
-    };
-    req.session.save(async () => {
-      await res.redirect('/');
-    });
-  } else {
-    await User.addSocialUser(req.user)
-      .then(successMessage => {
-        req.flash('success', successMessage);
-        req.session.user = {
-          email: req.user.email,
-        };
-        req.session.save(async _ => {
-          await res.redirect('/');
-        });
-      })
-      .catch(error => {
-        req.flash('errors', error);
-        req.session.save(async _ => {
-          await res.redirect('/register');
-        });
-      });
-  }
-};
-
 // COMMENTS
 exports.addComment = async (req, res) => {
   const profileEmail = helpers.getEmailFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
