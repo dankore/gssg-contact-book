@@ -79,12 +79,12 @@
 
             <form action="/logout" method="POST" class="flex flex-wrap">
               <label for="logout">
-                <input id="logout" value="Logout" type="submit" class="cursor-pointer ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700" />
+                <input id="logout" value="Logout" type="submit" class="cursor-pointer ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border  bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700" />
               </label>
             </form>
             <% } else { %>
             <a href="/login" class="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900">Sign in</a>
-            <a href="/register" class="ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700">Add Your Contact</a>
+            <a href="/register" class="ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border  bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700">Add Your Contact</a>
             <% } %>
           </div>
         </div>
@@ -117,7 +117,7 @@
               <a href="/about" class="text-base font-medium text-gray-900 hover:text-gray-700">About</a>
             </div>
 
-            <a href="/<%- user ? 'profile/'+user.email : 'register' %>" class="flex w-full items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700"><%- user ? 'Go to your profile' : 'Add Your Contact' %></a>
+            <a href="/<%- user ? 'profile/'+user.email : 'register' %>" class="flex w-full items-center justify-center rounded-md border  bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700"><%- user ? 'Go to your profile' : 'Add Your Contact' %></a>
           </div>
         </div>
       </div>

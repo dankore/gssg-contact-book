@@ -12,8 +12,8 @@ const express = require('express'),
   User = require('./models/model'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
-  TwitterStrategy = require('passport-twitter').Strategy;
-
+  TwitterStrategy = require('passport-twitter').Strategy,
+  cookieParser = require('cookie-parser');
 // TWITTER
 passport.use(
   new TwitterStrategy(
@@ -112,6 +112,7 @@ let sessionOptions = session({
   cookie: { maxAge: 1000 * 60 * 60 * 24 * 14, httpOnly: true }, // COOKIES EXPIRE IN 14 DAYS
 });
 
+server.use(cookieParser());
 server.use(sessionOptions);
 server.use(passport.initialize());
 server.use(passport.session());

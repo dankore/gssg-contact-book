@@ -5,6 +5,9 @@ const upload = require('./misc/file-upload');
 const singleUpload = upload.single('photo');
 const passport = require('passport');
 const rateLimit = require('express-rate-limit');
+const csrf = require('csurf');
+
+const csrfProtection = csrf({ cookie: true });
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -16,17 +19,17 @@ const apiLimiter = rateLimit({
 // HOME, REGISTER, LOGIN
 router.get('/', controller.home);
 router.get('/contacts', controller.contacts);
-router.get('/register', controller.registrationPage);
-router.post('/register', controller.registrationSubmission);
-router.get('/login', controller.loginPage);
-router.post('/login', apiLimiter, controller.login);
+router.get('/register', csrfProtection, controller.registrationPage);
+router.post('/register', csrfProtection, controller.registrationSubmission);
+router.get('/login', csrfProtection, controller.loginPage);
+router.post('/login', csrfProtection, apiLimiter, controller.login);
 router.post('/logout', controller.logout);
 router.get('/about', controller.about);
 
 // PROFILE
 router.get('/profile/:email', controller.ifUserExists, controller.profileScreen);
-router.get('/profile/:email/edit', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.viewEditScreen);
-router.post('/profile/:email/edit', singleUpload, controller.edit);
+router.get('/profile/:email/edit', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.viewEditScreen);
+router.post('/profile/:email/edit', singleUpload, csrfProtection, controller.edit);
 
 // ACCOUNT
 router.get('/account/:email', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.account);
@@ -35,10 +38,10 @@ router.get('/account/:email/change-password', controller.mustBeLoggedIn, control
 router.post('/account/:email/change-password', controller.changePassword);
 
 // RESET PASSWORD
-router.get('/reset-password', controller.resetPasswordPage);
-router.post('/reset-password', controller.resetPassword);
-router.get('/reset-password/:token', controller.resetPasswordTokenPage);
-router.post('/reset-password/:token', controller.resetPasswordToken);
+router.get('/reset-password', csrfProtection, controller.resetPasswordPage);
+router.post('/reset-password', csrfProtection, controller.resetPassword);
+router.get('/reset-password/:token', csrfProtection, controller.resetPasswordTokenPage);
+router.post('/reset-password/:token', csrfProtection, controller.resetPasswordToken);
 
 // PRIVACY
 router.get('/privacy', controller.privacy);

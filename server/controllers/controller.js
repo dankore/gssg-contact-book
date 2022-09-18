@@ -46,6 +46,7 @@ exports.registrationPage = async (req, res) => {
   } else {
     res.render('registrationPage', {
       reqErrors: req.flash('reqError'),
+      csrfToken: req.csrfToken(),
     });
   }
 };
@@ -78,7 +79,7 @@ exports.loginPage = (req, res) => {
   if (req.session.user) {
     res.redirect('/');
   } else {
-    res.render('loginPage');
+    res.render('loginPage', { csrfToken: req.csrfToken() });
   }
 };
 
@@ -173,7 +174,7 @@ exports.profileScreen = (req, res) => {
 
 exports.viewEditScreen = async function (req, res) {
   let profile = await User.findByEmail(req.session.user.email);
-  res.render('editProfilePage', { profile: profile });
+  res.render('editProfilePage', { profile: profile, csrfToken: req.csrfToken() });
 };
 
 exports.edit = async (req, res) => {
@@ -261,7 +262,7 @@ exports.changePassword = function (req, res) {
 };
 
 exports.resetPasswordPage = (req, res) => {
-  req.session.user ? res.redirect('/') : res.render('resetPasswordPage');
+  req.session.user ? res.redirect('/') : res.render('resetPasswordPage', { csrfToken: req.csrfToken() });
 };
 
 exports.resetPassword = (req, res) => {
@@ -289,6 +290,7 @@ exports.resetPasswordTokenPage = (req, res) => {
     .then(() => {
       res.render('resetTokenPage', {
         token: req.params.token,
+        csrfToken: req.csrfToken(),
       });
     })
     .catch(error => {
