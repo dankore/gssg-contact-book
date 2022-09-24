@@ -27,9 +27,9 @@ router.post('/logout', controller.logout);
 router.get('/about', controller.about);
 
 // PROFILE
-router.get('/profile/:email', controller.ifUserExists, controller.profileScreen);
-router.get('/profile/:email/edit', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.viewEditScreen);
-router.post('/profile/:email/edit', singleUpload, csrfProtection, controller.edit);
+router.get('/contacts/:email', controller.ifUserExists, controller.profileScreen);
+router.get('/contacts/:email/edit', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.viewEditScreen);
+router.post('/contacts/:email/edit', singleUpload, csrfProtection, controller.edit);
 
 // ACCOUNT
 router.get('/account/:email', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.account);

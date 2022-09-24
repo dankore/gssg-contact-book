@@ -163,12 +163,12 @@ exports.profileScreen = (req, res) => {
     // FILTER ONLY likes_received_from BELONGING TO THE SESSION USER ENDS
     const visitorIsOwner = User.isVisitorOwner(req.session.user.email, req.profileUser.email);
     if (visitorIsOwner) {
-      res.render('profileLoggedInUser', { profile: req.profileUser });
+      res.render('contactLoggedInUser', { profile: req.profileUser });
     } else {
-      res.render('profileGuest', { profile: req.profileUser });
+      res.render('contactGuest', { profile: req.profileUser });
     }
   } else {
-    res.render('profileGuest', { profile: req.profileUser });
+    res.render('contactGuest', { profile: req.profileUser });
   }
 };
 
