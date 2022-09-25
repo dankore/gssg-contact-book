@@ -176,7 +176,7 @@ User.prototype.login = function () {
             // EMAIL WHO LOGINS
             new Email().whoLoggedIn(attemptedUser.firstName);
             // EMAIL WHO LOGINS ENDS
-            resolve(attemptedUser.username);
+            resolve(attemptedUser);
           } else {
             reject('Invalid password!');
           }
@@ -840,7 +840,7 @@ User.saveComment = data => {
               commentId: data.commentId,
               comment: data.comment,
               visitorEmail: data.visitorEmail,
-              visitorUsername: data.username,
+              visitorUsername: data.visitorUsername,
               visitorFirstName: data.visitorFirstName,
               photo: data.photo,
               commentDate: data.commentDate,
@@ -856,7 +856,7 @@ User.saveComment = data => {
         const lastCommentDoc = info.value.comments[info.value.comments.length - 1];
         resolve(lastCommentDoc);
         // EMAIL USERS FOR A SUCCESSFULL COMMENT
-        new Email().sendCommentSuccessMessage(info.value.comments, data.visitorFirstName, data.visitorEmail, data.photo, data.commentDate, data.comment, data.profileEmail, info.value.firstName, info.value.lastName);
+        //new Email().sendCommentSuccessMessage(info.value.comments, data.visitorFirstName, data.visitorEmail, data.photo, data.commentDate, data.comment, data.profileEmail, info.value.firstName, info.value.lastName);
         //EMAIL USERS FOR A SUCCESSFULL COMMENT ENDS
       })
       .catch(_ => {

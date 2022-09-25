@@ -86,10 +86,12 @@ exports.login = async (req, res) => {
 
   user
     .login()
-    .then(username => {
+    .then(userDoc => {
       req.session.user = {
-        username: username,
+        username: userDoc.username,
+        email: userDoc.email,
       };
+
       req.session.save(() => {
         res.redirect('/');
       });
@@ -109,7 +111,7 @@ exports.logout = function (req, res) {
 };
 
 exports.getProfile = async (req, res) => {
-  const profileEmail = helpers.getEmailFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
+  const profileEmail = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
   await User.findByUsername(profileEmail)
     .then(userDoc => {
       res.json(userDoc.likes_received_from);
@@ -351,17 +353,19 @@ exports.googleLogin = async (req, res) => {
 
 // COMMENTS
 exports.addComment = async (req, res) => {
-  const profileEmail = helpers.getEmailFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
+  const contactUsername = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
+
   const userDoc = await User.findByUsername(req.session.user.username);
+
   const commentDate = helpers.getMonthDayYear() + ', ' + helpers.getHMS();
   // GET RID OF BOGUS AND SANITIZE DATA
   const data = {
     commentId: new ObjectId(),
     comment: req.body.comment,
-    visitorEmail: req.session.user.username,
+    visitorEmail: req.body.visitorEmail,
     visitorUsername: userDoc.username,
     visitorFirstName: userDoc.firstName,
-    profileEmail: profileEmail,
+    profileEmail: req.body.contactEmail,
     photo: userDoc.photo,
     commentDate: commentDate,
   };
@@ -373,19 +377,20 @@ exports.addComment = async (req, res) => {
     .catch(errorMessage => {
       req.flash('errors', errorMessage);
       req.session.save(async _ => {
-        await res.redirect(`contacts/${profileEmail}`);
+        await res.redirect(`contacts/${contactUsername}`);
       });
     });
 };
 
 // UPDATE A COMMENT
 exports.editComment = (req, res) => {
-  const profileEmail = helpers.getEmailFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
+  const profileUsername = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
   // GET RID OF BOGUS AND SANITIZE DATA
   const data = {
     commentId: req.body.commentId,
     comment: req.body.comment,
-    profileEmail: profileEmail,
+    profileEmail: req.body.contactEmail,
+    profileUsername,
   };
 
   User.updateComment(data)
@@ -402,9 +407,7 @@ exports.editComment = (req, res) => {
 
 // DELETE A COMMENT
 exports.deleteComment = (req, res) => {
-  const profileEmail = helpers.getEmailFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
-
-  User.deleteComment(req.body.commentId, profileEmail)
+  User.deleteComment(req.body.commentId, req.body.contactEmail)
     .then(successMessage => {
       res.json(successMessage);
     })
@@ -415,7 +418,7 @@ exports.deleteComment = (req, res) => {
 
 // LIKES
 exports.likes = async (req, res) => {
-  const profileEmail = helpers.getEmailFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
+  const profileEmail = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
   const userDoc = await User.findByUsername(req.session.user.username);
   // TODO: ADD _ID TO EACH LIKE
   const data = {
