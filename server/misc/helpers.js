@@ -24,8 +24,8 @@ const sortProfiles = array => {
 };
 
 // VALIDATION: ALLOWS ONLY LETTERS, NUMBERS, DASHES, AND HYPHENS
-const isAlphaNumericDashHyphen = stringInput => {
-  return /^[\w-]+$/.test(stringInput);
+const isAlphaNumericDashHyphenPeriod = stringInput => {
+  return /^[\w-\.]+$/.test(stringInput);
 };
 
 // STATS : GET YEAR AND NUMBER OF PROFILES PER YEAR.
@@ -114,7 +114,7 @@ function formatMonth(num) {
       return 'Dec';
   }
 }
-exports.isAlphaNumericDashHyphen = isAlphaNumericDashHyphen;
+exports.isAlphaNumericDashHyphenPeriod = isAlphaNumericDashHyphenPeriod;
 exports.statsByYear = statsByYear;
 exports.getUsernameFromHeadersReferrer = getUsernameFromHeadersReferrer;
 exports.getHMS = getHMS;

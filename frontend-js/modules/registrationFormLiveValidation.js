@@ -49,7 +49,7 @@ export default class RegistrationFormLiveValidation {
       this.isDifferent(this.lastName, this.lastNameHandler);
     });
     this.year.addEventListener('blur', () => {
-      this.isDifferent(this.year, this.yearHandler());
+      this.isDifferent(this.year, this.yearHandler);
     });
     this.email.addEventListener('blur', () => {
       this.isDifferent(this.email, this.emailHandler);
@@ -62,7 +62,7 @@ export default class RegistrationFormLiveValidation {
 
   // GENERAL METHODS
   isDifferent(el, handler) {
-    if (el.previousValue != el.value) {
+    if (handler && el.previousValue != el.value) {
       handler.call(this);
     }
     el.previousValue = el.value;
@@ -111,6 +111,7 @@ export default class RegistrationFormLiveValidation {
     if (this.password.value.length > 50) {
       this.showValidationError(this.password, 'Password cannot exceed 50 characters.');
     }
+
     if (!this.password.errors) {
       this.hideValidationError(this.password);
     }

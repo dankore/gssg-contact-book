@@ -33,6 +33,30 @@ User.prototype.validateEmail = function () {
     resolve();
   });
 };
+
+User.prototype.validateUsername = function () {
+  return new Promise(async (resolve, reject) => {
+    if (this.data.username.length == '') {
+      this.errors.push('Username cannot be empty.');
+    }
+    if (this.data.username.length > 30) {
+      this.errors.push('Username cannot exceed 30 characters.');
+    }
+    if (this.data.username.length != '' && !helpers.isAlphaNumericDashHyphenPeriod(this.data.username)) {
+      this.errors.push('Username can only contain letters, dashes, undercores, periods, and numbers.');
+    }
+
+    // if username is valid, check to see if it is taken
+    let usernameExists = await usersCollection.findOne({
+      username: this.data.username,
+    });
+
+    if (usernameExists) {
+      this.errors.push('That username is already taken.');
+    }
+    resolve();
+  });
+};
 User.prototype.validatePassword = function () {
   // check for empty box
   if (this.data.password.length == '') {
@@ -132,14 +156,14 @@ User.prototype.validateSomeUserRegistrationInputs = function () {
   if (this.data.firstName.length > 30) {
     this.errors.push('First name cannot exceed 30 characters.');
   }
-  if (this.data.firstName.length != '' && !helpers.isAlphaNumericDashHyphen(this.data.firstName)) {
-    this.errors.push('First name can only contain letters, dashes, undercores, and numbers.');
+  if (this.data.firstName.length != '' && !helpers.isAlphaNumericDashHyphenPeriod(this.data.firstName)) {
+    this.errors.push('First name can only contain letters, dashes, undercores, periods, and numbers.');
   }
   if (this.data.lastName.length > 30) {
     this.errors.push('Last name cannot exceed 30 characters.');
   }
-  if (this.data.lastName.length != '' && !helpers.isAlphaNumericDashHyphen(this.data.lastName)) {
-    this.errors.push('Last name can only contain letters, dashes, undercores, and numbers.');
+  if (this.data.lastName.length != '' && !helpers.isAlphaNumericDashHyphenPeriod(this.data.lastName)) {
+    this.errors.push('Last name can only contain letters, dashes, undercores, periods, and numbers.');
   }
 
   if (this.data.year.length != '' && !validator.isNumeric(this.data.year)) {
@@ -198,18 +222,19 @@ User.prototype.cleanUp = function () {
   if (typeof this.data.email != 'string') {
     this.data.email = '';
   }
+  if (typeof this.data.username != 'string') {
+    this.data.username = '';
+  }
 };
 
 User.prototype.register = function () {
   return new Promise(async (resolve, reject) => {
-    //Make sure email is string
     this.cleanUp();
-    // Validate user data
     this.validateSomeUserRegistrationInputs();
-    // check password
     this.validatePassword();
     // check to see if email is taken
     await this.validateEmail();
+    await this.validateUsername();
 
     // Only if there no validation error
     // then save the user data into the database
@@ -856,7 +881,7 @@ User.saveComment = data => {
         const lastCommentDoc = info.value.comments[info.value.comments.length - 1];
         resolve(lastCommentDoc);
         // EMAIL USERS FOR A SUCCESSFULL COMMENT
-        //new Email().sendCommentSuccessMessage(info.value.comments, data.visitorFirstName, data.visitorEmail, data.photo, data.commentDate, data.comment, data.profileEmail, info.value.firstName, info.value.lastName);
+        new Email().sendCommentSuccessMessage(info.value.comments, data.visitorFirstName, data.visitorEmail, data.photo, data.commentDate, data.comment, data.profileEmail, info.value.firstName, info.value.lastName);
         //EMAIL USERS FOR A SUCCESSFULL COMMENT ENDS
       })
       .catch(_ => {

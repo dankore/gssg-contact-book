@@ -57,7 +57,9 @@ exports.registrationSubmission = async (req, res) => {
     .then(successMessage => {
       req.session.user = {
         username: user.data.username,
+        email: user.data.email,
       };
+
       req.flash('success', successMessage);
       req.session.save(async function () {
         await res.redirect(`contacts/${req.session.user.username}/edit`);
@@ -90,6 +92,8 @@ exports.login = async (req, res) => {
       req.session.user = {
         username: userDoc.username,
         email: userDoc.email,
+        firstName: userDoc.firstName,
+        lastName: userDoc.lastName,
       };
 
       req.session.save(() => {
@@ -418,22 +422,23 @@ exports.deleteComment = (req, res) => {
 
 // LIKES
 exports.likes = async (req, res) => {
-  const profileEmail = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
-  const userDoc = await User.findByUsername(req.session.user.username);
   // TODO: ADD _ID TO EACH LIKE
   const data = {
     like: req.body.like,
     color: req.body.color,
-    visitorEmail: req.session.user.username,
-    visitorName: `${userDoc.firstName} ${userDoc.lastName}`,
-    profileEmail: profileEmail,
+    visitorEmail: req.body.visitorEmail,
+    visitorName: req.body.visitorName,
+    profileEmail: req.body.contactEmail,
+    contactUsername: helpers.getUsernameFromHeadersReferrer(req.headers.referer), // GET EMAIL FROM URL,
   };
 
-  User.storeLikes(data)
-    .then(response => {
-      res.json(response);
-    })
-    .catch(errorMessage => {
-      res.json(errorMessage);
-    });
+  console.log(data);
+
+  // User.storeLikes(data)
+  //   .then(response => {
+  //     res.json(response);
+  //   })
+  //   .catch(errorMessage => {
+  //     res.json(errorMessage);
+  //   });
 };
