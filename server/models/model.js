@@ -972,7 +972,6 @@ User.storeLikes = data => {
             likes_received_from: {
               color: data.color,
               visitorEmail: data.visitorEmail,
-              visitorUsername: data.contactUsername,
               visitorName: data.visitorName,
             },
           },

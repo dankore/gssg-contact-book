@@ -425,7 +425,6 @@ exports.likes = async (req, res) => {
     visitorEmail: req.body.visitorEmail,
     visitorName: req.body.visitorName,
     profileEmail: req.body.contactEmail,
-    contactUsername: helpers.getUsernameFromHeadersReferrer(req.headers.referer), // GET EMAIL FROM URL,
   };
 
   User.storeLikes(data)
