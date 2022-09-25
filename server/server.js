@@ -31,6 +31,9 @@ passport.use(
             // CLEAN UP
             user = {
               email: user._json.email,
+              firstName: user._json.given_name,
+              lastName: user._json.family_name,
+              username: user._json.email.split('@')[0],
               returningUser: true,
             };
             return cb(null, user);
@@ -41,8 +44,9 @@ passport.use(
               google_id: user._json.sub,
               firstName: user._json.given_name,
               lastName: user._json.family_name,
+              username: user._json.email.split('@')[0],
               email: user._json.email,
-              year: '1988?',
+              year: '2006?',
               photo: user._json.picture, // END
             };
             return cb(null, user);
@@ -111,7 +115,6 @@ server.use(async (req, res, next) => {
   res.locals.path = req.originalUrl;
   // GLOBALS FOR WHEN A USER IS LOGGED IN
   if (req.session.user) {
- 
     await User.findByUsername(req.session.user.username)
       .then(userDoc => {
         res.locals.profilesUserLiked = userDoc.likes_given_to;

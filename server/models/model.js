@@ -434,7 +434,7 @@ User.delete = function (requestedUsername, sessionUsername) {
       let visistorIsOwner = User.isVisitorOwner(requestedUsername, sessionUsername);
       if (visistorIsOwner) {
         // DELETE ACCOUNT
-        await usersCollection.deleteOne({ email: requestedUsername });
+        await usersCollection.deleteOne({ username: requestedUsername });
         // NOW DELETE COMMENTS OF THE USER ACROSS ALL DOCS
         await usersCollection.updateMany({}, { $pull: { comments: { visitorEmail: sessionUsername } } }, { multi: true });
         resolve();

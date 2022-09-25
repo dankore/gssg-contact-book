@@ -58,6 +58,8 @@ exports.registrationSubmission = async (req, res) => {
       req.session.user = {
         username: user.data.username,
         email: user.data.email,
+        firstName: user.data.firstName,
+        lastName: user.data.lastName,
       };
 
       req.flash('success', successMessage);
@@ -328,30 +330,24 @@ exports.doesEmailExists = async (req, res) => {
 
 // GOOGLE LOGIN
 exports.googleLogin = async (req, res) => {
-  if (req.user.returningUser) {
+  try {
     req.session.user = {
-      email: req.user.username,
+      email: req.user.email,
+      username: req.user.username,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
     };
-    req.session.save(async () => {
-      await res.redirect('/');
-    });
-  } else {
-    await User.addSocialUser(req.user)
-      .then(successMessage => {
-        req.flash('success', successMessage);
-        req.session.user = {
-          email: req.user.username,
-        };
-        req.session.save(async _ => {
-          await res.redirect('/');
-        });
-      })
-      .catch(error => {
-        req.flash('errors', error);
-        req.session.save(async _ => {
-          await res.redirect('/register');
-        });
-      });
+
+    if (req.user.returningUser) {
+      req.session.save(async _ => await res.redirect('/'));
+    } else {
+      const successMessage = await User.addSocialUser(req.user);
+      req.flash('success', successMessage);
+      req.session.save(async _ => await res.redirect(`contacts/${req.user.username}/edit`));
+    }
+  } catch (error) {
+    req.flash('errors', error);
+    req.session.save(async _ => await res.redirect('/register'));
   }
 };
 
