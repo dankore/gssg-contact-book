@@ -58,11 +58,11 @@ exports.registrationSubmission = async (req, res) => {
     .register()
     .then(successMessage => {
       req.session.user = {
-        email: user.data.email,
+        username: user.data.username,
       };
       req.flash('success', successMessage);
       req.session.save(async function () {
-        await res.redirect(`profile/${req.session.user.email}/edit`);
+        await res.redirect(`contacts/${req.session.user.username}/edit`);
       });
     })
     .catch(regErrors => {
@@ -88,9 +88,9 @@ exports.login = async (req, res) => {
 
   user
     .login()
-    .then(() => {
+    .then(username => {
       req.session.user = {
-        email: user.data.email,
+        username: username,
       };
       req.session.save(() => {
         res.redirect('/');
@@ -112,7 +112,7 @@ exports.logout = function (req, res) {
 
 exports.getProfile = async (req, res) => {
   const profileEmail = helpers.getEmailFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
-  await User.findByEmail(profileEmail)
+  await User.findByUsername(profileEmail)
     .then(userDoc => {
       res.json(userDoc.likes_received_from);
     })
@@ -122,7 +122,7 @@ exports.getProfile = async (req, res) => {
 };
 
 exports.ifUserExists = (req, res, next) => {
-  User.findByEmail(req.params.email)
+  User.findByUsername(req.params.email)
     .then(userDoc => {
       req.profileUser = userDoc;
       next();
@@ -144,7 +144,7 @@ exports.mustBeLoggedIn = (req, res, next) => {
 };
 
 exports.isVisitorOwner = (req, res, next) => {
-  const visitorIsOwner = User.isVisitorOwner(req.session.user.email, req.params.email);
+  const visitorIsOwner = User.isVisitorOwner(req.session.user.username, req.params.email);
   if (visitorIsOwner) {
     next();
   } else {
@@ -156,12 +156,12 @@ exports.isVisitorOwner = (req, res, next) => {
 exports.profileScreen = (req, res) => {
   if (req.session.user) {
     // FILTER ONLY likes_received_from BELONGING TO THE SESSION USER
-    const propExists = req.profileUser.likes_received_from ? req.profileUser.likes_received_from.filter(prop => prop.visitorEmail == req.session.user.email) : [];
+    const propExists = req.profileUser.likes_received_from ? req.profileUser.likes_received_from.filter(prop => prop.visitorEmail == req.session.user.username) : [];
     if (propExists.length > 0) {
       req.profileUser.color = propExists[0].color;
     }
     // FILTER ONLY likes_received_from BELONGING TO THE SESSION USER ENDS
-    const visitorIsOwner = User.isVisitorOwner(req.session.user.email, req.profileUser.email);
+    const visitorIsOwner = User.isVisitorOwner(req.session.user.username, req.profileUser.email);
     if (visitorIsOwner) {
       res.render('contactLoggedInUser', { profile: req.profileUser });
     } else {
@@ -173,19 +173,19 @@ exports.profileScreen = (req, res) => {
 };
 
 exports.viewEditScreen = async function (req, res) {
-  let profile = await User.findByEmail(req.session.user.email);
+  let profile = await User.findByUsername(req.session.user.username);
   res.render('editProfilePage', { profile: profile, csrfToken: req.csrfToken() });
 };
 
 exports.edit = async (req, res) => {
-  const userInfo = await User.findByEmail(req.session.user.email);
+  const userInfo = await User.findByUsername(req.session.user.username);
   const imageUrl = userInfo.photo;
   let profile;
 
   if (req.file) {
-    profile = new User(req.body, req.file.location, req.session.user.email, req.params.email);
+    profile = new User(req.body, req.file.location, req.session.user.username, req.params.email);
   } else {
-    profile = new User(req.body, imageUrl, req.session.user.email, req.params.email);
+    profile = new User(req.body, imageUrl, req.session.user.username, req.params.email);
   }
 
   profile
@@ -194,10 +194,10 @@ exports.edit = async (req, res) => {
       if (status == 'success') {
         req.flash('success', 'Profile successfully updated.');
         req.session.save(async _ => {
-          await res.redirect(`/profile/${req.params.email}/edit`);
+          await res.redirect(`/contacts/${req.params.email}/edit`);
         });
         // UPDATE USER COMMENTS INFO ACROSS ALL COMMENTS
-        const userInfo = await User.findByEmail(req.session.user.email);
+        const userInfo = await User.findByUsername(req.session.user.username);
         User.updateCommentFirtName(userInfo.email, userInfo.firstName);
         // UPDATE USER COMMENTS END
       } else {
@@ -205,7 +205,7 @@ exports.edit = async (req, res) => {
           req.flash('errors', error);
         });
         req.session.save(async _ => {
-          await res.redirect(`/profile/${req.params.email}/edit`);
+          await res.redirect(`/contacts/${req.params.email}/edit`);
         });
       }
     })
@@ -225,7 +225,7 @@ exports.account = (req, res) => {
 };
 
 exports.account.delete = (req, res) => {
-  User.delete(req.params.email, req.session.user.email)
+  User.delete(req.params.email, req.session.user.username)
     .then(() => {
       req.flash('success', 'Account successfully deleted.');
       req.session.destroy(() => res.redirect('/'));
@@ -245,7 +245,7 @@ exports.changePasswordPage = function (req, res) {
 };
 
 exports.changePassword = function (req, res) {
-  let user = new User(req.body, null, req.session.user.email, req.params.email);
+  let user = new User(req.body, null, req.session.user.username, req.params.email);
 
   user
     .updatePassword()
@@ -323,7 +323,7 @@ exports.doesEmailExists = async (req, res) => {
 exports.googleLogin = async (req, res) => {
   if (req.user.returningUser) {
     req.session.user = {
-      email: req.user.email,
+      email: req.user.username,
     };
     req.session.save(async () => {
       await res.redirect('/');
@@ -333,7 +333,7 @@ exports.googleLogin = async (req, res) => {
       .then(successMessage => {
         req.flash('success', successMessage);
         req.session.user = {
-          email: req.user.email,
+          email: req.user.username,
         };
         req.session.save(async _ => {
           await res.redirect('/');
@@ -351,13 +351,13 @@ exports.googleLogin = async (req, res) => {
 // COMMENTS
 exports.addComment = async (req, res) => {
   const profileEmail = helpers.getEmailFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
-  const userDoc = await User.findByEmail(req.session.user.email);
+  const userDoc = await User.findByUsername(req.session.user.username);
   const commentDate = helpers.getMonthDayYear() + ', ' + helpers.getHMS();
   // GET RID OF BOGUS AND SANITIZE DATA
   const data = {
     commentId: new ObjectId(),
     comment: req.body.comment,
-    visitorEmail: req.session.user.email,
+    visitorEmail: req.session.user.username,
     visitorFirstName: userDoc.firstName,
     profileEmail: profileEmail,
     photo: userDoc.photo,
@@ -371,7 +371,7 @@ exports.addComment = async (req, res) => {
     .catch(errorMessage => {
       req.flash('errors', errorMessage);
       req.session.save(async _ => {
-        await res.redirect(`profile/${profileEmail}`);
+        await res.redirect(`contacts/${profileEmail}`);
       });
     });
 };
@@ -393,7 +393,7 @@ exports.editComment = (req, res) => {
     .catch(errorMessage => {
       req.flash('errors', errorMessage);
       req.session.save(async _ => {
-        await res.redirect(`profile/${profileEmail}`);
+        await res.redirect(`contacts/${profileEmail}`);
       });
     });
 };
@@ -414,12 +414,12 @@ exports.deleteComment = (req, res) => {
 // LIKES
 exports.likes = async (req, res) => {
   const profileEmail = helpers.getEmailFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
-  const userDoc = await User.findByEmail(req.session.user.email);
+  const userDoc = await User.findByUsername(req.session.user.username);
   // TODO: ADD _ID TO EACH LIKE
   const data = {
     like: req.body.like,
     color: req.body.color,
-    visitorEmail: req.session.user.email,
+    visitorEmail: req.session.user.username,
     visitorName: `${userDoc.firstName} ${userDoc.lastName}`,
     profileEmail: profileEmail,
   };

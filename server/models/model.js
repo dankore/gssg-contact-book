@@ -176,7 +176,7 @@ User.prototype.login = function () {
             // EMAIL WHO LOGINS
             new Email().whoLoggedIn(attemptedUser.firstName);
             // EMAIL WHO LOGINS ENDS
-            resolve(attemptedUser.firstName);
+            resolve(attemptedUser.username);
           } else {
             reject('Invalid password!');
           }
@@ -254,6 +254,57 @@ User.findByEmail = function (email) {
             year: userDoc.data.year,
             email: userDoc.data.email,
             nickname: userDoc.data.nickname,
+            photo: userDoc.data.photo,
+            residence: userDoc.data.residence,
+            class: userDoc.data.class,
+            occupation: userDoc.data.occupation,
+            teacher: userDoc.data.teacher,
+            month: userDoc.data.month,
+            day: userDoc.data.day,
+            phone: userDoc.data.phone,
+            social_type_1: userDoc.data.social_type_1,
+            link_social_type_1: userDoc.data.link_social_type_1,
+            social_type_2: userDoc.data.social_type_2,
+            link_social_type_2: userDoc.data.link_social_type_2,
+            relationship: userDoc.data.relationship,
+            comments: userDoc.data.comments,
+            totalLikes: userDoc.data.totalLikes,
+            likes_received_from: userDoc.data.likes_received_from,
+            likes_given_to: userDoc.data.likes_given_to,
+          };
+
+          resolve(userDoc);
+        } else {
+          reject('Cannot find one user_by_email Model line 337');
+        }
+      })
+      .catch(() => {
+        reject('Cannot find one user_by_email Model line 341');
+      });
+  });
+};
+
+User.findByUsername = function (username) {
+  return new Promise(function (resolve, reject) {
+    if (typeof username != 'string') {
+      console.log({ username });
+      reject('Email not string. Model line 304');
+      return;
+    }
+    usersCollection
+      .findOne({ username: username })
+      .then(userDoc => {
+        if (userDoc) {
+          userDoc = new User(userDoc);
+
+          userDoc = {
+            _id: userDoc.data._id,
+            firstName: userDoc.data.firstName,
+            lastName: userDoc.data.lastName,
+            year: userDoc.data.year,
+            email: userDoc.data.email,
+            nickname: userDoc.data.nickname,
+            username: userDoc.data.username,
             photo: userDoc.data.photo,
             residence: userDoc.data.residence,
             class: userDoc.data.class,

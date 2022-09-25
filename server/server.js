@@ -111,7 +111,7 @@ server.use(async (req, res, next) => {
   res.locals.path = req.originalUrl;
   // GLOBALS FOR WHEN A USER IS LOGGED IN
   if (req.session.user) {
-    await User.findByEmail(req.session.user.email)
+    await User.findByUsername(req.session.user.username)
       .then(userDoc => {
         res.locals.profilesUserLiked = userDoc.likes_given_to;
         res.locals.first_name_welcome = userDoc.firstName;
@@ -126,8 +126,8 @@ server.use(async (req, res, next) => {
 });
 
 // SEO
-server.use('/profile/:email', async (req, res, next) => {
-  await User.findByEmail(req.params.email)
+server.use('/contacts/:username', async (req, res, next) => {
+  await User.findByUsername(req.params.username)
     .then(userDoc => {
       userDoc.url = 'https://www.gssgcontactbook.com' + req.originalUrl;
       res.locals.namesOfLikesReceivedFrom = userDoc.likes_received_from;
