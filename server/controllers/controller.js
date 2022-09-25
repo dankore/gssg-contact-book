@@ -428,13 +428,11 @@ exports.likes = async (req, res) => {
     contactUsername: helpers.getUsernameFromHeadersReferrer(req.headers.referer), // GET EMAIL FROM URL,
   };
 
-  console.log(data);
-
-  // User.storeLikes(data)
-  //   .then(response => {
-  //     res.json(response);
-  //   })
-  //   .catch(errorMessage => {
-  //     res.json(errorMessage);
-  //   });
+  User.storeLikes(data)
+    .then(response => {
+      res.json(response);
+    })
+    .catch(errorMessage => {
+      res.json(errorMessage);
+    });
 };

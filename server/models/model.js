@@ -1,4 +1,4 @@
-const usersCollection = require('../../db').db().collection('users'),
+const usersCollection = require('../../db.js').db().collection('users'),
   validator = require('validator'),
   bcrypt = require('bcryptjs'),
   crypto = require('crypto'),
@@ -511,11 +511,6 @@ User.getRecentProfiles = async function () {
 User.search = async function (searchedItem) {
   return new Promise(async (resolve, reject) => {
     try {
-      usersCollection.createIndex({
-        firstName: 'text',
-        lastName: 'text',
-        year: 'text',
-      });
       const safeSearchedItem = _.escapeRegExp(searchedItem);
 
       let searchedResult = await usersCollection
@@ -998,7 +993,7 @@ User.storeLikes = data => {
         resolve(visitorInfo);
 
         // EMAIL USERS FOR A SUCCESSFULL LIKE ENDS
-        new Email().sendLikesSuccessMessage(info.value.likes_received_from, data.profileEmail, data.visitorEmail, data.color, data.visitorName, info.value.firstName, info.value.lastName);
+        new Email().sendLikesSuccessMessage(info.value.likes_received_from, data.profileEmail, data.visitorEmail, data.color, data.visitorName, info.value.firstName, info.value.lastName, info.value.username);
         // EMAIL USERS FOR A SUCCESSFULL LIKE ENDS
       })
       .catch(_ => {

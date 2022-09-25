@@ -23,7 +23,7 @@ Emails.prototype.transporter = nodemailer.createTransport({
   },
 });
 
-Emails.prototype.sendLikesSuccessMessage = (likes, profileOwnerEmail, visitorEmail, color, visitorName, profileOwnerFirstName, profileOwnerLastName) => {
+Emails.prototype.sendLikesSuccessMessage = (likes, profileOwnerEmail, visitorEmail, color, visitorName, profileOwnerFirstName, profileOwnerLastName, profileOwnerUsername) => {
   // EMAIL USERS FOR A SUCCESSFULL LIKE
   /**
    * Only send email if a user likes a profile. If a user unlikes
@@ -68,7 +68,7 @@ Emails.prototype.sendLikesSuccessMessage = (likes, profileOwnerEmail, visitorEma
               <p style="font-size: 15px;"><strong>${visitorName}</strong> liked <strong>your</strong> profile.</p>
               </div>
               <a
-              href="https://www.gssgcontactbook.com/contacts/${profileOwnerEmail}"
+              href="https://www.gssgcontactbook.com/contacts/${profileOwnerUsername}"
               style="text-decoration: none; padding: 10px; background-color: #38a169; border-radius: 5px; color: white;
                 font-size: 15px; width: 300px; text-align: center; display:inline-block;">View on GSS Gwarinpa Contact Book
               </a>
@@ -88,7 +88,7 @@ Emails.prototype.sendLikesSuccessMessage = (likes, profileOwnerEmail, visitorEma
               <p style="font-size: 15px;"><strong>${visitorName}</strong> liked <strong>${profileOwnerFirstName} ${profileOwnerLastName}'s</strong> profile.</p>
               </div>
               <a
-              href="https://www.gssgcontactbook.com/contacts/${profileOwnerEmail}"
+              href="https://www.gssgcontactbook.com/contacts/${profileOwnerUsername}"
               style="text-decoration: none; padding: 10px; background-color: #38a169; border-radius: 5px; color: white;
                 font-size: 15px; width: 300px; text-align: center; display:inline-block;">View on GSS Gwarinpa Contact Book
               </a>
@@ -154,7 +154,7 @@ Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visito
                     <p style="font-size: 15px;"><strong>${comment}</strong></p>
                     </div>
                     <a 
-                    href="https://www.gssgcontactbook.com/contacts/${profileOwnerEmail}" 
+                    href="https://www.gssgcontactbook.com/contacts/${profileOwnerUsername}" 
                     style="text-decoration: none; padding: 10px; background-color: #38a169; border-radius: 5px; color: white; 
                       font-size: 15px; width: 300px; text-align: center; display:inline-block;">View on GSS Gwarinpa Contact Book
                     </a>
@@ -177,7 +177,7 @@ Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visito
                     <p style="font-size: 15px;"><strong>${comment}</strong></p>
                     </div>
                     <a 
-                    href="https://www.gssgcontactbook.com/contacts/${profileOwnerEmail}" 
+                    href="https://www.gssgcontactbook.com/contacts/${profileOwnerUsername}" 
                     style="text-decoration: none; padding: 10px; background-color: #38a169; border-radius: 5px; color: white; 
                       font-size: 15px; width: 300px; text-align: center; display:inline-block;">View on GSS Gwarinpa Contact Book
                     </a>

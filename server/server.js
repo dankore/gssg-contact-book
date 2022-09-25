@@ -70,7 +70,7 @@ passport.deserializeUser(function (obj, cb) {
 // EXPRESS SESSIONS
 let sessionOptions = session({
   secret: process.env.SESSION_SECRET,
-  store: new MongoStore({ client: require('../db') }),
+  store: new MongoStore({ client: require('../db.js') }),
   resave: false,
   secure: true,
   httpOnly: true,
