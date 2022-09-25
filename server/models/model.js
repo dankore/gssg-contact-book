@@ -254,6 +254,7 @@ User.findByEmail = function (email) {
             year: userDoc.data.year,
             email: userDoc.data.email,
             nickname: userDoc.data.nickname,
+            username: userDoc.data.username,
             photo: userDoc.data.photo,
             residence: userDoc.data.residence,
             class: userDoc.data.class,
@@ -291,6 +292,7 @@ User.findByUsername = function (username) {
       reject('Email not string. Model line 304');
       return;
     }
+
     usersCollection
       .findOne({ username: username })
       .then(userDoc => {
@@ -338,9 +340,9 @@ User.findByUsername = function (username) {
 User.prototype.update = function () {
   return new Promise(async (resolve, reject) => {
     try {
-      let profile = await User.findByEmail(this.requestedUsername);
+      let profile = await User.findByUsername(this.requestedUsername);
 
-      const visistorIsOwner = User.isVisitorOwner(this.sessionUsername, profile.email);
+      const visistorIsOwner = User.isVisitorOwner(this.sessionUsername, profile.username);
       if (visistorIsOwner) {
         //Update
         let status = await this.actuallyUpdate();
@@ -362,8 +364,8 @@ User.prototype.actuallyUpdate = function () {
     this.editValidation();
 
     if (!this.errors.length) {
-      await usersCollection.findOneAndUpdate(
-        { email: this.requestedUsername },
+      const userDoc = await usersCollection.findOneAndUpdate(
+        { username: this.requestedUsername },
         {
           $set: {
             firstName: this.data.firstName,
@@ -371,6 +373,7 @@ User.prototype.actuallyUpdate = function () {
             email: this.data.email,
             year: this.data.year,
             nickname: this.data.nickname,
+            username: this.data.username,
             photo: this.photo,
             residence: this.data.residence,
             class: this.data.class,
@@ -385,9 +388,11 @@ User.prototype.actuallyUpdate = function () {
             link_social_type_2: this.data.link_social_type_2,
             relationship: this.data.relationship,
           },
-        }
+        },
+        { returnOriginal: false }
       );
-      resolve('success');
+
+      resolve({ status: 'success', userDoc: userDoc.value });
     } else {
       resolve('failure');
     }

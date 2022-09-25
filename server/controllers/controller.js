@@ -190,22 +190,25 @@ exports.edit = async (req, res) => {
 
   profile
     .update()
-    .then(async status => {
+    .then(async ({ status, userDoc }) => {
       if (status == 'success') {
         req.flash('success', 'Profile successfully updated.');
+        req.session.user = {
+          username: userDoc.username,
+        };
         req.session.save(async _ => {
-          await res.redirect(`/contacts/${req.params.username}/edit`);
+          await res.redirect(`/contacts/${userDoc.username}`);
         });
+
         // UPDATE USER COMMENTS INFO ACROSS ALL COMMENTS
-        const userInfo = await User.findByUsername(req.session.user.username);
-        User.updateCommentFirtName(userInfo.username, userInfo.firstName);
+        User.updateCommentFirtName(userDoc.email, userDoc.firstName);
         // UPDATE USER COMMENTS END
       } else {
         profile.errors.forEach(error => {
           req.flash('errors', error);
         });
         req.session.save(async _ => {
-          await res.redirect(`/contacts/${req.params.username}/edit`);
+          await res.redirect(`/contacts/${userDoc.username}/edit`);
         });
       }
     })

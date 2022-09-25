@@ -111,12 +111,14 @@ server.use(async (req, res, next) => {
   res.locals.path = req.originalUrl;
   // GLOBALS FOR WHEN A USER IS LOGGED IN
   if (req.session.user) {
+ 
     await User.findByUsername(req.session.user.username)
       .then(userDoc => {
         res.locals.profilesUserLiked = userDoc.likes_given_to;
         res.locals.first_name_welcome = userDoc.firstName;
         res.locals.emailForComment = userDoc.email;
         res.locals.photoUrlForComment = userDoc.photo;
+        res.locals.username = userDoc.username;
       })
       .catch(err => {
         console.log('Server line 153 ' + err);
