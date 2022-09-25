@@ -31,6 +31,9 @@ passport.use(
             // CLEAN UP
             user = {
               email: user._json.email,
+              firstName: user._json.given_name,
+              lastName: user._json.family_name,
+              username: user._json.email.split('@')[0],
               returningUser: true,
             };
             return cb(null, user);
@@ -41,8 +44,9 @@ passport.use(
               google_id: user._json.sub,
               firstName: user._json.given_name,
               lastName: user._json.family_name,
+              username: user._json.email.split('@')[0],
               email: user._json.email,
-              year: '1988?',
+              year: '2006?',
               photo: user._json.picture, // END
             };
             return cb(null, user);
@@ -111,12 +115,13 @@ server.use(async (req, res, next) => {
   res.locals.path = req.originalUrl;
   // GLOBALS FOR WHEN A USER IS LOGGED IN
   if (req.session.user) {
-    await User.findByEmail(req.session.user.email)
+    await User.findByUsername(req.session.user.username)
       .then(userDoc => {
         res.locals.profilesUserLiked = userDoc.likes_given_to;
         res.locals.first_name_welcome = userDoc.firstName;
         res.locals.emailForComment = userDoc.email;
         res.locals.photoUrlForComment = userDoc.photo;
+        res.locals.username = userDoc.username;
       })
       .catch(err => {
         console.log('Server line 153 ' + err);
@@ -126,8 +131,8 @@ server.use(async (req, res, next) => {
 });
 
 // SEO
-server.use('/profile/:email', async (req, res, next) => {
-  await User.findByEmail(req.params.email)
+server.use('/contacts/:username', async (req, res, next) => {
+  await User.findByUsername(req.params.username)
     .then(userDoc => {
       userDoc.url = 'https://www.gssgcontactbook.com' + req.originalUrl;
       res.locals.namesOfLikesReceivedFrom = userDoc.likes_received_from;

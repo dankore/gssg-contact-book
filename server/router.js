@@ -27,15 +27,15 @@ router.post('/logout', controller.logout);
 router.get('/about', controller.about);
 
 // PROFILE
-router.get('/profile/:email', controller.ifUserExists, controller.profileScreen);
-router.get('/profile/:email/edit', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.viewEditScreen);
-router.post('/profile/:email/edit', singleUpload, csrfProtection, controller.edit);
+router.get('/contacts/:username', controller.ifUserExists, controller.profileScreen);
+router.get('/contacts/:username/edit', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.viewEditScreen);
+router.post('/contacts/:username/edit', singleUpload, csrfProtection, controller.edit);
 
 // ACCOUNT
-router.get('/account/:email', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.account);
-router.post('/account/:email/delete', controller.account.delete);
-router.get('/account/:email/change-password', controller.mustBeLoggedIn, controller.changePasswordPage);
-router.post('/account/:email/change-password', controller.changePassword);
+router.get('/account/:username', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.account);
+router.post('/account/:username/delete', controller.account.delete);
+router.get('/account/:username/change-password', controller.mustBeLoggedIn, controller.changePasswordPage);
+router.post('/account/:username/change-password', controller.changePassword);
 
 // RESET PASSWORD
 router.get('/reset-password', csrfProtection, controller.resetPasswordPage);

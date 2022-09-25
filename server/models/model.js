@@ -8,8 +8,8 @@ const usersCollection = require('../../db').db().collection('users'),
   _ = require('lodash');
 // CLASS
 let User = class user {
-  constructor(data, photo, sessionEmail, requestedEmail) {
-    (this.data = data), (this.photo = photo), (this.errors = []), (this.sessionEmail = sessionEmail), (this.requestedEmail = requestedEmail);
+  constructor(data, photo, sessionUsername, requestedUsername) {
+    (this.data = data), (this.photo = photo), (this.errors = []), (this.sessionUsername = sessionUsername), (this.requestedUsername = requestedUsername);
   }
 };
 // CLASS ENDS
@@ -29,6 +29,30 @@ User.prototype.validateEmail = function () {
       if (emailExist) {
         this.errors.push('That email is already taken.');
       }
+    }
+    resolve();
+  });
+};
+
+User.prototype.validateUsername = function () {
+  return new Promise(async (resolve, reject) => {
+    if (this.data.username.length == '') {
+      this.errors.push('Username cannot be empty.');
+    }
+    if (this.data.username.length > 30) {
+      this.errors.push('Username cannot exceed 30 characters.');
+    }
+    if (this.data.username.length != '' && !helpers.isAlphaNumericDashHyphenPeriod(this.data.username)) {
+      this.errors.push('Username can only contain letters, dashes, undercores, periods, and numbers.');
+    }
+
+    // if username is valid, check to see if it is taken
+    let usernameExists = await usersCollection.findOne({
+      username: this.data.username,
+    });
+
+    if (usernameExists) {
+      this.errors.push('That username is already taken.');
     }
     resolve();
   });
@@ -132,14 +156,14 @@ User.prototype.validateSomeUserRegistrationInputs = function () {
   if (this.data.firstName.length > 30) {
     this.errors.push('First name cannot exceed 30 characters.');
   }
-  if (this.data.firstName.length != '' && !helpers.isAlphaNumericDashHyphen(this.data.firstName)) {
-    this.errors.push('First name can only contain letters, dashes, undercores, and numbers.');
+  if (this.data.firstName.length != '' && !helpers.isAlphaNumericDashHyphenPeriod(this.data.firstName)) {
+    this.errors.push('First name can only contain letters, dashes, undercores, periods, and numbers.');
   }
   if (this.data.lastName.length > 30) {
     this.errors.push('Last name cannot exceed 30 characters.');
   }
-  if (this.data.lastName.length != '' && !helpers.isAlphaNumericDashHyphen(this.data.lastName)) {
-    this.errors.push('Last name can only contain letters, dashes, undercores, and numbers.');
+  if (this.data.lastName.length != '' && !helpers.isAlphaNumericDashHyphenPeriod(this.data.lastName)) {
+    this.errors.push('Last name can only contain letters, dashes, undercores, periods, and numbers.');
   }
 
   if (this.data.year.length != '' && !validator.isNumeric(this.data.year)) {
@@ -176,7 +200,7 @@ User.prototype.login = function () {
             // EMAIL WHO LOGINS
             new Email().whoLoggedIn(attemptedUser.firstName);
             // EMAIL WHO LOGINS ENDS
-            resolve(attemptedUser.firstName);
+            resolve(attemptedUser);
           } else {
             reject('Invalid password!');
           }
@@ -198,18 +222,19 @@ User.prototype.cleanUp = function () {
   if (typeof this.data.email != 'string') {
     this.data.email = '';
   }
+  if (typeof this.data.username != 'string') {
+    this.data.username = '';
+  }
 };
 
 User.prototype.register = function () {
   return new Promise(async (resolve, reject) => {
-    //Make sure email is string
     this.cleanUp();
-    // Validate user data
     this.validateSomeUserRegistrationInputs();
-    // check password
     this.validatePassword();
     // check to see if email is taken
     await this.validateEmail();
+    await this.validateUsername();
 
     // Only if there no validation error
     // then save the user data into the database
@@ -254,6 +279,59 @@ User.findByEmail = function (email) {
             year: userDoc.data.year,
             email: userDoc.data.email,
             nickname: userDoc.data.nickname,
+            username: userDoc.data.username,
+            photo: userDoc.data.photo,
+            residence: userDoc.data.residence,
+            class: userDoc.data.class,
+            occupation: userDoc.data.occupation,
+            teacher: userDoc.data.teacher,
+            month: userDoc.data.month,
+            day: userDoc.data.day,
+            phone: userDoc.data.phone,
+            social_type_1: userDoc.data.social_type_1,
+            link_social_type_1: userDoc.data.link_social_type_1,
+            social_type_2: userDoc.data.social_type_2,
+            link_social_type_2: userDoc.data.link_social_type_2,
+            relationship: userDoc.data.relationship,
+            comments: userDoc.data.comments,
+            totalLikes: userDoc.data.totalLikes,
+            likes_received_from: userDoc.data.likes_received_from,
+            likes_given_to: userDoc.data.likes_given_to,
+          };
+
+          resolve(userDoc);
+        } else {
+          reject('Cannot find one user_by_email Model line 337');
+        }
+      })
+      .catch(() => {
+        reject('Cannot find one user_by_email Model line 341');
+      });
+  });
+};
+
+User.findByUsername = function (username) {
+  return new Promise(function (resolve, reject) {
+    if (typeof username != 'string') {
+      console.log({ username });
+      reject('Email not string. Model line 304');
+      return;
+    }
+
+    usersCollection
+      .findOne({ username: username })
+      .then(userDoc => {
+        if (userDoc) {
+          userDoc = new User(userDoc);
+
+          userDoc = {
+            _id: userDoc.data._id,
+            firstName: userDoc.data.firstName,
+            lastName: userDoc.data.lastName,
+            year: userDoc.data.year,
+            email: userDoc.data.email,
+            nickname: userDoc.data.nickname,
+            username: userDoc.data.username,
             photo: userDoc.data.photo,
             residence: userDoc.data.residence,
             class: userDoc.data.class,
@@ -287,9 +365,9 @@ User.findByEmail = function (email) {
 User.prototype.update = function () {
   return new Promise(async (resolve, reject) => {
     try {
-      let profile = await User.findByEmail(this.requestedEmail);
+      let profile = await User.findByUsername(this.requestedUsername);
 
-      const visistorIsOwner = User.isVisitorOwner(this.sessionEmail, profile.email);
+      const visistorIsOwner = User.isVisitorOwner(this.sessionUsername, profile.username);
       if (visistorIsOwner) {
         //Update
         let status = await this.actuallyUpdate();
@@ -311,8 +389,8 @@ User.prototype.actuallyUpdate = function () {
     this.editValidation();
 
     if (!this.errors.length) {
-      await usersCollection.findOneAndUpdate(
-        { email: this.requestedEmail },
+      const userDoc = await usersCollection.findOneAndUpdate(
+        { username: this.requestedUsername },
         {
           $set: {
             firstName: this.data.firstName,
@@ -320,6 +398,7 @@ User.prototype.actuallyUpdate = function () {
             email: this.data.email,
             year: this.data.year,
             nickname: this.data.nickname,
+            username: this.data.username,
             photo: this.photo,
             residence: this.data.residence,
             class: this.data.class,
@@ -334,28 +413,30 @@ User.prototype.actuallyUpdate = function () {
             link_social_type_2: this.data.link_social_type_2,
             relationship: this.data.relationship,
           },
-        }
+        },
+        { returnOriginal: false }
       );
-      resolve('success');
+
+      resolve({ status: 'success', userDoc: userDoc.value });
     } else {
       resolve('failure');
     }
   });
 };
 
-User.isVisitorOwner = function (sessionEmail, requestedEmail) {
-  return sessionEmail == requestedEmail;
+User.isVisitorOwner = function (sessionUsername, requestedUsername) {
+  return sessionUsername == requestedUsername;
 };
 
-User.delete = function (requestedEmail, sessionEmail) {
+User.delete = function (requestedUsername, sessionUsername) {
   return new Promise(async (resolve, reject) => {
     try {
-      let visistorIsOwner = User.isVisitorOwner(requestedEmail, sessionEmail);
+      let visistorIsOwner = User.isVisitorOwner(requestedUsername, sessionUsername);
       if (visistorIsOwner) {
         // DELETE ACCOUNT
-        await usersCollection.deleteOne({ email: requestedEmail });
+        await usersCollection.deleteOne({ username: requestedUsername });
         // NOW DELETE COMMENTS OF THE USER ACROSS ALL DOCS
-        await usersCollection.updateMany({}, { $pull: { comments: { visitorEmail: sessionEmail } } }, { multi: true });
+        await usersCollection.updateMany({}, { $pull: { comments: { visitorEmail: sessionUsername } } }, { multi: true });
         resolve();
       } else {
         reject();
@@ -378,6 +459,7 @@ User.allProfiles = async function () {
         year: eachDoc.year,
         email: eachDoc.email,
         nickname: eachDoc.nickname,
+        username: eachDoc.username,
         photo: eachDoc.photo,
         residence: eachDoc.residence,
         class: eachDoc.class,
@@ -405,15 +487,16 @@ User.allProfiles = async function () {
 
 User.getRecentProfiles = async function () {
   return new Promise(async resolve => {
-    let recentProfiles = await usersCollection.find({}).limit(8).sort({ $natural: -1 }).toArray();
+    let recentContacts = await usersCollection.find({}).limit(8).sort({ $natural: -1 }).toArray();
 
-    recentProfiles.map(eachDoc => {
+    recentContacts = recentContacts.map(eachDoc => {
       eachDoc = {
         firstName: eachDoc.firstName,
         lastName: eachDoc.lastName,
         year: eachDoc.year,
         email: eachDoc.email,
         nickname: eachDoc.nickname,
+        username: eachDoc.username,
         photo: eachDoc.photo,
         phone: eachDoc.phone,
       };
@@ -421,7 +504,7 @@ User.getRecentProfiles = async function () {
       return eachDoc;
     });
 
-    resolve(recentProfiles);
+    resolve(recentContacts);
   });
 };
 
@@ -493,6 +576,7 @@ User.search = async function (searchedItem) {
           email: eachDoc.email,
           photo: eachDoc.photo,
           nickname: eachDoc.nickname,
+          username: eachDoc.username,
           residence: eachDoc.residence,
           class: eachDoc.class,
           occupation: eachDoc.occupation,
@@ -540,7 +624,7 @@ User.prototype.passwordChangeValidatation = function () {
     if (this.data.old_password) {
       // FIND OLD PASSWORD AND COMPARE WITH INPUTED OLD PASSWORD
       let userDoc = await usersCollection.findOne({
-        email: this.sessionEmail,
+        email: this.sessionUsername,
       });
 
       if (!bcrypt.compareSync(this.data.old_password, userDoc.password)) {
@@ -555,14 +639,14 @@ User.prototype.updatePassword = function () {
   return new Promise(async (resolve, reject) => {
     this.passwordChangeValidatation();
     // FIND OLD PASSWORD AND COMPARE WITH NEW PASSWORD
-    let userDoc = await usersCollection.findOne({ email: this.sessionEmail });
+    let userDoc = await usersCollection.findOne({ email: this.sessionUsername });
 
     if (!this.errors.length) {
       // Hash user password
       let salt = bcrypt.genSaltSync(10);
       this.data.confirm_new_password = bcrypt.hashSync(this.data.confirm_new_password, salt);
       await usersCollection.findOneAndUpdate(
-        { email: this.sessionEmail },
+        { email: this.sessionUsername },
         {
           $set: {
             password: this.data.confirm_new_password,
@@ -781,6 +865,7 @@ User.saveComment = data => {
               commentId: data.commentId,
               comment: data.comment,
               visitorEmail: data.visitorEmail,
+              visitorUsername: data.visitorUsername,
               visitorFirstName: data.visitorFirstName,
               photo: data.photo,
               commentDate: data.commentDate,
@@ -892,6 +977,7 @@ User.storeLikes = data => {
             likes_received_from: {
               color: data.color,
               visitorEmail: data.visitorEmail,
+              visitorUsername: data.visitorUsername,
               visitorName: data.visitorName,
             },
           },

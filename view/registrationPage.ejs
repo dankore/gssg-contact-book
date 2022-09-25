@@ -44,6 +44,14 @@
             <div class="border border-red-400 text-red-700 text-center px-4 py-3 rounded"><%= message %></div>
             <% }) %>
             <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+
+            <div class="relative">
+              <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+              <div class="mt-1">
+                <input id="username" name="username" type="text" autocomplete="username" class="form-control block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-green-500 focus:outline-none focus:ring-green-500 sm:text-sm" />
+              </div>
+            </div>
+
             <div class="relative">
               <label for="first-name" class="block text-sm font-medium text-gray-700">First name</label>
               <div class="mt-1">
@@ -75,7 +83,8 @@
             <div class="relative space-y-1">
               <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
               <div class="mt-1">
-                <input id="password" name="password" type="password" autocomplete="current-password" class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-green-500 focus:outline-none focus:ring-green-500 sm:text-sm" />
+                <input id="password" name="password" type="password" autocomplete="new-password" class="form-control block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-green-500 focus:outline-none focus:ring-green-500 sm:text-sm" />
+                <p class="text-red-300 text-xs mt-1 italic">Password should be a minimun of 6 characters</p>
               </div>
             </div>
 

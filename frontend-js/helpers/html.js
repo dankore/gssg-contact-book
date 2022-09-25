@@ -16,7 +16,7 @@ ReuseableHtml.prototype.li = data => {
   divPhoto.classList.add('flex', 'mr-1');
 
   const link = document.createElement('a');
-  link.setAttribute('href', `/profile/${data.visitorEmail}`);
+  link.setAttribute('href', `/contacts/${data.visitorEmail}`);
 
   const img = document.createElement('img');
   img.setAttribute('src', `${data.photo}`);
@@ -28,7 +28,7 @@ ReuseableHtml.prototype.li = data => {
   firstNameCommentDiv.classList.add('rounded', 'px-2');
   firstNameCommentDiv.setAttribute('style', 'overflow-wrap:break-word;min-width:0px;width:15rem;background-color:#F2F3F5;');
   const link2 = document.createElement('a');
-  link2.setAttribute('href', '/profile/'.concat(data.visitorEmail));
+  link2.setAttribute('href', '/contacts/'.concat(data.visitorEmail));
   link2.classList.add('font-medium');
   link2.innerText = `${data.visitorFirstName}`;
   const commentBox = document.createElement('p');

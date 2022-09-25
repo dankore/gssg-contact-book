@@ -2,6 +2,9 @@ const axios = require('axios');
 export default class Likes {
   constructor() {
     this.likesButton = document.querySelector('#likes-button');
+    this.visitorEmail = this.likesButton.getAttribute('data-visitor-email');
+    this.visitorName = this.likesButton.getAttribute('data-visitor-name');
+    this.contactEmail = this.likesButton.getAttribute('data-contact-email');
     this.likesContainer = document.querySelector('#likes-container');
     this.likesButtonSVG = document.querySelectorAll('#like-button-svg');
     this.likeWordContainer = document.querySelector('#like-word');
@@ -10,11 +13,11 @@ export default class Likes {
 
   // EVENTS
   events() {
-    this.likesButton.addEventListener('click', () => this.handleButtonClick());
+    this.likesButton.addEventListener('click', e => this.handleButtonClick(e));
   }
 
   // METHODS
-  handleButtonClick() {
+  handleButtonClick(e) {
     let like = 0;
     let color = '';
     if (this.likesButton.classList.contains('yes-toggle')) {
@@ -42,9 +45,10 @@ export default class Likes {
         svg.style.fill = '#16A34A';
       });
     }
+
     axios
-      .post('/likes', { like: like, color: color })
-      .then(response => {
+      .post('/likes', { like, color, visitorEmail: this.visitorEmail, contactEmail: this.contactEmail, visitorName: this.visitorName })
+      .then(_ => {
         axios
           .post('/get-visited-profile-doc')
           .then(res => {

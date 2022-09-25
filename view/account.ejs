@@ -5,7 +5,7 @@
   <div id="delete-profile-confirm-container" class="pt-20 bg-white rounded absolute shadow-lg max-w-xs sm:max-w-xl mx-auto" style="display: none; height: 50vh; top: -60px">
     <p class="text-center text-2xl">Are you sure?</p>
     <div class="mx-4 py-4 rounded flex flex-wrap justify-center">
-      <form action="/account/<%= user.email %>/delete" method="POST">
+      <form action="/account/<%= user.username %>/delete" method="POST">
         <label for="delete-my-account">
           <input id="delete-my-account" value="Yes, Delete My Account" type="submit" class="inline-block cursor-pointer bg-transparent text-red-800 rounded border border-red-800 w-56 hover:text-white hover:bg-red-600" />
         </label>
@@ -17,7 +17,7 @@
 
   <div class="max-w-2xl text-center mx-4 sm:mx-auto p-4 rounded">
     <button id="delete-profile" class="inline-block text-center text-md px-3 mr-4 my-2 text-red-800 rounded border border-red-800 mx-auto hover:text-white hover:bg-red-600">Delete Your Account</button>
-    <a href="/account/<%= user.email %>/change-password" class="inline-block text-center text-md px-3 my-2 text-green-800 rounded border border-green-800 mx-auto hover:text-white hover:bg-green-600"> Change Your Password </a>
+    <a href="/account/<%= user.username %>/change-password" class="inline-block text-center text-md px-3 my-2 text-green-800 rounded border border-green-800 mx-auto hover:text-white hover:bg-green-600"> Change Your Password </a>
   </div>
 </div>
 <%- include('includes/footer') %>

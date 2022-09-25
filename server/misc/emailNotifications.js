@@ -1,5 +1,5 @@
-const nodemailer = require("nodemailer");
-const dotenv = require("dotenv");
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
 dotenv.config();
 
 let Emails = class emails {
@@ -18,20 +18,12 @@ Emails.prototype.transporter = nodemailer.createTransport({
   service: 'yahoo',
   secure: false,
   auth: {
-    user: "gssgcontactbook@yahoo.com",
-    pass: process.env.YMAILPW
-  }
+    user: 'gssgcontactbook@yahoo.com',
+    pass: process.env.YMAILPW,
+  },
 });
 
-Emails.prototype.sendLikesSuccessMessage = (
-  likes,
-  profileOwnerEmail,
-  visitorEmail,
-  color,
-  visitorName,
-  profileOwnerFirstName,
-  profileOwnerLastName
-) => {
+Emails.prototype.sendLikesSuccessMessage = (likes, profileOwnerEmail, visitorEmail, color, visitorName, profileOwnerFirstName, profileOwnerLastName) => {
   // EMAIL USERS FOR A SUCCESSFULL LIKE
   /**
    * Only send email if a user likes a profile. If a user unlikes
@@ -44,23 +36,15 @@ Emails.prototype.sendLikesSuccessMessage = (
   for (let i = 0; i < likes.length; i++) {
     const currentElement = likes[i];
     // THIS LOGIC: IF I LIKE MY PROFILE OR LIKE OTHER PROFILE, DO NOT SEND ME EMAIL
-    if (profileOwnerEmail == visitorEmail && color == "yes") {
+    if (profileOwnerEmail == visitorEmail && color == 'yes') {
       // color == "yes" ensures only after a like an email would be sent
-      if (
-        currentElement.color === "yes" &&
-        color === "yes" &&
-        currentElement.visitorEmail !== profileOwnerEmail
-      ) {
+      if (currentElement.color === 'yes' && color === 'yes' && currentElement.visitorEmail !== profileOwnerEmail) {
         emailsForLikes.push(currentElement.visitorEmail);
       }
     } else {
-      if (
-        currentElement.color === "yes" &&
-        color === "yes" &&
-        currentElement.visitorEmail !== visitorEmail
-      ) {
+      if (currentElement.color === 'yes' && color === 'yes' && currentElement.visitorEmail !== visitorEmail) {
         emailsForLikes.push(currentElement.visitorEmail);
-      } else if (currentElement.color === "yes" && color === "yes") {
+      } else if (currentElement.color === 'yes' && color === 'yes') {
         emailsForLikes.push(profileOwnerEmail);
       }
     }
@@ -84,13 +68,13 @@ Emails.prototype.sendLikesSuccessMessage = (
               <p style="font-size: 15px;"><strong>${visitorName}</strong> liked <strong>your</strong> profile.</p>
               </div>
               <a
-              href="https://www.gssgcontactbook.com/profile/${profileOwnerEmail}"
+              href="https://www.gssgcontactbook.com/contacts/${profileOwnerEmail}"
               style="text-decoration: none; padding: 10px; background-color: #38a169; border-radius: 5px; color: white;
                 font-size: 15px; width: 300px; text-align: center; display:inline-block;">View on GSS Gwarinpa Contact Book
               </a>
               <p style="font-size: 10px; margin-top: 15px;">You are receiving this email because you are the owner of the profile that was liked by ${visitorName}.</p>
             </div>
-            `
+            `,
         };
       } else {
         data = {
@@ -104,18 +88,18 @@ Emails.prototype.sendLikesSuccessMessage = (
               <p style="font-size: 15px;"><strong>${visitorName}</strong> liked <strong>${profileOwnerFirstName} ${profileOwnerLastName}'s</strong> profile.</p>
               </div>
               <a
-              href="https://www.gssgcontactbook.com/profile/${profileOwnerEmail}"
+              href="https://www.gssgcontactbook.com/contacts/${profileOwnerEmail}"
               style="text-decoration: none; padding: 10px; background-color: #38a169; border-radius: 5px; color: white;
                 font-size: 15px; width: 300px; text-align: center; display:inline-block;">View on GSS Gwarinpa Contact Book
               </a>
               <p style="font-size: 8px; margin-top: 15px;">You are receiving this email because you liked ${profileOwnerFirstName} ${profileOwnerLastName}'s profile.</p>
              </div>
-             `
+             `,
         };
       }
       Emails.prototype.transporter.sendMail(data, (err, info) => {
         if (err) console.log(err);
-        else console.log("Likes Success Emails Sent: " + info.response);
+        else console.log('Likes Success Emails Sent: ' + info.response);
       });
     }
     // END OF 1ST IF
@@ -123,17 +107,7 @@ Emails.prototype.sendLikesSuccessMessage = (
   // END OF FUNCTION
 };
 
-Emails.prototype.sendCommentSuccessMessage = (
-  comments,
-  visitorFirstName,
-  visitorEmail,
-  photoUrl,
-  commentDate,
-  comment,
-  profileOwnerEmail,
-  profileOwnerFirstName,
-  profileOwnerLastName
-) => {
+Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visitorEmail, photoUrl, commentDate, comment, profileOwnerEmail, profileOwnerFirstName, profileOwnerLastName) => {
   /**
    * EMAIL USERS FOR A SUCCESSFULL COMMENT
    * TODO: OPTIMIZE GETTING EMAIL BY REMOVING [...NEW SET()]
@@ -180,13 +154,13 @@ Emails.prototype.sendCommentSuccessMessage = (
                     <p style="font-size: 15px;"><strong>${comment}</strong></p>
                     </div>
                     <a 
-                    href="https://www.gssgcontactbook.com/profile/${profileOwnerEmail}" 
+                    href="https://www.gssgcontactbook.com/contacts/${profileOwnerEmail}" 
                     style="text-decoration: none; padding: 10px; background-color: #38a169; border-radius: 5px; color: white; 
                       font-size: 15px; width: 300px; text-align: center; display:inline-block;">View on GSS Gwarinpa Contact Book
                     </a>
                     <p style="font-size: 10px; margin-top: 15px;">You are receiving this email because you are the owner of the profile that was commented on by ${visitorFirstName}.</p>
                   </div>
-                  `
+                  `,
         };
       } else {
         data = {
@@ -203,18 +177,18 @@ Emails.prototype.sendCommentSuccessMessage = (
                     <p style="font-size: 15px;"><strong>${comment}</strong></p>
                     </div>
                     <a 
-                    href="https://www.gssgcontactbook.com/profile/${profileOwnerEmail}" 
+                    href="https://www.gssgcontactbook.com/contacts/${profileOwnerEmail}" 
                     style="text-decoration: none; padding: 10px; background-color: #38a169; border-radius: 5px; color: white; 
                       font-size: 15px; width: 300px; text-align: center; display:inline-block;">View on GSS Gwarinpa Contact Book
                     </a>
                     <p style="font-size: 10px; margin-top: 15px;">You are receiving this email because you commented on ${profileOwnerFirstName} ${profileOwnerLastName}'s profile.</p>
                   </div>
-                  `
+                  `,
         };
       }
       Emails.prototype.transporter.sendMail(data, (err, info) => {
         if (err) console.log(err);
-        else console.log("Comment Success Emails Sent: " + info.response);
+        else console.log('Comment Success Emails Sent: ' + info.response);
       });
     }
     // END OF 1ST IF
@@ -227,20 +201,11 @@ Emails.prototype.sendResetPasswordConfirmationMessage = (email, firstName) => {
     bcc: email,
     from: '"GSS Gwarinpa Contact Book 📗" <gssgcontactbook@yahoo.com>',
     subject: `${firstName}, You Successfully Reset Your Password - GSS Gwarinpa Contact Book`,
-    html:
-      `Hello ${firstName},` +
-      "<br><br>" +
-      `This is a confirmation that the password for your account <strong>${email}</strong> has just been changed.\n` +
-      "<br><br>" +
-      "If you did not reset your password, secure your account by resetting your password:\n" +
-      '<a href="https://www.gssgcontactbook.com/reset-password">Reset your password</a>'
+    html: `Hello ${firstName},` + '<br><br>' + `This is a confirmation that the password for your account <strong>${email}</strong> has just been changed.\n` + '<br><br>' + 'If you did not reset your password, secure your account by resetting your password:\n' + '<a href="https://www.gssgcontactbook.com/reset-password">Reset your password</a>',
   };
   Emails.prototype.transporter.sendMail(data, (err, info) => {
     if (err) console.log(err);
-    else
-      console.log(
-        "Reset Password Confirmation Sent Via Email: " + info.response
-      );
+    else console.log('Reset Password Confirmation Sent Via Email: ' + info.response);
   });
 };
 
@@ -249,29 +214,11 @@ Emails.prototype.sendResetPasswordToken = (email, firstName, url, token) => {
     bcc: email,
     from: '"GSS Gwarinpa Contact Book 📗" <gssgcontactbook@yahoo.com>',
     subject: `${firstName}, Reset Your Password - GSS Gwarinpa Contact Book`,
-    html:
-      `Hello ${firstName},` +
-      "<br><br>" +
-      "Please click on the following link to complete the process:\n" +
-      '<a href="https://' +
-      url +
-      "/reset-password/" +
-      token +
-      '">Reset your password</a><br>' +
-      "OR" +
-      "<br>" +
-      "Paste the below URL into your browser to complete the process:" +
-      "<br>" +
-      "https://" +
-      url +
-      "/reset-password/" +
-      token +
-      "<br><br>" +
-      "If you did not request this, please ignore this email and your password will remain unchanged.\n"
+    html: `Hello ${firstName},` + '<br><br>' + 'Please click on the following link to complete the process:\n' + '<a href="https://' + url + '/reset-password/' + token + '">Reset your password</a><br>' + 'OR' + '<br>' + 'Paste the below URL into your browser to complete the process:' + '<br>' + 'https://' + url + '/reset-password/' + token + '<br><br>' + 'If you did not request this, please ignore this email and your password will remain unchanged.\n',
   };
   Emails.prototype.transporter.sendMail(data, (err, info) => {
     if (err) console.log(err);
-    else console.log("Reset Password Token Sent Via Email: " + info.response);
+    else console.log('Reset Password Token Sent Via Email: ' + info.response);
   });
 };
 
@@ -287,24 +234,24 @@ Emails.prototype.regSuccessEmail = (email, firstName) => {
         style="text-decoration: none; padding: 10px; background-color: #38a169; border-radius: 5px; color: white; 
           font-size: 15px; width: 300px; text-align: center; display:inline-block;">Discover GSS Gwarinpa Contact Book
         </a>
-        `
+        `,
   };
   Emails.prototype.transporter.sendMail(data, (err, info) => {
     if (err) console.log(err);
-    else console.log("Registration Success Email Sent: " + info.response);
+    else console.log('Registration Success Email Sent: ' + info.response);
   });
 };
 
 Emails.prototype.whoLoggedIn = attemptedUserFirstName => {
   const data = {
-    bcc: "adamu.dankore@gmail.com",
+    bcc: 'adamu.dankore@gmail.com',
     from: '"GSS Gwarinpa Contact Book 📗" <gssgcontactbook@yahoo.com>',
     subject: `Login from ${attemptedUserFirstName}`,
-    html: `<p><strong>${attemptedUserFirstName}</strong> just logged in.</p>`
+    html: `<p><strong>${attemptedUserFirstName}</strong> just logged in.</p>`,
   };
   Emails.prototype.transporter.sendMail(data, (err, info) => {
     if (err) console.log(err);
-    else console.log("Who Logs in Email Sent: " + info.response);
+    else console.log('Who Logs in Email Sent: ' + info.response);
   });
 };
 
