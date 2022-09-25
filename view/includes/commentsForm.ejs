@@ -4,7 +4,7 @@
   <div class="bg-white rounded">
     <section class="flex p-2">
       <div class="mr-1">
-        <a href="/profile/<%= emailForComment %>">
+        <a href="/contacts/<%= emailForComment %>">
           <% if(photoUrlForComment){ %>
           <img src="<%= photoUrlForComment %>" class="w-8 h-8 rounded-full" alt="profile pic" />
           <% } else { %>
@@ -30,7 +30,7 @@
     <li id="li-comment" class="my-2 p-2 rounded">
       <div class="flex">
         <div class="flex mr-1">
-          <a href="/profile/<%= comment.visitorEmail %>">
+          <a href="/contacts/<%= comment.visitorEmail %>">
             <% if(comment.photo){ %>
             <img src="<%= comment.photo %>" class="w-8 h-8 rounded-full" alt="profile pic" />
             <% } else { %>
@@ -39,7 +39,7 @@
           </a>
         </div>
         <div class="rounded px-2" style="overflow-wrap: break-word; min-width: 0px; width: 15rem; background-color: #f2f3f5">
-          <a href="/profile/<%= comment.visitorEmail %>" class="font-medium"><%= comment.visitorFirstName %></a>
+          <a href="/contacts/<%= comment.visitorEmail %>" class="font-medium"><%= comment.visitorFirstName %></a>
           <div><%- filterUserHTML(comment.comment) %></div>
         </div>
       </div>

@@ -6,7 +6,7 @@
 </div>
 <div class="flex justify-center p-2 sm:p-4 sm:mx-auto relative mx-4 max-w-2xl">
   <form
-    action="/profile/<%= profile.email %>/edit"
+    action="/contacts/<%= profile.username %>/edit"
     method="POST"
     enctype="multipart/form-data"
   >
@@ -54,7 +54,7 @@
             Email (this Cannot Be Changed) <span class="text-red-600">*</span>
           </label>
           <input
-            value="<%= profile.email %>"
+            value="<%= profile.username %>"
             name="email"
             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             id="email"

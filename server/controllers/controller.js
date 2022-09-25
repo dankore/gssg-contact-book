@@ -122,7 +122,7 @@ exports.getProfile = async (req, res) => {
 };
 
 exports.ifUserExists = (req, res, next) => {
-  User.findByUsername(req.params.email)
+  User.findByUsername(req.params.username)
     .then(userDoc => {
       req.profileUser = userDoc;
       next();
@@ -144,7 +144,7 @@ exports.mustBeLoggedIn = (req, res, next) => {
 };
 
 exports.isVisitorOwner = (req, res, next) => {
-  const visitorIsOwner = User.isVisitorOwner(req.session.user.username, req.params.email);
+  const visitorIsOwner = User.isVisitorOwner(req.session.user.username, req.params.username);
   if (visitorIsOwner) {
     next();
   } else {
@@ -161,7 +161,7 @@ exports.profileScreen = (req, res) => {
       req.profileUser.color = propExists[0].color;
     }
     // FILTER ONLY likes_received_from BELONGING TO THE SESSION USER ENDS
-    const visitorIsOwner = User.isVisitorOwner(req.session.user.username, req.profileUser.email);
+    const visitorIsOwner = User.isVisitorOwner(req.session.user.username, req.profileUser.username);
     if (visitorIsOwner) {
       res.render('contactLoggedInUser', { profile: req.profileUser });
     } else {
@@ -183,9 +183,9 @@ exports.edit = async (req, res) => {
   let profile;
 
   if (req.file) {
-    profile = new User(req.body, req.file.location, req.session.user.username, req.params.email);
+    profile = new User(req.body, req.file.location, req.session.user.username, req.params.username);
   } else {
-    profile = new User(req.body, imageUrl, req.session.user.username, req.params.email);
+    profile = new User(req.body, imageUrl, req.session.user.username, req.params.username);
   }
 
   profile
@@ -194,7 +194,7 @@ exports.edit = async (req, res) => {
       if (status == 'success') {
         req.flash('success', 'Profile successfully updated.');
         req.session.save(async _ => {
-          await res.redirect(`/contacts/${req.params.email}/edit`);
+          await res.redirect(`/contacts/${req.params.username}/edit`);
         });
         // UPDATE USER COMMENTS INFO ACROSS ALL COMMENTS
         const userInfo = await User.findByUsername(req.session.user.username);
@@ -205,7 +205,7 @@ exports.edit = async (req, res) => {
           req.flash('errors', error);
         });
         req.session.save(async _ => {
-          await res.redirect(`/contacts/${req.params.email}/edit`);
+          await res.redirect(`/contacts/${req.params.username}/edit`);
         });
       }
     })
@@ -225,7 +225,7 @@ exports.account = (req, res) => {
 };
 
 exports.account.delete = (req, res) => {
-  User.delete(req.params.email, req.session.user.username)
+  User.delete(req.params.username, req.session.user.username)
     .then(() => {
       req.flash('success', 'Account successfully deleted.');
       req.session.destroy(() => res.redirect('/'));
@@ -245,19 +245,19 @@ exports.changePasswordPage = function (req, res) {
 };
 
 exports.changePassword = function (req, res) {
-  let user = new User(req.body, null, req.session.user.username, req.params.email);
+  let user = new User(req.body, null, req.session.user.username, req.params.username);
 
   user
     .updatePassword()
     .then(successMessage => {
       req.flash('success', successMessage);
-      req.session.save(() => res.redirect(`/account/${req.params.email}/change-password`));
+      req.session.save(() => res.redirect(`/account/${req.params.username}/change-password`));
     })
     .catch(errors => {
       errors.forEach(error => {
         req.flash('errors', error);
       });
-      req.session.save(() => res.redirect(`/account/${req.params.email}/change-password`));
+      req.session.save(() => res.redirect(`/account/${req.params.username}/change-password`));
     });
 };
 

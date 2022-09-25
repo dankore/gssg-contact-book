@@ -75,7 +75,7 @@
           </nav>
           <div class="hidden items-center justify-end md:flex md:flex-1 lg:w-0">
             <% if (user) { %>
-            <a href="/profile/<%= user.email %>" class="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900">Go to profile</a>
+            <a href="/contacts/<%= user.email %>" class="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900">Go to profile</a>
 
             <form action="/logout" method="POST" class="flex flex-wrap">
               <label for="logout">
@@ -117,7 +117,7 @@
               <a href="/about" class="text-base font-medium text-gray-900 hover:text-gray-700">About</a>
             </div>
 
-            <a href="/<%- user ? 'profile/'+user.email : 'register' %>" class="flex w-full items-center justify-center rounded-md border  bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700"><%- user ? 'Go to your profile' : 'Add Your Contact' %></a>
+            <a href="/<%- user ? 'contacts/'+user.email : 'register' %>" class="flex w-full items-center justify-center rounded-md border  bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700"><%- user ? 'Go to your profile' : 'Add Your Contact' %></a>
           </div>
         </div>
       </div>

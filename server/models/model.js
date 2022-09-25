@@ -8,8 +8,8 @@ const usersCollection = require('../../db').db().collection('users'),
   _ = require('lodash');
 // CLASS
 let User = class user {
-  constructor(data, photo, sessionEmail, requestedEmail) {
-    (this.data = data), (this.photo = photo), (this.errors = []), (this.sessionEmail = sessionEmail), (this.requestedEmail = requestedEmail);
+  constructor(data, photo, sessionUsername, requestedUsername) {
+    (this.data = data), (this.photo = photo), (this.errors = []), (this.sessionUsername = sessionUsername), (this.requestedUsername = requestedUsername);
   }
 };
 // CLASS ENDS
@@ -338,9 +338,9 @@ User.findByUsername = function (username) {
 User.prototype.update = function () {
   return new Promise(async (resolve, reject) => {
     try {
-      let profile = await User.findByEmail(this.requestedEmail);
+      let profile = await User.findByEmail(this.requestedUsername);
 
-      const visistorIsOwner = User.isVisitorOwner(this.sessionEmail, profile.email);
+      const visistorIsOwner = User.isVisitorOwner(this.sessionUsername, profile.email);
       if (visistorIsOwner) {
         //Update
         let status = await this.actuallyUpdate();
@@ -363,7 +363,7 @@ User.prototype.actuallyUpdate = function () {
 
     if (!this.errors.length) {
       await usersCollection.findOneAndUpdate(
-        { email: this.requestedEmail },
+        { email: this.requestedUsername },
         {
           $set: {
             firstName: this.data.firstName,
@@ -394,19 +394,19 @@ User.prototype.actuallyUpdate = function () {
   });
 };
 
-User.isVisitorOwner = function (sessionEmail, requestedEmail) {
-  return sessionEmail == requestedEmail;
+User.isVisitorOwner = function (sessionUsername, requestedUsername) {
+  return sessionUsername == requestedUsername;
 };
 
-User.delete = function (requestedEmail, sessionEmail) {
+User.delete = function (requestedUsername, sessionUsername) {
   return new Promise(async (resolve, reject) => {
     try {
-      let visistorIsOwner = User.isVisitorOwner(requestedEmail, sessionEmail);
+      let visistorIsOwner = User.isVisitorOwner(requestedUsername, sessionUsername);
       if (visistorIsOwner) {
         // DELETE ACCOUNT
-        await usersCollection.deleteOne({ email: requestedEmail });
+        await usersCollection.deleteOne({ email: requestedUsername });
         // NOW DELETE COMMENTS OF THE USER ACROSS ALL DOCS
-        await usersCollection.updateMany({}, { $pull: { comments: { visitorEmail: sessionEmail } } }, { multi: true });
+        await usersCollection.updateMany({}, { $pull: { comments: { visitorEmail: sessionUsername } } }, { multi: true });
         resolve();
       } else {
         reject();
@@ -591,7 +591,7 @@ User.prototype.passwordChangeValidatation = function () {
     if (this.data.old_password) {
       // FIND OLD PASSWORD AND COMPARE WITH INPUTED OLD PASSWORD
       let userDoc = await usersCollection.findOne({
-        email: this.sessionEmail,
+        email: this.sessionUsername,
       });
 
       if (!bcrypt.compareSync(this.data.old_password, userDoc.password)) {
@@ -606,14 +606,14 @@ User.prototype.updatePassword = function () {
   return new Promise(async (resolve, reject) => {
     this.passwordChangeValidatation();
     // FIND OLD PASSWORD AND COMPARE WITH NEW PASSWORD
-    let userDoc = await usersCollection.findOne({ email: this.sessionEmail });
+    let userDoc = await usersCollection.findOne({ email: this.sessionUsername });
 
     if (!this.errors.length) {
       // Hash user password
       let salt = bcrypt.genSaltSync(10);
       this.data.confirm_new_password = bcrypt.hashSync(this.data.confirm_new_password, salt);
       await usersCollection.findOneAndUpdate(
-        { email: this.sessionEmail },
+        { email: this.sessionUsername },
         {
           $set: {
             password: this.data.confirm_new_password,
