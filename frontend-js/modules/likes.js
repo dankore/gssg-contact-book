@@ -45,7 +45,7 @@ export default class Likes {
         svg.style.fill = '#16A34A';
       });
     }
-
+    console.log({ like, color });
     axios
       .post('/likes', { like, color, visitorEmail: this.visitorEmail, contactEmail: this.contactEmail, visitorName: this.visitorName })
       .then(_ => {
@@ -56,6 +56,8 @@ export default class Likes {
              * GET THE NAMES OF PROFILES WHO LIKED THIS PROFILE
              * IF @COLOR == "YES" MEANS PROFILE CURRENTLY LIKES THIS PROFILE
              */
+
+            console.log(res);
             let arrayOfNames = [];
             for (let i = 0; i < res.data.length; i++) {
               if (res.data[i].color == 'yes') {
@@ -64,7 +66,7 @@ export default class Likes {
                 arrayOfNames.push(firstName);
               }
             }
-
+            console.log(arrayOfNames, 222);
             if (arrayOfNames.length < 1) {
               this.likesContainer.innerHTML = '';
             } else if (arrayOfNames.length == 1) {

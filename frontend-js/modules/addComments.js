@@ -97,8 +97,6 @@ export default class AddComments {
           contactEmail: e.target.getAttribute('data-contact-email'),
         })
         .then(_ => {
-          this.handleCommentCountAndCommentGrammar(-1);
-
           e.target.parentElement.parentElement.parentElement.remove();
         })
         .catch(err => {
@@ -136,8 +134,6 @@ export default class AddComments {
     axios
       .post('/get-comments', { comment: this.input.value, visitorEmail: e.target.getAttribute('data-visitor-email'), contactEmail: e.target.getAttribute('data-contact-email') })
       .then(res => {
-        this.handleCommentCountAndCommentGrammar(1);
-
         // INSERT INTO DOM
         // IF NO PROFILE IMAGE, SET DEFAULT TO BLANK.PNG
         !res.data.photo ? (res.data.photo = 'https://gss-gwarinpa.s3.us-east-2.amazonaws.com/blank.png') : res.data.photo;

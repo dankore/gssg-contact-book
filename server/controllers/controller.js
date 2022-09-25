@@ -117,8 +117,8 @@ exports.logout = function (req, res) {
 };
 
 exports.getProfile = async (req, res) => {
-  const profileEmail = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
-  await User.findByUsername(profileEmail)
+  const contactUsername = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
+  await User.findByUsername(contactUsername)
     .then(userDoc => {
       res.json(userDoc.likes_received_from);
     })
@@ -400,7 +400,7 @@ exports.editComment = (req, res) => {
     .catch(errorMessage => {
       req.flash('errors', errorMessage);
       req.session.save(async _ => {
-        await res.redirect(`contacts/${profileEmail}`);
+        await res.redirect(`contacts/${profileUsername}`);
       });
     });
 };
