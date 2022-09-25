@@ -478,7 +478,7 @@ User.getRecentProfiles = async function () {
 
       return eachDoc;
     });
-    console.log(recentContacts);
+
     resolve(recentContacts);
   });
 };
