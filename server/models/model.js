@@ -434,6 +434,7 @@ User.allProfiles = async function () {
         year: eachDoc.year,
         email: eachDoc.email,
         nickname: eachDoc.nickname,
+        username: eachDoc.username,
         photo: eachDoc.photo,
         residence: eachDoc.residence,
         class: eachDoc.class,
@@ -461,23 +462,24 @@ User.allProfiles = async function () {
 
 User.getRecentProfiles = async function () {
   return new Promise(async resolve => {
-    let recentProfiles = await usersCollection.find({}).limit(8).sort({ $natural: -1 }).toArray();
+    let recentContacts = await usersCollection.find({}).limit(8).sort({ $natural: -1 }).toArray();
 
-    recentProfiles.map(eachDoc => {
+    recentContacts = recentContacts.map(eachDoc => {
       eachDoc = {
         firstName: eachDoc.firstName,
         lastName: eachDoc.lastName,
         year: eachDoc.year,
         email: eachDoc.email,
         nickname: eachDoc.nickname,
+        username: eachDoc.username,
         photo: eachDoc.photo,
         phone: eachDoc.phone,
       };
 
       return eachDoc;
     });
-
-    resolve(recentProfiles);
+    console.log(recentContacts);
+    resolve(recentContacts);
   });
 };
 
@@ -549,6 +551,7 @@ User.search = async function (searchedItem) {
           email: eachDoc.email,
           photo: eachDoc.photo,
           nickname: eachDoc.nickname,
+          username: eachDoc.username,
           residence: eachDoc.residence,
           class: eachDoc.class,
           occupation: eachDoc.occupation,

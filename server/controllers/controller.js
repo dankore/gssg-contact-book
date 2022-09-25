@@ -4,12 +4,10 @@ const User = require('../models/model'),
 
 exports.home = async (req, res) => {
   try {
-    let profiles;
-    profiles = await User.getRecentProfiles();
+    let contacts;
+    contacts = await User.getRecentProfiles();
 
-    res.render('homePage', {
-      profiles: profiles,
-    });
+    res.render('homePage', { contacts });
   } catch (error) {
     req.flash('errors', error);
     req.session.save(() => res.redirect('/'));
