@@ -198,7 +198,7 @@ exports.edit = async (req, res) => {
         });
         // UPDATE USER COMMENTS INFO ACROSS ALL COMMENTS
         const userInfo = await User.findByUsername(req.session.user.username);
-        User.updateCommentFirtName(userInfo.email, userInfo.firstName);
+        User.updateCommentFirtName(userInfo.username, userInfo.firstName);
         // UPDATE USER COMMENTS END
       } else {
         profile.errors.forEach(error => {
@@ -358,6 +358,7 @@ exports.addComment = async (req, res) => {
     commentId: new ObjectId(),
     comment: req.body.comment,
     visitorEmail: req.session.user.username,
+    visitorUsername: userDoc.username,
     visitorFirstName: userDoc.firstName,
     profileEmail: profileEmail,
     photo: userDoc.photo,

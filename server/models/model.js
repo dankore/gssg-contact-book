@@ -832,6 +832,7 @@ User.saveComment = data => {
               commentId: data.commentId,
               comment: data.comment,
               visitorEmail: data.visitorEmail,
+              visitorUsername: data.username,
               visitorFirstName: data.visitorFirstName,
               photo: data.photo,
               commentDate: data.commentDate,
@@ -943,6 +944,7 @@ User.storeLikes = data => {
             likes_received_from: {
               color: data.color,
               visitorEmail: data.visitorEmail,
+              visitorUsername: data.visitorUsername,
               visitorName: data.visitorName,
             },
           },

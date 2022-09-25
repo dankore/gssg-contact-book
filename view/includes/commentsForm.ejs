@@ -30,7 +30,7 @@
     <li id="li-comment" class="my-2 p-2 rounded">
       <div class="flex">
         <div class="flex mr-1">
-          <a href="/contacts/<%= comment.visitorEmail %>">
+          <a href="/contacts/<%= comment.visitorEmail.split('@')[0] %>">
             <% if(comment.photo){ %>
             <img src="<%= comment.photo %>" class="w-8 h-8 rounded-full" alt="profile pic" />
             <% } else { %>
@@ -39,14 +39,14 @@
           </a>
         </div>
         <div class="rounded px-2" style="overflow-wrap: break-word; min-width: 0px; width: 15rem; background-color: #f2f3f5">
-          <a href="/contacts/<%= comment.visitorEmail %>" class="font-medium"><%= comment.visitorFirstName %></a>
+          <a href="/contacts/<%= comment.visitorEmail.split('@')[0] %>" class="font-medium"><%= comment.visitorFirstName %></a>
           <div><%- filterUserHTML(comment.comment) %></div>
         </div>
       </div>
       <div class="flex justify-between items-center mt-2 text-xs">
         <p><%= comment.commentDate %></p>
         <div class="flex">
-          <% if(user){ %> <% if(comment.visitorEmail == user.email){ %>
+          <% if(user){ %> <% if(comment.visitorEmail.split('@')[0] == user.username){ %>
           <!-- EDIT BUTTON -->
           <input type="button" value="Edit" id="edit-comment-button" class="flex bg-white items-center cursor-pointer" />
           <!-- EDIT BUTTON ENDS-->
