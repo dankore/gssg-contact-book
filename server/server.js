@@ -4,7 +4,6 @@ const express = require('express'),
   MongoStore = require('connect-mongo')(session),
   flash = require('connect-flash'),
   server = express(),
-  { marked } = require('marked'),
   sanitizeHTML = require('sanitize-html'),
   bodyParser = require('body-parser'),
   router = require('./router'),
@@ -12,7 +11,8 @@ const express = require('express'),
   User = require('./models/model'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
-  cookieParser = require('cookie-parser');
+  cookieParser = require('cookie-parser'),
+  { likesHelper } = require('./misc/helpers');
 
 // GOOGLE
 passport.use(
@@ -99,7 +99,7 @@ server.use('/favicon.ico', express.static('public/favicon.ico'));
 server.use(async (req, res, next) => {
   // MAKE MARKDOWN AVAILABLE GLOBALLY
   res.locals.filterUserHTML = content => {
-    return sanitizeHTML(marked.parse(content), {
+    return sanitizeHTML(content, {
       allowedTags: ['p', 'br', 'ul', 'li', 'strong', 'i', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'code', 'blockquote'],
       allowedAttributes: {
         a: ['href', 'name', 'target'],
@@ -118,7 +118,6 @@ server.use(async (req, res, next) => {
     await User.findByUsername(req.session.user.username)
       .then(userDoc => {
         res.locals.profilesUserLiked = userDoc.likes_given_to;
-        res.locals.first_name_welcome = userDoc.firstName;
         res.locals.emailForComment = userDoc.email;
         res.locals.photoUrlForComment = userDoc.photo;
         res.locals.username = userDoc.username;
@@ -136,6 +135,7 @@ server.use('/contacts/:username', async (req, res, next) => {
     .then(userDoc => {
       userDoc.url = 'https://www.gssgcontactbook.com' + req.originalUrl;
       res.locals.namesOfLikesReceivedFrom = userDoc.likes_received_from;
+      res.locals.likesHelper = likesHelper(userDoc.likes_received_from, req.session.user, res.locals.profilesUserLiked);
       res.locals.seo = userDoc;
     })
     .catch(err => {

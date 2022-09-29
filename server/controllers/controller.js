@@ -64,7 +64,7 @@ exports.registrationSubmission = async (req, res) => {
 
       req.flash('success', successMessage);
       req.session.save(async function () {
-        await res.redirect(`contacts/${req.session.user.username}/edit`);
+        await res.redirect(`/contacts/${req.session.user.username}/edit`);
       });
     })
     .catch(regErrors => {
@@ -169,7 +169,7 @@ exports.profileScreen = (req, res) => {
     // FILTER ONLY likes_received_from BELONGING TO THE SESSION USER ENDS
     const visitorIsOwner = User.isVisitorOwner(req.session.user.username, req.profileUser.username);
     if (visitorIsOwner) {
-      res.render('contactLoggedInUser', { profile: req.profileUser });
+      res.render('contactGuest', { profile: req.profileUser });
     } else {
       res.render('contactGuest', { profile: req.profileUser });
     }
@@ -343,7 +343,7 @@ exports.googleLogin = async (req, res) => {
     } else {
       const successMessage = await User.addSocialUser(req.user);
       req.flash('success', successMessage);
-      req.session.save(async _ => await res.redirect(`contacts/${req.user.username}/edit`));
+      req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit`));
     }
   } catch (error) {
     req.flash('errors', error);
@@ -372,12 +372,13 @@ exports.addComment = async (req, res) => {
 
   User.saveComment(data)
     .then(response => {
+      response.contactEmail = userDoc.email;
       res.json(response);
     })
     .catch(errorMessage => {
       req.flash('errors', errorMessage);
       req.session.save(async _ => {
-        await res.redirect(`contacts/${contactUsername}`);
+        await res.redirect(`/contacts/${contactUsername}`);
       });
     });
 };
@@ -400,7 +401,7 @@ exports.editComment = (req, res) => {
     .catch(errorMessage => {
       req.flash('errors', errorMessage);
       req.session.save(async _ => {
-        await res.redirect(`contacts/${profileUsername}`);
+        await res.redirect(`/contacts/${profileUsername}`);
       });
     });
 };

@@ -41,19 +41,17 @@
 }
 .top-bar {
   border-top-width: 2px;
-  border-color: #16a34a;
+  border-color: #22C55E;
 }
 .blueOnHover:hover {
-  color: #16a34a;
+  color: #22C55E;
 }
 .yes-like-color {
-  color: #16a34a;
+  color: #22C55E;
 }
-.no-like-color {
-  color: black;
-}
+
 .yes-fill {
-  fill: #16a34a;
+  fill: #22C55E;
 }
 .no-fill {
   fill: white;
