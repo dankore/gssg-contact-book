@@ -118,7 +118,6 @@ server.use(async (req, res, next) => {
     await User.findByUsername(req.session.user.username)
       .then(userDoc => {
         res.locals.profilesUserLiked = userDoc.likes_given_to;
-        res.locals.first_name_welcome = userDoc.firstName;
         res.locals.emailForComment = userDoc.email;
         res.locals.photoUrlForComment = userDoc.photo;
         res.locals.username = userDoc.username;
