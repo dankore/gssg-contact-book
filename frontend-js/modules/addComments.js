@@ -40,7 +40,7 @@ export default class AddComments {
   }
 
   handleCancelEditCommentConatiner(e) {
-    const editParent = e.target.parentElement.parentElement.parentElement.parentElement;
+    const editParent = e.target.parentElement.parentElement.parentElement;
     const editCommentContainer = editParent.querySelector('.edit-comment-parent');
 
     this.modalOverlay.classList.remove('active');
