@@ -1,9 +1,9 @@
 const axios = require('axios');
-import ReuseableHtml from '../helpers/html';
 
 export default class AddComments {
   constructor() {
     this.input = document.querySelector('#input-comment');
+    this.userComment = '';
     this.commentsContainerUl = document.querySelector('#comment-container-ul');
     this.commentsCount = document.querySelector('#comment-count');
     this.commentWordContainer = document.querySelector('#comment-word');
@@ -35,6 +35,8 @@ export default class AddComments {
     e.target.style.height = 25 + e.target.scrollHeight + 'px';
     this.input.style.height = '1px';
     this.input.style.height = 25 + this.input.scrollHeight + 'px';
+    // SET INPUT VALUE
+    this.userComment = e.target.value;
   }
 
   handleCancelEditCommentConatiner(e) {
@@ -89,7 +91,6 @@ export default class AddComments {
 
     this.modalOverlay.classList.remove('active');
     editParent.classList.remove('active');
-    console.log(editParent);
     editCommentContainer.style.display = 'none';
   }
 
@@ -109,40 +110,54 @@ export default class AddComments {
     }
   }
 
-  handleCommentCountAndCommentGrammar(count) {
-    // INCREASE / DECREASE COMMENTS COUNT
-    if (count == 1) {
-      this.commentsCount.innerText = +this.commentsCount.innerText + 1; // INCREASE # OF COMMENTS
-    } else {
-      if (this.commentsCount.innerText == 1) {
-        this.commentsCount.innerText = ''; // INSTEAD OF DISPLAYING ZERO, DISPLAY NOTHING
-      } else {
-        this.commentsCount.innerText = +this.commentsCount.innerText - 1; // DECREASE # OF COMMENTS
-      }
-    }
-    // CHANGE FROM COMMENT TO COMMENTS AND VICE VERSA
-    const currentCommentsCount = this.commentsCount.innerText;
-    if (currentCommentsCount == 0) {
-      this.commentWordContainer.innerText = '';
-    } else if (currentCommentsCount == 1) {
-      this.commentWordContainer.innerText = 'comment';
-    } else {
-      this.commentWordContainer.innerText = 'comments';
-    }
-  }
-
   handleAddCommentClick(e) {
     // IF INPUT BOX IS EMPTY, DO NOT SAVE
-    if (!this.input.value) return;
+    if (!this.userComment) return;
+
     // SEND DATA TO DB
     axios
-      .post('/get-comments', { comment: this.input.value, visitorEmail: e.target.getAttribute('data-visitor-email'), contactEmail: e.target.getAttribute('data-contact-email') })
+      .post('/add-comment', { comment: this.userComment, visitorEmail: e.target.getAttribute('data-visitor-email'), contactEmail: e.target.getAttribute('data-contact-email') })
       .then(res => {
         // INSERT INTO DOM
         // IF NO PROFILE IMAGE, SET DEFAULT TO BLANK.PNG
         !res.data.photo ? (res.data.photo = 'https://gss-gwarinpa.s3.us-east-2.amazonaws.com/blank.png') : res.data.photo;
 
-        this.commentsContainerUl.insertAdjacentElement('afterbegin', new ReuseableHtml().li(res.data));
+        const { commentId, comment, visitorEmail, contactEmail, visitorUsername, visitorFirstName, commentDate, photo } = res.data;
+
+        this.commentsContainerUl.insertAdjacentHTML(
+          'afterbegin',
+          `<li id="li-comment">
+                    <div class="flex space-x-3">
+                      <a href="/contacts/${visitorUsername}" class="flex-shrink-0">
+                        <img class="h-10 w-10 rounded-full" src="${photo}" alt="profile picture" />
+                      </a>
+                      <div>
+                        <div class="text-sm">
+                          <a href="/contacts/${visitorUsername}" class="font-medium text-gray-900">${visitorFirstName}</a>
+                        </div>
+                        <div class="mt-1 text-sm text-gray-700">
+                          <p class="comment">${comment}</p>
+                        </div>
+                        <div class="mt-2 space-x-2 text-sm">
+                          <datetime datetime="${commentDate}" class="comment-date-time font-medium text-gray-500"> ${commentDate} </datetime>
+                          <span class="font-medium text-gray-500">&middot;</span>
+                          <button id="edit-comment-button" class="font-medium text-gray-900">Edit</button>
+                          <button id="delete-comment-button" data-comment-id="${commentId}" data-contact-email="${contactEmail}" class="font-medium text-red-600">Delete</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- EDIT COMMENT FORM -->
+                    <div class="edit-comment-parent modal shadow-2xl" style="display: none">
+                      <textarea id="input-comment" data-comment-id="${commentId}" class="w-full p-2 border border-green-400 rounded" style="background-color: #f2f3f5; white-space: pre-wrap; overflow: hidden">${comment}</textarea>
+                      <div class="flex justify-between py-4">
+                        <button id="cancel-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Cancel</button>
+                        <button data-comment-id="${commentId}" data-contact-email="${contactEmail}" id="update-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Update</button>
+                      </div>
+                    </div>
+                  </li>`
+        );
+
         this.input.value = '';
         this.input.focus();
       })

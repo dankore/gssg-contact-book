@@ -54,7 +54,7 @@ router.get('/google-login', passport.authenticate('google', { scope: ['https://w
 router.get('/google-login/callback', passport.authenticate('google', { failureRedirect: '/register' }), controller.googleLogin);
 
 // COMMENTS
-router.post('/get-comments', controller.addComment);
+router.post('/add-comment', controller.addComment);
 router.post('/delete-comment', controller.deleteComment);
 router.post('/edit-comment', controller.editComment);
 

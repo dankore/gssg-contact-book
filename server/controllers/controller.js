@@ -372,6 +372,7 @@ exports.addComment = async (req, res) => {
 
   User.saveComment(data)
     .then(response => {
+      response.contactEmail = userDoc.email;
       res.json(response);
     })
     .catch(errorMessage => {
