@@ -114,12 +114,12 @@
                   <% if(profile.comments){ %> <% profile.comments.reverse().forEach(comment => { %>
                   <li id="li-comment">
                     <div class="flex space-x-3">
-                      <a href="" class="flex-shrink-0">
+                      <p class="flex-shrink-0">
                         <% if(comment.photo){ %>
                         <img class="h-10 w-10 rounded-full" src="<%= comment.photo %>" alt="" />
                         <% } else { %>
                         <img class="h-10 w-10 rounded-full" src="https://gss-gwarinpa.s3.us-east-2.amazonaws.com/blank.png" alt="" />
-                      </a>
+                      </p>
                       <%}%>
                       <div>
                         <div class="text-sm">
@@ -134,7 +134,7 @@
                         </div>
                         <div class="mt-2 space-x-2 text-sm">
                           <datetime datetime="<%= comment.commentDate %>" class="comment-date-time font-medium text-gray-500"> <%= comment.commentDate %> </datetime>
-                          <% if(user){ %>
+                          <% if(user && profile.email == user.email){ %>
                           <span class="font-medium text-gray-500">&middot;</span>
                           <button id="edit-comment-button" class="font-medium text-gray-900">Edit</button>
                           <button id="delete-comment-button" data-comment-id="<%- comment.commentId %>" data-contact-email="<%= profile.email %>" class="font-medium text-red-600">Delete</button>
