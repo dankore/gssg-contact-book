@@ -134,8 +134,8 @@
                         </div>
                         <div class="mt-2 space-x-2 text-sm">
                           <datetime datetime="<%= comment.commentDate %>" class="comment-date-time font-medium text-gray-500"> <%= comment.commentDate %> </datetime>
-                    
-                          <% if(user && profile.email == comment.visitorEmail){ %>
+
+                          <% if(user && comment.visitorEmail == user.email){ %>
                           <span class="font-medium text-gray-500">&middot;</span>
                           <button id="edit-comment-button" class="font-medium text-gray-900">Edit</button>
                           <button id="delete-comment-button" data-comment-id="<%- comment.commentId %>" data-contact-email="<%= profile.email %>" class="font-medium text-red-600">Delete</button>
