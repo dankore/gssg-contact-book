@@ -4,7 +4,6 @@ const express = require('express'),
   MongoStore = require('connect-mongo')(session),
   flash = require('connect-flash'),
   server = express(),
-  { marked } = require('marked'),
   sanitizeHTML = require('sanitize-html'),
   bodyParser = require('body-parser'),
   router = require('./router'),
@@ -12,7 +11,8 @@ const express = require('express'),
   User = require('./models/model'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
-  cookieParser = require('cookie-parser');
+  cookieParser = require('cookie-parser'),
+  { likesHelper } = require('./misc/helpers');
 
 // GOOGLE
 passport.use(
@@ -136,6 +136,7 @@ server.use('/contacts/:username', async (req, res, next) => {
     .then(userDoc => {
       userDoc.url = 'https://www.gssgcontactbook.com' + req.originalUrl;
       res.locals.namesOfLikesReceivedFrom = userDoc.likes_received_from;
+      res.locals.likesHelper = likesHelper(userDoc.likes_received_from, req.session.user, res.locals.profilesUserLiked);
       res.locals.seo = userDoc;
     })
     .catch(err => {

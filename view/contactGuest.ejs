@@ -1,8 +1,8 @@
 <%- include('includes/header') %>
-<div class="max-w-xs mx-auto"><%- include('includes/flash') %></div>
 
 <div class="min-h-full">
   <main class="py-10">
+    <div class="max-w-xs mx-auto"><%- include('includes/flash') %></div>
     <!-- Page header -->
     <div class="mx-auto max-w-3xl px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
       <div class="flex items-center space-x-5">
@@ -23,7 +23,24 @@
       </div>
       <div class="justify-stretch mt-6 flex flex-col-reverse space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-y-0 sm:space-x-3 sm:space-x-reverse md:mt-0 md:flex-row md:space-x-3">
         <div class="justify-stretch mt-6 flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
-          <a href="mailto:<%= profile.email %>" class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
+          <% if(user){ %>
+          <a href="/contacts/<%= user.username %>/edit" class="mr-3 inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+            <!-- Heroicon name: mini/pencil -->
+            <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M2.695 14.763l-1.262 3.154a.5.5 0 00.65.65l3.155-1.262a4 4 0 001.343-.885L17.5 5.5a2.121 2.121 0 00-3-3L3.58 13.42a4 4 0 00-.885 1.343z" />
+            </svg>
+            <span>Edit</span>
+          </a>
+
+          <a href="/account/<%= user.username %>" class="mr-3 inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+            <!-- Heroicon name: mini/cog -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="-ml-1 mr-2 h-5 w-5 text-gray-400" aria-hidden="true">
+              <path fill-rule="evenodd" d="M7.84 1.804A1 1 0 018.82 1h2.36a1 1 0 01.98.804l.331 1.652a6.993 6.993 0 011.929 1.115l1.598-.54a1 1 0 011.186.447l1.18 2.044a1 1 0 01-.205 1.251l-1.267 1.113a7.047 7.047 0 010 2.228l1.267 1.113a1 1 0 01.206 1.25l-1.18 2.045a1 1 0 01-1.187.447l-1.598-.54a6.993 6.993 0 01-1.929 1.115l-.33 1.652a1 1 0 01-.98.804H8.82a1 1 0 01-.98-.804l-.331-1.652a6.993 6.993 0 01-1.929-1.115l-1.598.54a1 1 0 01-1.186-.447l-1.18-2.044a1 1 0 01.205-1.251l1.267-1.114a7.05 7.05 0 010-2.227L1.821 7.773a1 1 0 01-.206-1.25l1.18-2.045a1 1 0 011.187-.447l1.598.54A6.993 6.993 0 017.51 3.456l.33-1.652zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+            </svg>
+           <span>Settings</span>
+          </a>
+          <% } %>
+          <a href="mailto:<%= profile.email %>" class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
             <!-- Heroicon name: mini/envelope -->
             <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
@@ -32,7 +49,7 @@
             <span>Message</span>
           </a>
           <% if(profile.phone) {%>
-          <a href="tel:<%= profile.phone %>" class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
+          <a href="tel:<%= profile.phone %>" class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
             <!-- Heroicon name: mini/phone -->
             <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd" />
@@ -174,98 +191,27 @@
 
           <!-- Activity Feed -->
           <div class="mt-6 flow-root">
-            <ul role="list" class="-mb-8">
+            <ul class="-mb-8">
               <li>
                 <div class="relative pb-8">
                   <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
                   <div class="relative flex space-x-3">
                     <div>
-                      <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
-                        <!-- Heroicon name: mini/user -->
-                        <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                          <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
-                        </svg>
-                      </span>
-                    </div>
-                    <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                      <div>
-                        <p class="text-sm text-gray-500">Applied to <a href="#" class="font-medium text-gray-900">Front End Developer</a></p>
-                      </div>
-                      <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                        <time datetime="2020-09-20">Sep 20</time>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-
-              <li>
-                <div class="relative pb-8">
-                  <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                  <div class="relative flex space-x-3">
-                    <div>
-                      <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
+                      <span class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center ring-8 ring-white">
                         <!-- Heroicon name: mini/hand-thumb-up -->
-                        <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <svg id="like-button-svg" class="<%= locals.likesHelper.color %>-fill h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                           <path d="M1 8.25a1.25 1.25 0 112.5 0v7.5a1.25 1.25 0 11-2.5 0v-7.5zM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0114 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 01-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 01-1.341-.317l-2.734-1.366A3 3 0 006.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 012.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388z" />
                         </svg>
                       </span>
                     </div>
-                    <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                      <div>
-                        <p class="text-sm text-gray-500">Advanced to phone screening by <a href="#" class="font-medium text-gray-900">Bethany Blake</a></p>
-                      </div>
-                      <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                        <time datetime="2020-09-22">Sep 22</time>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
 
-              <li>
-                <div class="relative pb-8">
-                  <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                  <div class="relative flex space-x-3">
-                    <div>
-                      <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                        <!-- Heroicon name: mini/check -->
-                        <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                          <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                        </svg>
-                      </span>
-                    </div>
                     <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                      <div>
-                        <p class="text-sm text-gray-500">Completed phone screening with <a href="#" class="font-medium text-gray-900">Martha Gardner</a></p>
-                      </div>
-                      <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                        <time datetime="2020-09-28">Sep 28</time>
-                      </div>
+                      <p id="likes-container" class="first-line:text-sm text-gray-500"><%= locals.likesHelper.peopleWhoLiked %></p>
                     </div>
-                  </div>
-                </div>
-              </li>
-
-              <li>
-                <div class="relative pb-8">
-                  <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                  <div class="relative flex space-x-3">
-                    <div>
-                      <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
-                        <!-- Heroicon name: mini/hand-thumb-up -->
-                        <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                          <path d="M1 8.25a1.25 1.25 0 112.5 0v7.5a1.25 1.25 0 11-2.5 0v-7.5zM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0114 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 01-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 01-1.341-.317l-2.734-1.366A3 3 0 006.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 012.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388z" />
-                        </svg>
-                      </span>
-                    </div>
-                    <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                      <div>
-                        <p class="text-sm text-gray-500">Advanced to interview by <a href="#" class="font-medium text-gray-900">Bethany Blake</a></p>
-                      </div>
-                      <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                        <time datetime="2020-09-30">Sep 30</time>
-                      </div>
+                    <div class="relative whitespace-nowrap text-right text-sm text-gray-500">
+                      <!-- TOGGLE: SHOW NAMES OF USERS WHO LIKED THIS PROFILE -->
+                      <ul id="names-container-ul" class="pt-1.5" style="display: none"></ul>
+                      <!-- TOGGLE: SHOW NAMES OF USERS WHO LIKED THIS PROFILE END-->
                     </div>
                   </div>
                 </div>
@@ -283,21 +229,23 @@
                       </span>
                     </div>
                     <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                      <div>
-                        <p class="text-sm text-gray-500">Completed interview with <a href="#" class="font-medium text-gray-900">Katherine Snyder</a></p>
-                      </div>
-                      <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                        <time datetime="2020-10-04">Oct 4</time>
-                      </div>
+                      <p><% if(profile.comments){ %> <% if(profile.comments.length > 1){ %> <%= profile.comments.length == 0 ? "" : profile.comments.length + ' comments'%> <% } else { %> <%= profile.comments.length == 0 ? "" : profile.comments.length + ' comment'%> <% } %> <% } else { %> Be the first to say hello! <% } %></p>
                     </div>
                   </div>
                 </div>
               </li>
             </ul>
           </div>
+          <% if(user){%>
           <div class="justify-stretch mt-6 flex flex-col">
-            <button type="button" class="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Advance to offer</button>
+            <button id="likes-button" data-visitor-name="<%= user.firstName %>" data-visitor-email="<%= user.email %>" data-contact-email="<%= profile.email %>" class="<%= locals.likesHelper.color%>-toggle inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+              <svg id="like-button-svg" class="<%= locals.likesHelper.color%>-fill" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+              </svg>
+              <p id="like-word" class="ml-1 <%= locals.likesHelper.color%>-like-color"><%= locals.likesHelper.text %></p>
+            </button>
           </div>
+          <%}%>
         </div>
       </section>
     </div>

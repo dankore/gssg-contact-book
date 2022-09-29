@@ -1,3 +1,5 @@
+import { likesHelper } from '../../server/misc/helpers';
+
 const axios = require('axios');
 export default class Likes {
   constructor() {
@@ -19,13 +21,14 @@ export default class Likes {
   // METHODS
   handleButtonClick(e) {
     let like = 0;
-    let color = '';
+    let color = 'yes';
     if (this.likesButton.classList.contains('yes-toggle')) {
       like = -1;
       color = 'no';
       this.likesButton.classList.remove('yes-toggle');
       this.likesButton.classList.add('no-toggle');
       this.likeWordContainer.classList.remove('yes-like-color');
+      this.likeWordContainer.innerText = 'Like';
 
       Array.prototype.forEach.call(this.likesButtonSVG, svg => {
         svg.classList.remove('yes');
@@ -38,6 +41,7 @@ export default class Likes {
       this.likesButton.classList.remove('no-toggle');
       this.likesButton.classList.add('yes-toggle');
       this.likeWordContainer.classList.add('yes-like-color');
+      this.likeWordContainer.innerText = 'Unlike';
 
       Array.prototype.forEach.call(this.likesButtonSVG, svg => {
         svg.classList.add('yes');
@@ -45,7 +49,7 @@ export default class Likes {
         svg.style.fill = '#16A34A';
       });
     }
-    console.log({ like, color });
+
     axios
       .post('/likes', { like, color, visitorEmail: this.visitorEmail, contactEmail: this.contactEmail, visitorName: this.visitorName })
       .then(_ => {
@@ -57,18 +61,15 @@ export default class Likes {
              * IF @COLOR == "YES" MEANS PROFILE CURRENTLY LIKES THIS PROFILE
              */
 
-            console.log(res);
             let arrayOfNames = [];
             for (let i = 0; i < res.data.length; i++) {
               if (res.data[i].color == 'yes') {
-                let fullName = res.data[i].visitorName;
-                let firstName = fullName.split(' ')[0];
-                arrayOfNames.push(firstName);
+                arrayOfNames.push(res.data[i].visitorName);
               }
             }
-            console.log(arrayOfNames, 222);
+
             if (arrayOfNames.length < 1) {
-              this.likesContainer.innerHTML = '';
+              this.likesContainer.innerHTML = 'Be the first to like this contact';
             } else if (arrayOfNames.length == 1) {
               this.likesContainer.innerHTML = `Liked by ${arrayOfNames[0]}`;
             } else if (arrayOfNames.length == 2) {
@@ -77,6 +78,7 @@ export default class Likes {
               this.likesContainer.innerHTML = `Liked by ${arrayOfNames.slice(0, 1)} & ${arrayOfNames.slice(1).length} others`;
             }
           })
+
           .catch(err => {
             console.log(err);
           });

@@ -114,6 +114,41 @@ function formatMonth(num) {
       return 'Dec';
   }
 }
+
+const likesHelper = (namesOfLikesReceivedFrom, user, profilesUserLiked) => {
+  if (!namesOfLikesReceivedFrom) namesOfLikesReceivedFrom = [];
+
+  let arrayOfNames = [];
+  let color = '';
+  for (let i = 0; i < namesOfLikesReceivedFrom.length; i++) {
+    if (namesOfLikesReceivedFrom[i].color == 'yes') arrayOfNames.push(namesOfLikesReceivedFrom[i].visitorName);
+  }
+
+  let peopleWhoLiked = '';
+  if (arrayOfNames.length < 1) {
+    peopleWhoLiked = 'Be the first to like this contact';
+  } else if (arrayOfNames.length == 1) {
+    peopleWhoLiked = `Liked by ${arrayOfNames[0]}`;
+  } else if (arrayOfNames.length == 2) {
+    peopleWhoLiked = `Liked by ${arrayOfNames.slice(0, 1)} & ${arrayOfNames.slice(1).length} other`;
+  } else {
+    peopleWhoLiked = `Liked by ${arrayOfNames.slice(0, 1)} & ${arrayOfNames.slice(1).length} others`;
+  }
+
+  if (user) {
+    if (!profilesUserLiked) {
+      profilesUserLiked = [];
+    }
+    for (var i = 0; i < profilesUserLiked.length; i++) {
+      if (profilesUserLiked[i].profileEmail == user.email) {
+        color = profilesUserLiked[i].color;
+      }
+    }
+  }
+
+  return { peopleWhoLiked, color, text: color == 'yes' ? 'Unlike' : 'Like' };
+};
+
 exports.isAlphaNumericDashHyphenPeriod = isAlphaNumericDashHyphenPeriod;
 exports.statsByYear = statsByYear;
 exports.getUsernameFromHeadersReferrer = getUsernameFromHeadersReferrer;
@@ -121,3 +156,4 @@ exports.getHMS = getHMS;
 exports.getMonthDayYear = getMonthDayYear;
 exports.sortProfiles = sortProfiles;
 exports.singlePropArrayFilter = singlePropArrayFilter;
+exports.likesHelper = likesHelper;
