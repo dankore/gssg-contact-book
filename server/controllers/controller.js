@@ -64,7 +64,7 @@ exports.registrationSubmission = async (req, res) => {
 
       req.flash('success', successMessage);
       req.session.save(async function () {
-        await res.redirect(`contacts/${req.session.user.username}/edit`);
+        await res.redirect(`/contacts/${req.session.user.username}/edit`);
       });
     })
     .catch(regErrors => {
@@ -343,7 +343,7 @@ exports.googleLogin = async (req, res) => {
     } else {
       const successMessage = await User.addSocialUser(req.user);
       req.flash('success', successMessage);
-      req.session.save(async _ => await res.redirect(`contacts/${req.user.username}/edit`));
+      req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit`));
     }
   } catch (error) {
     req.flash('errors', error);
@@ -377,7 +377,7 @@ exports.addComment = async (req, res) => {
     .catch(errorMessage => {
       req.flash('errors', errorMessage);
       req.session.save(async _ => {
-        await res.redirect(`contacts/${contactUsername}`);
+        await res.redirect(`/contacts/${contactUsername}`);
       });
     });
 };
@@ -400,7 +400,7 @@ exports.editComment = (req, res) => {
     .catch(errorMessage => {
       req.flash('errors', errorMessage);
       req.session.save(async _ => {
-        await res.redirect(`contacts/${profileUsername}`);
+        await res.redirect(`/contacts/${profileUsername}`);
       });
     });
 };

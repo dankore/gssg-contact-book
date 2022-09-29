@@ -38,7 +38,8 @@ export default class AddComments {
   }
 
   handleCancelEditCommentConatiner(e) {
-    const editCommentContainer = e.target.parentElement.parentElement.parentElement.children[2];
+    const editParent = e.target.parentElement.parentElement.parentElement.parentElement;
+    const editCommentContainer = editParent.querySelector('.edit-comment-parent');
 
     this.modalOverlay.classList.remove('active');
     editCommentContainer.classList.remove('active');
@@ -46,8 +47,9 @@ export default class AddComments {
   }
 
   handleOpenCloseEditContainer(e) {
-    const editCommentContainer = e.target.parentElement.parentElement.parentElement.children[2];
-    const inputEditContainer = editCommentContainer.children[0];
+    const editParent = e.target.parentElement.parentElement.parentElement.parentElement;
+    const editCommentContainer = editParent.querySelector('.edit-comment-parent');
+    const inputEditContainer = editParent.querySelector('#input-comment');
 
     // TOGGLE EDIT CONTAINER
     if (editCommentContainer.style.display == 'none') {
@@ -63,10 +65,11 @@ export default class AddComments {
   }
 
   handleUpdateComment(e) {
-    const editCommentContainer = e.target.parentElement.parentElement.parentElement.children[2];
-    const inputEditContainer = editCommentContainer.children[0];
-    const timesStampContainerServerSide = e.target.parentElement.parentElement.parentElement.children[1].children[0];
-    const commentContainerServerSide = e.target.parentElement.parentElement.parentElement.children[0].children[1].children[1];
+    const editParent = e.target.parentElement.parentElement.parentElement;
+    const inputEditContainer = editParent.querySelector('#input-comment');
+    const editCommentContainer = editParent.querySelector('.edit-comment-parent');
+    const timesStampContainerServerSide = editParent.querySelector('.comment-date-time');
+    const commentContainerServerSide = editParent.querySelector('.comment');
 
     if (!inputEditContainer.value) return; // DIS-ALLOW EMPTY TEXT
 
@@ -85,7 +88,8 @@ export default class AddComments {
       });
 
     this.modalOverlay.classList.remove('active');
-    editCommentContainer.classList.remove('active');
+    editParent.classList.remove('active');
+    console.log(editParent);
     editCommentContainer.style.display = 'none';
   }
 
