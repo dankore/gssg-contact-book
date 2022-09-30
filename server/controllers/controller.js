@@ -14,7 +14,15 @@ exports.home = async (req, res) => {
   }
 };
 
-exports.about = (_, res) => res.render('about');
+exports.about = async (_, res) => {
+  try {
+    const count = await User.contactsCount();
+    res.render('about', { count });
+  } catch (error) {
+    req.flash('errors', error);
+    req.session.save(() => res.redirect('/'));
+  }
+};
 
 exports.contacts = async (req, res) => {
   try {

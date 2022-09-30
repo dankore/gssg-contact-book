@@ -598,6 +598,7 @@ User.search = async function (searchedItem) {
     }
   });
 };
+
 User.prototype.passwordChangeValidatation = function () {
   return new Promise(async (resolve, reject) => {
     if (this.data.old_password == '') {
@@ -802,6 +803,8 @@ User.doesEmailExists = email => {
     }
   });
 };
+
+User.contactsCount = async () => await usersCollection.count();
 
 User.addSocialUser = data => {
   return new Promise(async (resolve, reject) => {
