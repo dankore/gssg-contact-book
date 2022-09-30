@@ -267,7 +267,7 @@ User.findByEmail = function (email) {
       return;
     }
     usersCollection
-      .findOne({ email: email })
+      .findOne({ email })
       .then(userDoc => {
         if (userDoc) {
           userDoc = new User(userDoc);
@@ -620,7 +620,7 @@ User.prototype.passwordChangeValidatation = function () {
     if (this.data.old_password) {
       // FIND OLD PASSWORD AND COMPARE WITH INPUTED OLD PASSWORD
       let userDoc = await usersCollection.findOne({
-        email: this.sessionUsername,
+        username: this.sessionUsername,
       });
 
       if (!bcrypt.compareSync(this.data.old_password, userDoc.password)) {
@@ -635,14 +635,14 @@ User.prototype.updatePassword = function () {
   return new Promise(async (resolve, reject) => {
     this.passwordChangeValidatation();
     // FIND OLD PASSWORD AND COMPARE WITH NEW PASSWORD
-    let userDoc = await usersCollection.findOne({ email: this.sessionUsername });
+    let userDoc = await usersCollection.findOne({ username: this.sessionUsername });
 
     if (!this.errors.length) {
       // Hash user password
       let salt = bcrypt.genSaltSync(10);
       this.data.confirm_new_password = bcrypt.hashSync(this.data.confirm_new_password, salt);
       await usersCollection.findOneAndUpdate(
-        { email: this.sessionUsername },
+        { username: this.sessionUsername },
         {
           $set: {
             password: this.data.confirm_new_password,
@@ -795,7 +795,7 @@ User.doesEmailExists = email => {
       return;
     }
 
-    let user = await usersCollection.findOne({ email: email });
+    let user = await usersCollection.findOne({ email });
     if (user) {
       resolve(true);
     } else {
