@@ -149,6 +149,18 @@ const likesHelper = (namesOfLikesReceivedFrom, user, profilesUserLiked) => {
   return { peopleWhoLiked, color, text: color == 'yes' ? 'Unlike' : 'Like' };
 };
 
+const commentsHelper = comments => {
+  if (comments.length) {
+    if (comments.length > 1) {
+      return comments.length + ' comments';
+    } else {
+      return comments.length + ' comment';
+    }
+  } else {
+    return 'Be the first to say hello';
+  }
+};
+
 exports.isAlphaNumericDashHyphenPeriod = isAlphaNumericDashHyphenPeriod;
 exports.statsByYear = statsByYear;
 exports.getUsernameFromHeadersReferrer = getUsernameFromHeadersReferrer;
@@ -157,3 +169,4 @@ exports.getMonthDayYear = getMonthDayYear;
 exports.sortProfiles = sortProfiles;
 exports.singlePropArrayFilter = singlePropArrayFilter;
 exports.likesHelper = likesHelper;
+exports.commentsHelper = commentsHelper;
