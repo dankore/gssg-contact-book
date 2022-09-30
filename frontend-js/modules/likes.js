@@ -1,5 +1,3 @@
-import { likesHelper } from '../../server/misc/helpers';
-
 const axios = require('axios');
 export default class Likes {
   constructor() {
@@ -8,7 +6,6 @@ export default class Likes {
     this.visitorName = this.likesButton.getAttribute('data-visitor-name');
     this.contactEmail = this.likesButton.getAttribute('data-contact-email');
     this.likesContainer = document.querySelector('#likes-container');
-    this.likesButtonSVG = document.querySelectorAll('#like-button-svg');
     this.likeWordContainer = document.querySelector('#like-word');
     this.events();
   }
@@ -20,6 +17,7 @@ export default class Likes {
 
   // METHODS
   handleButtonClick(e) {
+    e.stopPropagation();
     let like = 0;
     let color = 'yes';
     if (this.likesButton.classList.contains('yes-toggle')) {
@@ -27,27 +25,27 @@ export default class Likes {
       color = 'no';
       this.likesButton.classList.remove('yes-toggle');
       this.likesButton.classList.add('no-toggle');
-      this.likeWordContainer.classList.remove('yes-like-color');
       this.likeWordContainer.innerText = 'Like';
 
-      Array.prototype.forEach.call(this.likesButtonSVG, svg => {
-        svg.classList.remove('yes');
-        svg.classList.add('no');
-        svg.style.fill = 'white';
-      });
+      const svgParent = e.target.parentElement.parentElement;
+      const svg = svgParent.querySelector('.svg-container');
+      svg.style.background = '#6B7280';
+
+      const buttonSVG = e.target.querySelector('#like-button-svg');
+      buttonSVG.style.fill = '#fff';
     } else {
       like = 1;
       color = 'yes';
       this.likesButton.classList.remove('no-toggle');
       this.likesButton.classList.add('yes-toggle');
-      this.likeWordContainer.classList.add('yes-like-color');
       this.likeWordContainer.innerText = 'Unlike';
 
-      Array.prototype.forEach.call(this.likesButtonSVG, svg => {
-        svg.classList.add('yes');
-        svg.classList.remove('no');
-        svg.style.fill = '#16A34A';
-      });
+      const svgParent = e.target.parentElement.parentElement;
+      const svg = svgParent.querySelector('.svg-container');
+      svg.style.background = '#22c55e';
+
+      const buttonSVG = e.target.querySelector('#like-button-svg');
+      buttonSVG.style.fill = '#22c55e';
     }
 
     axios
