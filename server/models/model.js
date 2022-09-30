@@ -353,11 +353,11 @@ User.findByUsername = function (username) {
 
           resolve(userDoc);
         } else {
-          reject('Cannot find one user_by_email Model line 337');
+          reject('Cannot find one username');
         }
       })
       .catch(() => {
-        reject('Cannot find one user_by_email Model line 341');
+        reject('Cannot find one username');
       });
   });
 };
@@ -804,7 +804,7 @@ User.doesEmailExists = email => {
   });
 };
 
-User.contactsCount = async () => await usersCollection.count();
+User.contactsCount = async () => await usersCollection.countDocuments();
 
 User.addSocialUser = data => {
   return new Promise(async (resolve, reject) => {
