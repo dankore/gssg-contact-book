@@ -12,7 +12,61 @@ const express = require('express'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
   cookieParser = require('cookie-parser'),
-  { likesHelper, commentsHelper } = require('./misc/helpers');
+  { likesHelper, commentsHelper } = require('./misc/helpers'),
+  csrf = require('csurf');
+
+// GOOGLE
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: `${process.env.GOOGLE_CLIENT_ID}`,
+      clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
+      callbackURL: `${process.env.GOOGLE_CALLABCK_URL}`,
+    },
+    function (accessToken, refreshToken, user, cb) {
+      User.doesEmailExists(user._json.email)
+        .then(userBool => {
+          console.log('Server 29. New user: ' + userBool);
+          if (userBool) {
+            // USER EXISTS. LOG IN
+            // CLEAN UP
+            user = {
+              email: user._json.email,
+              firstName: user._json.given_name,
+              lastName: user._json.family_name,
+              username: user._json.email.split('@')[0],
+              returningUser: true,
+            };
+            return cb(null, user);
+          } else {
+            // NEW USER. REGISTER
+            // CLEAN UP
+            user = {
+              google_id: user._json.sub,
+              firstName: user._json.given_name,
+              lastName: user._json.family_name,
+              username: user._json.email.split('@')[0],
+              email: user._json.email,
+              year: '2006?',
+              photo: user._json.picture, // END
+            };
+            return cb(null, user);
+          }
+        })
+        .catch(err => {
+          console.log('Server 58: ' + err);
+        });
+    }
+  )
+);
+
+passport.serializeUser(function (user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function (obj, cb) {
+  cb(null, obj);
+});
 
 // EXPRESS SESSIONS
 let sessionOptions = session({
@@ -28,9 +82,8 @@ let sessionOptions = session({
 
 server.use(cookieParser());
 server.use(sessionOptions);
-server.use(passport.initialize());
-server.use(passport.session());
-//PASSPORT ENDS
+server.use(passport.initialize({ session: true }));
+server.use(csrf({ cookie: true }));
 
 server.set('views', 'view');
 server.set('view engine', 'ejs');
@@ -92,59 +145,6 @@ server.use('/contacts/:username', async (req, res, next) => {
   next();
 });
 // SEO ENDS
-
-// GOOGLE
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: `${process.env.GOOGLE_CLIENT_ID}`,
-      clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-      callbackURL: `${process.env.GOOGLE_CALLABCK_URL}`,
-    },
-    function (accessToken, refreshToken, user, cb) {
-      User.doesEmailExists(user._json.email)
-        .then(userBool => {
-          console.log('Server 29. New user: ' + userBool);
-          if (userBool) {
-            // USER EXISTS. LOG IN
-            // CLEAN UP
-            user = {
-              email: user._json.email,
-              firstName: user._json.given_name,
-              lastName: user._json.family_name,
-              username: user._json.email.split('@')[0],
-              returningUser: true,
-            };
-            return cb(null, user);
-          } else {
-            // NEW USER. REGISTER
-            // CLEAN UP
-            user = {
-              google_id: user._json.sub,
-              firstName: user._json.given_name,
-              lastName: user._json.family_name,
-              username: user._json.email.split('@')[0],
-              email: user._json.email,
-              year: '2006?',
-              photo: user._json.picture, // END
-            };
-            return cb(null, user);
-          }
-        })
-        .catch(err => {
-          console.log('Server 58: ' + err);
-        });
-    }
-  )
-);
-
-passport.serializeUser(function (user, cb) {
-  cb(null, user);
-});
-
-passport.deserializeUser(function (obj, cb) {
-  cb(null, obj);
-});
 
 server.use('/', router);
 
