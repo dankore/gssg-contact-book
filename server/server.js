@@ -12,8 +12,7 @@ const express = require('express'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
   cookieParser = require('cookie-parser'),
-  { likesHelper, commentsHelper } = require('./misc/helpers'),
-  csrf = require('csurf');
+  { csrf, likesHelper, commentsHelper } = require('./misc/helpers');
 
 // GOOGLE
 passport.use(

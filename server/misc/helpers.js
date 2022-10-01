@@ -1,3 +1,6 @@
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: true });
+
 const singlePropArrayFilter = (arr, valueToFilter) => {
   let commentId;
   for (let i = 0; i < arr.length; i++) {
@@ -170,3 +173,5 @@ exports.sortProfiles = sortProfiles;
 exports.singlePropArrayFilter = singlePropArrayFilter;
 exports.likesHelper = likesHelper;
 exports.commentsHelper = commentsHelper;
+exports.csrf = csrf;
+exports.csrfProtection = csrfProtection;
