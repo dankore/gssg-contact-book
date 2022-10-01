@@ -5,7 +5,7 @@ const upload = require('./misc/file-upload');
 const singleUpload = upload.single('photo');
 const passport = require('passport');
 const rateLimit = require('express-rate-limit');
-import { csrf } from './misc/helpers';
+const csrf = require('csurf');
 
 const csrfProtection = csrf({ cookie: true });
 

@@ -1,4 +1,4 @@
-const csrf = require('csurf');
+
 
 const singlePropArrayFilter = (arr, valueToFilter) => {
   let commentId;
@@ -172,4 +172,3 @@ exports.sortProfiles = sortProfiles;
 exports.singlePropArrayFilter = singlePropArrayFilter;
 exports.likesHelper = likesHelper;
 exports.commentsHelper = commentsHelper;
-exports.csrf = csrf;
