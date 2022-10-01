@@ -1,5 +1,4 @@
-import csrf from 'csurf';
-const csrfProtection = csrf({ cookie: true });
+const csrf = require('csurf');
 
 const singlePropArrayFilter = (arr, valueToFilter) => {
   let commentId;
@@ -164,25 +163,13 @@ const commentsHelper = comments => {
   }
 };
 
-const _isAlphaNumericDashHyphenPeriod = isAlphaNumericDashHyphenPeriod;
-export { _isAlphaNumericDashHyphenPeriod as isAlphaNumericDashHyphenPeriod };
-const _statsByYear = statsByYear;
-export { _statsByYear as statsByYear };
-const _getUsernameFromHeadersReferrer = getUsernameFromHeadersReferrer;
-export { _getUsernameFromHeadersReferrer as getUsernameFromHeadersReferrer };
-const _getHMS = getHMS;
-export { _getHMS as getHMS };
-const _getMonthDayYear = getMonthDayYear;
-export { _getMonthDayYear as getMonthDayYear };
-const _sortProfiles = sortProfiles;
-export { _sortProfiles as sortProfiles };
-const _singlePropArrayFilter = singlePropArrayFilter;
-export { _singlePropArrayFilter as singlePropArrayFilter };
-const _likesHelper = likesHelper;
-export { _likesHelper as likesHelper };
-const _commentsHelper = commentsHelper;
-export { _commentsHelper as commentsHelper };
-const _csrf = csrf;
-export { _csrf as csrf };
-const _csrfProtection = csrfProtection;
-export { _csrfProtection as csrfProtection };
+exports.isAlphaNumericDashHyphenPeriod = isAlphaNumericDashHyphenPeriod;
+exports.statsByYear = statsByYear;
+exports.getUsernameFromHeadersReferrer = getUsernameFromHeadersReferrer;
+exports.getHMS = getHMS;
+exports.getMonthDayYear = getMonthDayYear;
+exports.sortProfiles = sortProfiles;
+exports.singlePropArrayFilter = singlePropArrayFilter;
+exports.likesHelper = likesHelper;
+exports.commentsHelper = commentsHelper;
+exports.csrf = csrf;

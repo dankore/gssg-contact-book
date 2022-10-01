@@ -12,7 +12,7 @@ const express = require('express'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
   cookieParser = require('cookie-parser'),
-  { csrf, likesHelper, commentsHelper } = require('./misc/helpers');
+  { likesHelper, commentsHelper } = require('./misc/helpers');
 
 // GOOGLE
 passport.use(
@@ -82,7 +82,6 @@ let sessionOptions = session({
 server.use(cookieParser());
 server.use(sessionOptions);
 server.use(passport.initialize({ session: true }));
-server.use(csrf());
 
 server.set('views', 'view');
 server.set('view engine', 'ejs');
