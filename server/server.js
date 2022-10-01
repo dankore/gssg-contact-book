@@ -82,7 +82,7 @@ let sessionOptions = session({
 server.use(cookieParser());
 server.use(sessionOptions);
 server.use(passport.initialize({ session: true }));
-server.use(csrf({ cookie: true }));
+server.use(csrf());
 
 server.set('views', 'view');
 server.set('view engine', 'ejs');
