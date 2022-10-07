@@ -495,6 +495,7 @@ User.getRecentProfiles = async function () {
         lastName: eachDoc.lastName,
         year: eachDoc.year,
         email: eachDoc.email,
+        ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
         nickname: eachDoc.nickname,
         username: eachDoc.username,
         photo: eachDoc.photo,

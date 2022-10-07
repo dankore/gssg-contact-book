@@ -1,10 +1,12 @@
 <li>
   <a href="/contacts/<%= profile.username %>" class="space-y-6">
-    <% if(profile.photo){ %>
+    <% if(profile.google_id) {%>
     <img class="object-contain mx-auto rounded-full h-56 w-56 bg-gray-900" src="<%= profile.photo %>" alt="<%= profile.firstName %> <%= profile.lastName %>" />
-    <% } else { %>
-    <img class="object-contain mx-auto rounded-full h-56 w-56 bg-gray-900" title="<%= profile.firstName %> <%= profile.lastName %>" src="../../static/blank.png" alt="profile picture" />
-    <%}%>
+    <% } else {%>
+    <object data="<%='/images/'+profile.email.split('@')[0] %>" alt="profile picture">
+      <img class="object-contain mx-auto rounded-full h-56 w-56 bg-gray-900" src="../../static/blank.png" alt="<%= profile.firstName %> <%= profile.lastName %>" />
+    </object>
+    <% } %>
     <div class="space-y-2">
       <div class="space-y-1 text-lg font-medium leading-6">
         <h3><%= profile.firstName %> <%= profile.lastName %></h3>
