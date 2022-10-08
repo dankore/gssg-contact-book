@@ -1,28 +1,31 @@
+const { metatags } = require('../misc/metatags');
+
 const User = require('../models/model'),
   helpers = require('../misc/helpers'),
   ObjectId = require('mongodb').ObjectID;
 
 exports.home = async (req, res) => {
   try {
-    let contacts;
-    contacts = await User.getRecentProfiles();
+    const contacts = await User.getRecentProfiles();
 
-    res.render('homePage', { contacts });
+    res.render('homePage', { contacts, metatags: metatags({ page: '/' }) });
   } catch (error) {
-    req.flash('errors', error);
-    req.session.save(() => res.redirect('/'));
+    req.flash('errors', error.message);
+    req.session.save(() => res.redirect('/error'));
   }
 };
 
-exports.about = async (_, res) => {
+exports.about = async (req, res) => {
   try {
     const count = await User.contactsCount();
-    res.render('about', { count });
+    res.render('about', { count, metatags: metatags({ page: 'about' }) });
   } catch (error) {
-    req.flash('errors', error);
-    req.session.save(() => res.redirect('/'));
+    req.flash('errors', error.message);
+    req.session.save(() => res.redirect('/error'));
   }
 };
+
+exports.error = (req, res) => res.render('error');
 
 exports.contacts = async (req, res) => {
   try {
@@ -39,9 +42,10 @@ exports.contacts = async (req, res) => {
     }
     res.render('contacts', {
       profiles: profiles,
+      metatags: metatags({ page: 'contacts' }),
     });
   } catch (error) {
-    req.flash('errors', error);
+    req.flash('errors', error.message);
     req.session.save(() => res.redirect('/contacts'));
   }
 };
@@ -152,7 +156,7 @@ exports.mustBeLoggedIn = (req, res, next) => {
   } else {
     req.flash('errors', 'Must be login to perform that action.');
     req.session.save(_ => {
-      res.redirect('/');
+      res.redirect('/error');
     });
   }
 };
@@ -163,7 +167,7 @@ exports.isVisitorOwner = (req, res, next) => {
     next();
   } else {
     req.flash('errors', 'You do not have permission to perform that action.');
-    req.session.save(_ => res.redirect('/'));
+    req.session.save(_ => res.redirect('/error'));
   }
 };
 
@@ -174,7 +178,7 @@ exports.profileScreen = (req, res) => {
     if (propExists.length > 0) req.profileUser.color = propExists[0].color;
   }
 
-  res.render('contact', { profile: req.profileUser });
+  res.render('contact', { profile: req.profileUser, metatags: metatags({ page: 'contact', data: req.profileUser }) });
 };
 
 exports.viewEditScreen = async function (req, res) {
@@ -210,7 +214,7 @@ exports.edit = async (req, res) => {
         // UPDATE USER COMMENTS END
       } else {
         profile.errors.forEach(error => {
-          req.flash('errors', error);
+          req.flash('errors', error.message);
         });
         req.session.save(async _ => {
           await res.redirect(`/contacts/${userDoc.username}/edit`);
@@ -219,14 +223,12 @@ exports.edit = async (req, res) => {
     })
     .catch(() => {
       req.flash('errors', 'You do not have permission to perform that action.');
-      res.redirect('/');
+      res.redirect('/error');
     });
 };
 
 // NOT FOUND PAGE
-exports.notFound = (req, res) => {
-  res.status(404).render('404');
-};
+exports.notFound = (req, res) => res.status(404).render('404');
 
 exports.account = (req, res) => {
   res.render('account');
@@ -240,7 +242,7 @@ exports.account.delete = (req, res) => {
     })
     .catch(() => {
       req.flash('errors', 'You do not have permission to perform that action.');
-      req.session.save(() => res.redirect('/'));
+      req.session.save(() => res.redirect('/error'));
     });
 };
 
@@ -263,7 +265,7 @@ exports.changePassword = function (req, res) {
     })
     .catch(errors => {
       errors.forEach(error => {
-        req.flash('errors', error);
+        req.flash('errors', error.message);
       });
       req.session.save(() => res.redirect(`/account/${req.params.username}/change-password`));
     });
@@ -284,7 +286,7 @@ exports.resetPassword = (req, res) => {
     })
     .catch(errors => {
       errors.forEach(error => {
-        req.flash('errors', error);
+        req.flash('errors', error.message);
       });
 
       res.redirect('/reset-password');
@@ -302,7 +304,7 @@ exports.resetPasswordTokenPage = (req, res) => {
       });
     })
     .catch(error => {
-      req.flash('errors', error);
+      req.flash('errors', error.message);
       res.redirect('/reset-password');
     });
 };
@@ -317,7 +319,7 @@ exports.resetPasswordToken = (req, res) => {
       res.redirect('/');
     })
     .catch(error => {
-      req.flash('errors', error);
+      req.flash('errors', error.message);
       res.redirect(`/reset-password/${req.params.token}`);
     });
 };
@@ -345,7 +347,7 @@ exports.googleLogin = async (req, res) => {
       req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit`));
     }
   } catch (error) {
-    req.flash('errors', error);
+    req.flash('errors', error.message);
     req.session.save(async _ => await res.redirect('/register'));
   }
 };
@@ -375,7 +377,7 @@ exports.addComment = async (req, res) => {
       res.json(response);
     })
     .catch(errorMessage => {
-      req.flash('errors', errorMessage);
+      req.flash('errors', error.messageMessage);
       req.session.save(async _ => {
         await res.redirect(`/contacts/${contactUsername}`);
       });
@@ -398,7 +400,7 @@ exports.editComment = (req, res) => {
       res.json(response);
     })
     .catch(errorMessage => {
-      req.flash('errors', errorMessage);
+      req.flash('errors', error.messageMessage);
       req.session.save(async _ => {
         await res.redirect(`/contacts/${profileUsername}`);
       });

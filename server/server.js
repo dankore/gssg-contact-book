@@ -127,14 +127,11 @@ server.use(async (req, res, next) => {
   next();
 });
 
-// SEO
 server.use('/contacts/:username', async (req, res, next) => {
   await User.findByUsername(req.params.username)
     .then(userDoc => {
-      userDoc.url = 'https://www.gssgcontactbook.com' + req.originalUrl;
       res.locals.namesOfLikesReceivedFrom = userDoc.likes_received_from;
       res.locals.likesHelper = likesHelper(userDoc.likes_received_from, req.session.user, res.locals.profilesUserLiked);
-      res.locals.seo = userDoc;
       res.locals.commentsCount = commentsHelper(userDoc.comments);
     })
     .catch(err => {
@@ -142,7 +139,6 @@ server.use('/contacts/:username', async (req, res, next) => {
     });
   next();
 });
-// SEO ENDS
 
 server.use('/', router);
 
