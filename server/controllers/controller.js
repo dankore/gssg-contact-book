@@ -25,7 +25,7 @@ exports.about = async (req, res) => {
   }
 };
 
-exports.error = (req, res) => res.render('error');
+exports.error = (req, res) => res.render('error', { metatags: metatags({ page: 'generic' }) });
 
 exports.contacts = async (req, res) => {
   try {
@@ -51,14 +51,13 @@ exports.contacts = async (req, res) => {
 };
 
 exports.registrationPage = async (req, res) => {
-  if (req.session.user) {
-    res.redirect('/');
-  } else {
-    res.render('registrationPage', {
-      reqErrors: req.flash('reqError'),
-      csrfToken: req.csrfToken(),
-    });
-  }
+  if (req.session.user) return res.redirect('/');
+
+  res.render('registrationPage', {
+    reqErrors: req.flash('reqError'),
+    csrfToken: req.csrfToken(),
+    metatags: metatags({ page: 'register' }),
+  });
 };
 
 exports.registrationSubmission = async (req, res) => {
@@ -90,11 +89,8 @@ exports.registrationSubmission = async (req, res) => {
 };
 
 exports.loginPage = (req, res) => {
-  if (req.session.user) {
-    res.redirect('/');
-  } else {
-    res.render('loginPage', { csrfToken: req.csrfToken() });
-  }
+  if (req.session.user) return res.redirect('/');
+  res.render('loginPage', { csrfToken: req.csrfToken(), metatags: metatags({ page: 'login' }) });
 };
 
 exports.login = async (req, res) => {
@@ -227,12 +223,9 @@ exports.edit = async (req, res) => {
     });
 };
 
-// NOT FOUND PAGE
-exports.notFound = (req, res) => res.status(404).render('404');
+exports.notFound = (req, res) => res.status(404).render('404', { metatags: metatags({ page: 'generic' }) });
 
-exports.account = (req, res) => {
-  res.render('account');
-};
+exports.account = (req, res) => res.render('account');
 
 exports.account.delete = (req, res) => {
   User.delete(req.params.username, req.session.user.username)
@@ -246,13 +239,9 @@ exports.account.delete = (req, res) => {
     });
 };
 
-exports.privacy = function (req, res) {
-  res.render('privacy');
-};
+exports.privacy = (req, res) => res.render('privacy', { metatags: metatags({ page: 'privacy' }) });
 
-exports.changePasswordPage = function (req, res) {
-  res.render('changePasswordPage');
-};
+exports.changePasswordPage = (req, res) => res.render('changePasswordPage', { metatags: metatags({ page: 'generic' }) });
 
 exports.changePassword = function (req, res) {
   let user = new User(req.body, null, req.session.user.username, req.params.username);
@@ -301,6 +290,7 @@ exports.resetPasswordTokenPage = (req, res) => {
       res.render('resetTokenPage', {
         token: req.params.token,
         csrfToken: req.csrfToken(),
+        metatags: metatags({ page: 'generic' }),
       });
     })
     .catch(error => {

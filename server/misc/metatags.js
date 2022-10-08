@@ -22,6 +22,42 @@ exports.metatags = ({ page, data }) => {
       },
       path: `${page}`,
     },
+    privacy: {
+      title: `${page_cap} | ${title}`,
+      description: 'Privacy Policy of GSS Gwarinpa Contact Book. Please read this privacy policy carefully as it will help you make informed decisions about sharing your personal information with us.',
+      image: {
+        url,
+        alt: 'Privacy policy image',
+      },
+      path: `${page}`,
+    },
+    login: {
+      title: `${page_cap} | ${title}`,
+      description: 'Login to view, edit, and update your GSS Gwarinpa Contact Book contact.',
+      image: {
+        url,
+        alt: 'Login page image',
+      },
+      path: `${page}`,
+    },
+    register: {
+      title: `${page_cap} | ${title}`,
+      description: 'Register for an account. Join your former classmates and schoolmates.',
+      image: {
+        url,
+        alt: 'Login page image',
+      },
+      path: `${page}`,
+    },
+    generic: {
+      title: `${page_cap} | ${title}`,
+      description: 'Find Your GSS Gwarinpa Classmates and Their Contacts.',
+      image: {
+        url,
+        alt: '',
+      },
+      path: `${page}`,
+    },
     contacts: {
       title: `${page_cap} | ${title}`,
       description: 'Contacts for GSS Gwarinpa students. Discover Present & Past GSS Gwarinpa Students.',
