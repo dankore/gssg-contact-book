@@ -25,7 +25,7 @@ exports.about = async (req, res) => {
   }
 };
 
-exports.error = (req, res) => res.render('error', { metatags: metatags({ page: 'generic' }) });
+exports.error = (req, res) => res.render('error', { metatags: metatags({ page: 'generic', data: { page_name: 'error' } }) });
 
 exports.contacts = async (req, res) => {
   try {
@@ -223,7 +223,7 @@ exports.edit = async (req, res) => {
     });
 };
 
-exports.notFound = (req, res) => res.status(404).render('404', { metatags: metatags({ page: 'generic' }) });
+exports.notFound = (req, res) => res.status(404).render('404', { metatags: metatags({ page: 'generic', data: { page_name: '404' } }) });
 
 exports.account = (req, res) => res.render('account');
 
@@ -241,7 +241,7 @@ exports.account.delete = (req, res) => {
 
 exports.privacy = (req, res) => res.render('privacy', { metatags: metatags({ page: 'privacy' }) });
 
-exports.changePasswordPage = (req, res) => res.render('changePasswordPage', { metatags: metatags({ page: 'generic' }) });
+exports.changePasswordPage = (req, res) => res.render('changePasswordPage', { metatags: metatags({ page: 'generic', data: { page_name: 'Change Your Password' } }) });
 
 exports.changePassword = function (req, res) {
   let user = new User(req.body, null, req.session.user.username, req.params.username);
@@ -261,7 +261,7 @@ exports.changePassword = function (req, res) {
 };
 
 exports.resetPasswordPage = (req, res) => {
-  req.session.user ? res.redirect('/') : res.render('resetPasswordPage', { csrfToken: req.csrfToken() });
+  req.session.user ? res.redirect('/') : res.render('resetPasswordPage', { csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Reset Your Password', path: 'reset-password' } }) });
 };
 
 exports.resetPassword = (req, res) => {
@@ -290,7 +290,7 @@ exports.resetPasswordTokenPage = (req, res) => {
       res.render('resetTokenPage', {
         token: req.params.token,
         csrfToken: req.csrfToken(),
-        metatags: metatags({ page: 'generic' }),
+        metatags: metatags({ page: 'generic', data: { page_name: 'Change Your Password', path: `reset-password/${req.params.token}` } }),
       });
     })
     .catch(error => {
@@ -306,7 +306,7 @@ exports.resetPasswordToken = (req, res) => {
     .resetToken(req.params.token)
     .then(message => {
       req.flash('success', message);
-      res.redirect('/');
+      res.redirect('/login');
     })
     .catch(error => {
       req.flash('errors', error.message);

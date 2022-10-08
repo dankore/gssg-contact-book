@@ -45,18 +45,18 @@ exports.metatags = ({ page, data }) => {
       description: 'Register for an account. Join your former classmates and schoolmates.',
       image: {
         url,
-        alt: 'Login page image',
+        alt: 'Register page image',
       },
       path: `${page}`,
     },
     generic: {
-      title: `${page_cap} | ${title}`,
+      title: `${data?.page_name} | ${title}`,
       description: 'Find Your GSS Gwarinpa Classmates and Their Contacts.',
       image: {
         url,
         alt: '',
       },
-      path: `${page}`,
+      path: data?.path,
     },
     contacts: {
       title: `${page_cap} | ${title}`,
