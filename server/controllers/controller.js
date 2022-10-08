@@ -6,8 +6,7 @@ const User = require('../models/model'),
 
 exports.home = async (req, res) => {
   try {
-    let contacts;
-    contacts = await User.getRecentProfiles();
+    const contacts = await User.getRecentProfiles();
 
     res.render('homePage', { contacts, metatags: metatags({ page: '/' }) });
   } catch (error) {
@@ -43,6 +42,7 @@ exports.contacts = async (req, res) => {
     }
     res.render('contacts', {
       profiles: profiles,
+      metatags: metatags({ page: 'contacts' }),
     });
   } catch (error) {
     req.flash('errors', error.message);
@@ -52,7 +52,7 @@ exports.contacts = async (req, res) => {
 
 exports.registrationPage = async (req, res) => {
   if (req.session.user) {
-    res.redirect('/error');
+    res.redirect('/');
   } else {
     res.render('registrationPage', {
       reqErrors: req.flash('reqError'),
@@ -91,7 +91,7 @@ exports.registrationSubmission = async (req, res) => {
 
 exports.loginPage = (req, res) => {
   if (req.session.user) {
-    res.redirect('/error');
+    res.redirect('/');
   } else {
     res.render('loginPage', { csrfToken: req.csrfToken() });
   }
@@ -111,7 +111,7 @@ exports.login = async (req, res) => {
       };
 
       req.session.save(() => {
-        res.redirect('/error');
+        res.redirect('/');
       });
     })
     .catch(err => {
@@ -124,7 +124,7 @@ exports.login = async (req, res) => {
 
 exports.logout = function (req, res) {
   req.session.destroy(function () {
-    res.redirect('/error');
+    res.redirect('/');
   });
 };
 
@@ -178,7 +178,7 @@ exports.profileScreen = (req, res) => {
     if (propExists.length > 0) req.profileUser.color = propExists[0].color;
   }
 
-  res.render('contact', { profile: req.profileUser });
+  res.render('contact', { profile: req.profileUser, metatags: metatags({ page: 'contact', data: req.profileUser }) });
 };
 
 exports.viewEditScreen = async function (req, res) {
@@ -238,7 +238,7 @@ exports.account.delete = (req, res) => {
   User.delete(req.params.username, req.session.user.username)
     .then(() => {
       req.flash('success', 'Account successfully deleted.');
-      req.session.destroy(() => res.redirect('/error'));
+      req.session.destroy(() => res.redirect('/'));
     })
     .catch(() => {
       req.flash('errors', 'You do not have permission to perform that action.');
@@ -272,7 +272,7 @@ exports.changePassword = function (req, res) {
 };
 
 exports.resetPasswordPage = (req, res) => {
-  req.session.user ? res.redirect('/error') : res.render('resetPasswordPage', { csrfToken: req.csrfToken() });
+  req.session.user ? res.redirect('/') : res.render('resetPasswordPage', { csrfToken: req.csrfToken() });
 };
 
 exports.resetPassword = (req, res) => {
@@ -316,7 +316,7 @@ exports.resetPasswordToken = (req, res) => {
     .resetToken(req.params.token)
     .then(message => {
       req.flash('success', message);
-      res.redirect('/error');
+      res.redirect('/');
     })
     .catch(error => {
       req.flash('errors', error.message);
@@ -340,7 +340,7 @@ exports.googleLogin = async (req, res) => {
     };
 
     if (req.user.returningUser) {
-      req.session.save(async _ => await res.redirect('/error'));
+      req.session.save(async _ => await res.redirect('/'));
     } else {
       const successMessage = await User.addSocialUser(req.user);
       req.flash('success', successMessage);

@@ -1,7 +1,7 @@
-exports.metatags = ({ page, img }) => {
+exports.metatags = ({ page, data }) => {
   const title = 'GSS Gwarinpa Contact Book 📗';
-  const url = img ? img : 'https://gss-gwarinpa.s3.us-east-2.amazonaws.com/1580629627915';
-  const page_cap = `${page.charAt(0).toUpperCase() + page.slice(1)} | ${title}`;
+  const url = data ? data.photo : 'https://gss-gwarinpa.s3.us-east-2.amazonaws.com/1580629627915';
+  const page_cap = `${page.charAt(0).toUpperCase() + page.slice(1)}`;
 
   const seo = {
     '/': {
@@ -24,17 +24,24 @@ exports.metatags = ({ page, img }) => {
     },
     contacts: {
       title: `${page_cap} | ${title}`,
-      description: 'All contacts for GSS Gwarinpa students. Discover Present & Past GSS Gwarinpa Students.',
+      description: 'Contacts for GSS Gwarinpa students. Discover Present & Past GSS Gwarinpa Students.',
       image: {
         url,
-        alt: 'A man presenting an award to a student',
+        alt: '',
       },
       path: `${page}`,
     },
+    contact: {
+      title: `${data?.firstName} ${data?.lastName} | ${title}`,
+      description: `${data?.firstName} ${data?.lastName}'s contact page.`,
+      image: {
+        url,
+        alt: `${data?.firstName} ${data?.lastName}'s photo.`,
+      },
+      path: `contacts/${data?.username}`,
+    },
   };
 
-  // if (seo[page]) return seo[page];
-  // else return seo['/'];
-
-  return seo[page];
+  if (seo[page]) return seo[page];
+  else return seo['/'];
 };
