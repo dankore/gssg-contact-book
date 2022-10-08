@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
   <head>
+    <% var metatags = metatags ? metatags : { title: 'GSS Gwarinpa Contact Book 📗', description: 'Find Your GSS Gwarinpa Classmates and Their Contacts.', image: { url: 'https://gss-gwarinpa.s3.us-east-2.amazonaws.com/1580629627915', alt: 'Page image'},path: '/', } %>
     <meta charset="UTF-8" />
-    <title><%= typeof(locals.seo) == "undefined" ? 'GSS Gwarinpa Contact Book 📗' : `${locals.seo.firstName} ${locals.seo.lastName} | GSS Gwarinpa Contact Book 📗` %></title>
-    <!-- FAVICON -->
-    <link rel="icon" type="image/x-icon" href="../../static/favicon.ico" />
-    <!-- FAVICON ENDS -->
+    <title><%= metatags.title %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    
     <!-- SEO -->
     <meta itemprop="name" content="GSS Gwarinpa Contact Book 📗" />
-    <meta itemprop="description" content="Find Your GSS Gwarinpa Classmates and Their Contacts." />
-    <meta itemprop="image" content="<%= typeof(locals.seo) == 'undefined' ? 'https://gss-gwarinpa.s3.us-east-2.amazonaws.com/1580629627915' : `${locals.seo.photo}` %>" />
+    <meta itemprop="description" content="<%= metatags.description %>" />
+    <meta itemprop="image" content="<%= metatags.image.url %>" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="profile" />
-    <meta property="og:url" content="<%= typeof(locals.seo) == 'undefined' ? 'https://www.gssgcontactbook.com/' : `${locals.seo.url}` %>" />
+    <meta property="og:url" content="https://www.gssgcontactbook.com/<%= metatags.path %>" />
     <meta property="og:site_name" content="GSS Gwarinpa Contact Book 📗" />
-    <meta property="og:title" content="<%= typeof(locals.seo) == 'undefined' ? 'GSS Gwarinpa Contact Book 📗' : `${locals.seo.firstName} ${locals.seo.lastName} | GSS Gwarinpa Contact Book 📗` %>" />
-    <meta property="og:description" content="Find Your GSS Gwarinpa Classmates and Their Contacts." />
-    <meta property="og:image" content="<%= typeof(locals.seo) == 'undefined' ? 'https://gss-gwarinpa.s3.us-east-2.amazonaws.com/1580629627915' : `${locals.seo.photo}` %>" />
-    <meta property="og:image:alt" content="Profile photo" />
+    <meta property="og:title" content="<%= metatags.title %>" />
+    <meta property="og:description" content="<%= metatags.description %>" />
+    <meta property="og:image" content="<%= metatags.image.url %>" />
+    <meta property="og:image:alt" content="<%= metatags.image.alt %>" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="GSS Gwarinpa Contact Book 📗" />
-    <meta name="twitter:description" content="Find Your GSS Gwarinpa Classmates and Their Contacts." />
-    <meta name="twitter:image" content="<%= typeof(locals.seo) == 'undefined' ? 'https://gss-gwarinpa.s3.us-east-2.amazonaws.com/1580629627915' : `${locals.seo.photo}` %>" />
+    <meta name="twitter:title" content="<%= metatags.title %>" />
+    <meta name="twitter:description" content="<%= metatags.description %>" />
+    <meta name="twitter:image" content="<%= metatags.image.url %>" />
 
-    <link rel="canonical" href="https://www.gssgcontactbook.com/" />
+    <link rel="canonical" href="https://www.gssgcontactbook.com/<%= metatags.path %>" />
+     <!-- FAVICON -->
+    <link rel="icon" type="image/x-icon" href="../../static/favicon.ico" />
+    <!-- FAVICON ENDS -->
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png" />

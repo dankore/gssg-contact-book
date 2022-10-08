@@ -1,3 +1,5 @@
+const { metatags } = require('../misc/metatags');
+
 const User = require('../models/model'),
   helpers = require('../misc/helpers'),
   ObjectId = require('mongodb').ObjectID;
@@ -7,22 +9,24 @@ exports.home = async (req, res) => {
     let contacts;
     contacts = await User.getRecentProfiles();
 
-    res.render('homePage', { contacts });
+    res.render('homePage', { contacts, metatags: metatags({ page: '/' }) });
   } catch (error) {
-    req.flash('errors', error);
-    req.session.save(() => res.redirect('/'));
+    req.flash('errors', error.message);
+    req.session.save(() => res.redirect('/error'));
   }
 };
 
-exports.about = async (_, res) => {
+exports.about = async (req, res) => {
   try {
     const count = await User.contactsCount();
-    res.render('about', { count });
+    res.render('about', { count, metatags: metatags({ page: 'about' }) });
   } catch (error) {
-    req.flash('errors', error);
-    req.session.save(() => res.redirect('/'));
+    req.flash('errors', error.message);
+    req.session.save(() => res.redirect('/error'));
   }
 };
+
+exports.error = (req, res) => res.render('error');
 
 exports.contacts = async (req, res) => {
   try {
@@ -41,14 +45,14 @@ exports.contacts = async (req, res) => {
       profiles: profiles,
     });
   } catch (error) {
-    req.flash('errors', error);
+    req.flash('errors', error.message);
     req.session.save(() => res.redirect('/contacts'));
   }
 };
 
 exports.registrationPage = async (req, res) => {
   if (req.session.user) {
-    res.redirect('/');
+    res.redirect('/error');
   } else {
     res.render('registrationPage', {
       reqErrors: req.flash('reqError'),
@@ -87,7 +91,7 @@ exports.registrationSubmission = async (req, res) => {
 
 exports.loginPage = (req, res) => {
   if (req.session.user) {
-    res.redirect('/');
+    res.redirect('/error');
   } else {
     res.render('loginPage', { csrfToken: req.csrfToken() });
   }
@@ -107,7 +111,7 @@ exports.login = async (req, res) => {
       };
 
       req.session.save(() => {
-        res.redirect('/');
+        res.redirect('/error');
       });
     })
     .catch(err => {
@@ -120,7 +124,7 @@ exports.login = async (req, res) => {
 
 exports.logout = function (req, res) {
   req.session.destroy(function () {
-    res.redirect('/');
+    res.redirect('/error');
   });
 };
 
@@ -152,7 +156,7 @@ exports.mustBeLoggedIn = (req, res, next) => {
   } else {
     req.flash('errors', 'Must be login to perform that action.');
     req.session.save(_ => {
-      res.redirect('/');
+      res.redirect('/error');
     });
   }
 };
@@ -163,7 +167,7 @@ exports.isVisitorOwner = (req, res, next) => {
     next();
   } else {
     req.flash('errors', 'You do not have permission to perform that action.');
-    req.session.save(_ => res.redirect('/'));
+    req.session.save(_ => res.redirect('/error'));
   }
 };
 
@@ -210,7 +214,7 @@ exports.edit = async (req, res) => {
         // UPDATE USER COMMENTS END
       } else {
         profile.errors.forEach(error => {
-          req.flash('errors', error);
+          req.flash('errors', error.message);
         });
         req.session.save(async _ => {
           await res.redirect(`/contacts/${userDoc.username}/edit`);
@@ -219,14 +223,12 @@ exports.edit = async (req, res) => {
     })
     .catch(() => {
       req.flash('errors', 'You do not have permission to perform that action.');
-      res.redirect('/');
+      res.redirect('/error');
     });
 };
 
 // NOT FOUND PAGE
-exports.notFound = (req, res) => {
-  res.status(404).render('404');
-};
+exports.notFound = (req, res) => res.status(404).render('404');
 
 exports.account = (req, res) => {
   res.render('account');
@@ -236,11 +238,11 @@ exports.account.delete = (req, res) => {
   User.delete(req.params.username, req.session.user.username)
     .then(() => {
       req.flash('success', 'Account successfully deleted.');
-      req.session.destroy(() => res.redirect('/'));
+      req.session.destroy(() => res.redirect('/error'));
     })
     .catch(() => {
       req.flash('errors', 'You do not have permission to perform that action.');
-      req.session.save(() => res.redirect('/'));
+      req.session.save(() => res.redirect('/error'));
     });
 };
 
@@ -263,14 +265,14 @@ exports.changePassword = function (req, res) {
     })
     .catch(errors => {
       errors.forEach(error => {
-        req.flash('errors', error);
+        req.flash('errors', error.message);
       });
       req.session.save(() => res.redirect(`/account/${req.params.username}/change-password`));
     });
 };
 
 exports.resetPasswordPage = (req, res) => {
-  req.session.user ? res.redirect('/') : res.render('resetPasswordPage', { csrfToken: req.csrfToken() });
+  req.session.user ? res.redirect('/error') : res.render('resetPasswordPage', { csrfToken: req.csrfToken() });
 };
 
 exports.resetPassword = (req, res) => {
@@ -284,7 +286,7 @@ exports.resetPassword = (req, res) => {
     })
     .catch(errors => {
       errors.forEach(error => {
-        req.flash('errors', error);
+        req.flash('errors', error.message);
       });
 
       res.redirect('/reset-password');
@@ -302,7 +304,7 @@ exports.resetPasswordTokenPage = (req, res) => {
       });
     })
     .catch(error => {
-      req.flash('errors', error);
+      req.flash('errors', error.message);
       res.redirect('/reset-password');
     });
 };
@@ -314,10 +316,10 @@ exports.resetPasswordToken = (req, res) => {
     .resetToken(req.params.token)
     .then(message => {
       req.flash('success', message);
-      res.redirect('/');
+      res.redirect('/error');
     })
     .catch(error => {
-      req.flash('errors', error);
+      req.flash('errors', error.message);
       res.redirect(`/reset-password/${req.params.token}`);
     });
 };
@@ -338,14 +340,14 @@ exports.googleLogin = async (req, res) => {
     };
 
     if (req.user.returningUser) {
-      req.session.save(async _ => await res.redirect('/'));
+      req.session.save(async _ => await res.redirect('/error'));
     } else {
       const successMessage = await User.addSocialUser(req.user);
       req.flash('success', successMessage);
       req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit`));
     }
   } catch (error) {
-    req.flash('errors', error);
+    req.flash('errors', error.message);
     req.session.save(async _ => await res.redirect('/register'));
   }
 };
@@ -375,7 +377,7 @@ exports.addComment = async (req, res) => {
       res.json(response);
     })
     .catch(errorMessage => {
-      req.flash('errors', errorMessage);
+      req.flash('errors', error.messageMessage);
       req.session.save(async _ => {
         await res.redirect(`/contacts/${contactUsername}`);
       });
@@ -398,7 +400,7 @@ exports.editComment = (req, res) => {
       res.json(response);
     })
     .catch(errorMessage => {
-      req.flash('errors', errorMessage);
+      req.flash('errors', error.messageMessage);
       req.session.save(async _ => {
         await res.redirect(`/contacts/${profileUsername}`);
       });
