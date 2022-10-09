@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const fs = require('fs');
 const dotenv = require('dotenv');
+const usersCollection = require('../../db.js').db().collection('users');
 dotenv.config();
 
 const config = new AWS.Config({
@@ -30,11 +31,15 @@ const download = async () => {
           .promise();
 
         if (s3_obj.Metadata.email) {
-          const email = s3_obj.Metadata.email;
-          const filename = email.split('@')[0];
-          const file_path = `${process.cwd()}/public/images/${filename}`;
-          console.log(`${process.cwd()}/public/images/${filename}`);
-          write_to_file(file_path, s3_obj.Body);
+          const userDoc = await usersCollection.findOne({ email: s3_obj.Metadata.email });
+          if (userDoc) {
+            const filename = userDoc._id;
+            const file_path = `${process.cwd()}/public/contact-images/${filename}`;
+            console.log(`${process.cwd()}/public/contact-images/${filename}`);
+            write_to_file(file_path, s3_obj.Body);
+          } else {
+            console.log('No userdoc');
+          }
         } else {
           console.log('No email');
         }

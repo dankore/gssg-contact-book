@@ -25,11 +25,11 @@ passport.use(
     function (accessToken, refreshToken, user, cb) {
       User.doesEmailExists(user._json.email)
         .then(userBool => {
-          console.log('Server 29. New user: ' + userBool);
           if (userBool) {
             // USER EXISTS. LOG IN
             // CLEAN UP
             user = {
+              _id: userBool._id,
               email: user._json.email,
               firstName: user._json.given_name,
               lastName: user._json.family_name,

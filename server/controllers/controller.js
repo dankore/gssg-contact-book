@@ -41,7 +41,7 @@ exports.contacts = async (req, res) => {
       profiles = helpers.sortProfiles(profiles);
     }
     res.render('contacts', {
-      profiles: profiles,
+      profiles,
       metatags: metatags({ page: 'contacts' }),
     });
   } catch (error) {
@@ -65,26 +65,21 @@ exports.registrationSubmission = async (req, res) => {
 
   user
     .register()
-    .then(successMessage => {
+    .then(_id => {
       req.session.user = {
+        _id,
         username: user.data.username,
         email: user.data.email,
         firstName: user.data.firstName,
         lastName: user.data.lastName,
       };
 
-      req.flash('success', successMessage);
-      req.session.save(async function () {
-        await res.redirect(`/contacts/${req.session.user.username}/edit`);
-      });
+      req.flash('success', 'Success, Up GSS Gwarinpa! Add your photo, nickname, birthday, and more below.');
+      req.session.save(async () => await res.redirect(`/contacts/${req.session.user.username}/edit`));
     })
     .catch(regErrors => {
-      regErrors.forEach(function (error) {
-        req.flash('reqError', error);
-      });
-      req.session.save(async function () {
-        await res.redirect('/register');
-      });
+      regErrors.forEach(error => req.flash('reqError', error));
+      req.session.save(async () => await res.redirect('/register'));
     });
 };
 
@@ -100,6 +95,7 @@ exports.login = async (req, res) => {
     .login()
     .then(userDoc => {
       req.session.user = {
+        _id: userDoc._id,
         username: userDoc.username,
         email: userDoc.email,
         firstName: userDoc.firstName,
@@ -330,10 +326,12 @@ exports.googleLogin = async (req, res) => {
     };
 
     if (req.user.returningUser) {
+      req.session.user._id = req.user._id;
       req.session.save(async _ => await res.redirect('/'));
     } else {
-      const successMessage = await User.addSocialUser(req.user);
-      req.flash('success', successMessage);
+      const _id = await User.addSocialUser(req.user);
+      req.session.user._id = _id;
+      req.flash('success', "Success, Up GSS Gwarinpa! Click 'Edit Profile' to add your nickname, birthday, and more.");
       req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit`));
     }
   } catch (error) {

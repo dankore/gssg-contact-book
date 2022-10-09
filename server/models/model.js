@@ -248,9 +248,9 @@ User.prototype.register = function () {
       this.data.likes_received_from = [];
       this.data.likes_given_to = [];
 
-      await usersCollection.insertOne(this.data);
+      const userDoc = await usersCollection.insertOne(this.data);
 
-      resolve('Success, Up GSS Gwarinpa! Add your photo, nickname, birthday, and more below.');
+      resolve(userDoc._id);
       // EMAIL USER FOR A SUCCESSFULL REGISTRATION
       new Email().regSuccessEmail(this.data.email, this.data.firstName);
       // EMAIL USER FOR A SUCCESSFULL REGISTRATION ENDS
@@ -454,6 +454,7 @@ User.allProfiles = async function () {
     allProfiles = allProfiles.map(eachDoc => {
       //clean up each document
       eachDoc = {
+        _id: eachDoc._id,
         firstName: eachDoc.firstName,
         lastName: eachDoc.lastName,
         year: eachDoc.year,
@@ -491,6 +492,7 @@ User.getRecentProfiles = async function () {
 
     recentContacts = recentContacts.map(eachDoc => {
       eachDoc = {
+        _id: eachDoc._id,
         firstName: eachDoc.firstName,
         lastName: eachDoc.lastName,
         year: eachDoc.year,
@@ -566,6 +568,7 @@ User.search = async function (searchedItem) {
       searchedResult = searchedResult.map(eachDoc => {
         //clean up each document
         eachDoc = {
+          _id: eachDoc._id,
           firstName: eachDoc.firstName,
           lastName: eachDoc.lastName,
           year: eachDoc.year,
@@ -815,9 +818,9 @@ User.addSocialUser = data => {
       data.likes_received_from = [];
       data.likes_given_to = [];
 
-      await usersCollection.insertOne(data);
+      const userDoc = await usersCollection.insertOne(data);
 
-      resolve("Success, Up GSS Gwarinpa! Click 'Edit Profile' to add your nickname, birthday, and more.");
+      resolve(userDoc._id);
       // EMAIL USER FOR A SUCCESSFUL REGISTRATION
       new Email().regSuccessEmail(data.email, data.firstName);
       // EMAIL USER FOR A SUCCESSFUL REGISTRATION ENDS
@@ -830,12 +833,44 @@ User.addSocialUser = data => {
 User.sortProfiles = q => {
   return new Promise(async (resolve, reject) => {
     try {
-      let users = await usersCollection
+      let sortedContacts = await usersCollection
         .find()
         .sort({ _id: +q })
         .toArray();
 
-      resolve(users);
+      sortedContacts = sortedContacts.map(eachDoc => {
+        //clean up each document
+        eachDoc = {
+          _id: eachDoc._id,
+          firstName: eachDoc.firstName,
+          lastName: eachDoc.lastName,
+          year: eachDoc.year,
+          email: eachDoc.email,
+          nickname: eachDoc.nickname,
+          username: eachDoc.username,
+          photo: eachDoc.photo,
+          residence: eachDoc.residence,
+          class: eachDoc.class,
+          occupation: eachDoc.occupation,
+          teacher: eachDoc.teacher,
+          month: eachDoc.month,
+          day: eachDoc.day,
+          phone: eachDoc.phone,
+          social_type_1: eachDoc.social_type_1,
+          link_social_type_1: eachDoc.link_social_type_1,
+          social_type_2: eachDoc.social_type_2,
+          link_social_type_2: eachDoc.link_social_type_2,
+          relationship: eachDoc.relationship,
+          comments: eachDoc.comments,
+          totalLikes: eachDoc.totalLikes,
+          likes_received_from: eachDoc.likes_received_from,
+          likes_given_to: eachDoc.likes_given_to,
+        };
+
+        return eachDoc;
+      });
+
+      resolve(sortedContacts);
     } catch {
       reject('Abeg no vex, we are having server issues.');
     }
