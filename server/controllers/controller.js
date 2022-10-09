@@ -179,29 +179,19 @@ exports.viewEditScreen = async function (req, res) {
 };
 
 exports.edit = async (req, res) => {
-  const userInfo = await User.findByUsername(req.session.user.username);
-  const imageUrl = userInfo.photo;
-  let profile;
-
-  if (req.file) {
-    profile = new User(req.body, req.file.location, req.session.user.username, req.params.username);
-  } else {
-    profile = new User(req.body, imageUrl, req.session.user.username, req.params.username);
-  }
-
-  console.log(req.file);
+  const profile = new User(req.body, req.session.user.username, req.params.username);
 
   profile
     .update()
     .then(async ({ status, userDoc }) => {
       if (status == 'success') {
         req.flash('success', 'Profile successfully updated.');
-        req.session.user = {
-          username: userDoc.username,
-        };
-        req.session.save(async _ => {
-          await res.redirect(`/contacts/${userDoc.username}`);
-        });
+
+        // save these values just in case if they hsave been changed
+        req.session.user.username = userDoc.username;
+        req.session.user.email = userDoc.email;
+
+        req.session.save(async _ => await res.redirect(`/contacts/${userDoc.username}`));
 
         // UPDATE USER COMMENTS INFO ACROSS ALL COMMENTS
         User.updateCommentFirtName(userDoc.email, userDoc.firstName);
@@ -242,7 +232,7 @@ exports.privacy = (req, res) => res.render('privacy', { metatags: metatags({ pag
 exports.changePasswordPage = (req, res) => res.render('changePasswordPage', { metatags: metatags({ page: 'generic', data: { page_name: 'Change Your Password' } }) });
 
 exports.changePassword = function (req, res) {
-  let user = new User(req.body, null, req.session.user.username, req.params.username);
+  let user = new User(req.body, req.session.user.username, req.params.username);
 
   user
     .updatePassword()

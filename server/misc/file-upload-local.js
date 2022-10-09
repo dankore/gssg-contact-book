@@ -1,37 +1,25 @@
 const multer = require('multer');
 
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // Uploads is the Upload_folder_name
-    cb(null, 'public');
+    cb(null, 'public/images');
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + '.jpg');
+    cb(null, req.session.user._id);
   },
 });
 
-// Define the maximum size for uploading
-// picture i.e. 1 MB. it is optional
-const maxSize = 1 * 1000 * 1000;
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true);
+  } else {
+    cb(new Error('Invalid Mime Type, only JPEG and PNG'), false);
+  }
+};
 
-var upload = multer({
-  storage: storage,
-  limits: { fileSize: maxSize },
-  fileFilter: function (req, file, cb) {
-    // Set the filetypes, it is optional
-    var filetypes = /jpeg|jpg|png/;
-    var mimetype = filetypes.test(file.mimetype);
-
-    var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-
-    if (mimetype && extname) {
-      return cb(null, true);
-    }
-
-    cb('Error: File upload only supports the ' + 'following filetypes - ' + filetypes);
-  },
-
-  // mypic is the name of file attribute
-}).single('mypic');
+const upload = multer({
+  fileFilter,
+  storage,
+});
 
 module.exports = upload;

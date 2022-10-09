@@ -8,8 +8,11 @@ const usersCollection = require('../../db.js').db().collection('users'),
   _ = require('lodash');
 // CLASS
 let User = class user {
-  constructor(data, photo, sessionUsername, requestedUsername) {
-    (this.data = data), (this.photo = photo), (this.errors = []), (this.sessionUsername = sessionUsername), (this.requestedUsername = requestedUsername);
+  constructor(data, sessionUsername, requestedUsername) {
+    this.data = data;
+    this.errors = [];
+    this.sessionUsername = sessionUsername;
+    this.requestedUsername = requestedUsername;
   }
 };
 // CLASS ENDS
@@ -399,7 +402,6 @@ User.prototype.actuallyUpdate = function () {
             year: this.data.year,
             nickname: this.data.nickname,
             username: this.data.username,
-            photo: this.photo,
             residence: this.data.residence,
             class: this.data.class,
             occupation: this.data.occupation,
