@@ -455,6 +455,7 @@ User.allProfiles = async function () {
       //clean up each document
       eachDoc = {
         _id: eachDoc._id,
+        ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
         firstName: eachDoc.firstName,
         lastName: eachDoc.lastName,
         year: eachDoc.year,
@@ -482,6 +483,7 @@ User.allProfiles = async function () {
 
       return eachDoc;
     });
+
     resolve(allProfiles);
   });
 };
@@ -569,6 +571,7 @@ User.search = async function (searchedItem) {
         //clean up each document
         eachDoc = {
           _id: eachDoc._id,
+          ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
           firstName: eachDoc.firstName,
           lastName: eachDoc.lastName,
           year: eachDoc.year,
@@ -842,6 +845,7 @@ User.sortProfiles = q => {
         //clean up each document
         eachDoc = {
           _id: eachDoc._id,
+          ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
           firstName: eachDoc.firstName,
           lastName: eachDoc.lastName,
           year: eachDoc.year,
