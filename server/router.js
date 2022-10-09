@@ -64,6 +64,9 @@ router.post('/get-visited-profile-doc', controller.getProfile);
 
 router.get('/contacts', controller.contacts);
 
+// ERROR
+router.get('/error', controller.error);
+
 // NOT FOUND
 router.get('*', controller.notFound);
 
