@@ -189,6 +189,8 @@ exports.edit = async (req, res) => {
     profile = new User(req.body, imageUrl, req.session.user.username, req.params.username);
   }
 
+  console.log(req.file);
+
   profile
     .update()
     .then(async ({ status, userDoc }) => {
