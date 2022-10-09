@@ -12,7 +12,7 @@ const express = require('express'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
   cookieParser = require('cookie-parser'),
-  { likesHelper, commentsHelper } = require('./misc/helpers');
+  { likesHelper, commentsHelper, environment } = require('./misc/helpers');
 
 // GOOGLE
 passport.use(
@@ -111,6 +111,8 @@ server.use(async (req, res, next) => {
   res.locals.user = req.session.user;
   // IF PATH IS HOMEPAGE SHOW SCROLL-TO-TOP
   res.locals.path = req.originalUrl;
+  res.locals.environment = environment;
+  environment == 'development' ? (res.locals.images_folder = '/images-dev/') : (res.locals.images_folder = '/images/');
   // GLOBALS FOR WHEN A USER IS LOGGED IN
   if (req.session.user) {
     await User.findByUsername(req.session.user.username)

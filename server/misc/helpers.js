@@ -1,5 +1,3 @@
-
-
 const singlePropArrayFilter = (arr, valueToFilter) => {
   let commentId;
   for (let i = 0; i < arr.length; i++) {
@@ -163,12 +161,26 @@ const commentsHelper = comments => {
   }
 };
 
-exports.isAlphaNumericDashHyphenPeriod = isAlphaNumericDashHyphenPeriod;
-exports.statsByYear = statsByYear;
-exports.getUsernameFromHeadersReferrer = getUsernameFromHeadersReferrer;
-exports.getHMS = getHMS;
-exports.getMonthDayYear = getMonthDayYear;
-exports.sortProfiles = sortProfiles;
-exports.singlePropArrayFilter = singlePropArrayFilter;
-exports.likesHelper = likesHelper;
-exports.commentsHelper = commentsHelper;
+// exports.environment = process.env.NODE_ENV == 'dev' ? 'development' : 'production';
+// exports.isAlphaNumericDashHyphenPeriod = isAlphaNumericDashHyphenPeriod;
+// exports.statsByYear = statsByYear;
+// exports.getUsernameFromHeadersReferrer = getUsernameFromHeadersReferrer;
+// exports.getHMS = getHMS;
+// exports.getMonthDayYear = getMonthDayYear;
+// exports.sortProfiles = sortProfiles;
+// exports.singlePropArrayFilter = singlePropArrayFilter;
+// exports.likesHelper = likesHelper;
+// exports.commentsHelper = commentsHelper;
+
+module.exports = {
+  environment: process.env.NODE_ENV == 'dev' ? 'development' : 'production',
+  isAlphaNumericDashHyphenPeriod,
+  statsByYear,
+  getUsernameFromHeadersReferrer,
+  getHMS,
+  getMonthDayYear,
+  sortProfiles,
+  singlePropArrayFilter,
+  likesHelper,
+  commentsHelper,
+};

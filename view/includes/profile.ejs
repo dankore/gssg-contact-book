@@ -3,7 +3,7 @@
     <% if(profile.google_id) {%>
     <img class="object-contain mx-auto rounded-full h-56 w-56 bg-gray-900" src="<%= profile.photo %>" alt="<%= profile.firstName %>" />
     <% } else {%>
-    <img class="object-contain mx-auto rounded-full h-56 w-56 bg-gray-900 text-white" src="<%='/images/'+profile._id%>" alt="<%= profile.firstName %>" />
+    <img class="object-contain mx-auto rounded-full h-56 w-56 bg-gray-900 text-white" src="<%=locals.images_folder+profile._id%>" alt="<%= profile.firstName %>" />
     <% } %>
     <div class="space-y-2">
       <div class="space-y-1 text-lg font-medium leading-6">

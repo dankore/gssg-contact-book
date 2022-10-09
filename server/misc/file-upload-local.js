@@ -1,8 +1,13 @@
 const multer = require('multer');
+const { environment } = require('../misc/helpers');
+
+let destination_folder = '';
+if (environment == 'development') destination_folder = 'public/images-dev';
+else destination_folder = 'public/images';
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/images');
+    cb(null, destination_folder);
   },
   filename: function (req, file, cb) {
     cb(null, req.session.user._id);
