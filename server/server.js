@@ -12,7 +12,7 @@ const express = require('express'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
   cookieParser = require('cookie-parser'),
-  { likesHelper, commentsHelper, environment } = require('./misc/helpers');
+  {  commentsHelper, environment } = require('./misc/helpers');
 
 // GOOGLE
 passport.use(
@@ -134,7 +134,6 @@ server.use('/contacts/:username', async (req, res, next) => {
   await User.findByUsername(req.params.username)
     .then(userDoc => {
       res.locals.namesOfLikesReceivedFrom = userDoc.likes_received_from;
-      res.locals.likesHelper = likesHelper(userDoc.likes_received_from, req.session.user, res.locals.profilesUserLiked);
       res.locals.commentsCount = commentsHelper(userDoc.comments);
     })
     .catch(err => {

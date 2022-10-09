@@ -1006,11 +1006,7 @@ User.storeLikes = data => {
         { email: data.profileEmail },
         {
           $push: {
-            likes_received_from: {
-              color: data.color,
-              visitorEmail: data.visitorEmail,
-              visitorName: data.visitorName,
-            },
+            likes_received_from: data,
           },
           $inc: { totalLikes: data.like },
         },
@@ -1027,10 +1023,6 @@ User.storeLikes = data => {
          * VISITORNAME: VALUE, TOTALLIKES: VALUE} ]
          */
         resolve(visitorInfo);
-
-        // EMAIL USERS FOR A SUCCESSFULL LIKE ENDS
-        new Email().sendLikesSuccessMessage(info.value.likes_received_from, data.profileEmail, data.visitorEmail, data.color, data.visitorName, info.value.firstName, info.value.lastName, info.value.username);
-        // EMAIL USERS FOR A SUCCESSFULL LIKE ENDS
       })
       .catch(_ => {
         reject();

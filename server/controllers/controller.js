@@ -403,22 +403,3 @@ exports.deleteComment = (req, res) => {
     });
 };
 
-// LIKES
-exports.likes = async (req, res) => {
-  // TODO: ADD _ID TO EACH LIKE
-  const data = {
-    like: req.body.like,
-    color: req.body.color,
-    visitorEmail: req.body.visitorEmail,
-    visitorName: req.body.visitorName,
-    profileEmail: req.body.contactEmail,
-  };
-
-  User.storeLikes(data)
-    .then(response => {
-      res.json(response);
-    })
-    .catch(error => {
-      res.json(error.message);
-    });
-};

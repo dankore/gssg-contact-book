@@ -8,20 +8,7 @@ const singlePropArrayFilter = (arr, valueToFilter) => {
 };
 
 // SORT PROFILES
-const sortProfiles = array => {
-  return array.sort((a, b) => {
-    if (a.likes_received_from && b.likes_received_from) {
-      const aNumComments = a.comments ? a.comments.length : [];
-      const bNumComments = b.comments ? b.comments.length : [];
-      const aNumLikesReceived = a.likes_received_from.filter(item => item.color == 'yes').length; // IF COLOR VALUE IS YES IT MEANS THE PROFILE IS LIKED
-      const bNumLikesReceived = b.likes_received_from.filter(item => item.color == 'yes').length;
-
-      return bNumComments + bNumLikesReceived - (aNumComments + aNumLikesReceived);
-    } else {
-      return b.comments.length - a.comments.length;
-    }
-  });
-};
+const sortProfiles = array => array.sort((a, b) => b.comments.length - a.comments.length);
 
 // VALIDATION: ALLOWS ONLY LETTERS, NUMBERS, DASHES, AND HYPHENS
 const isAlphaNumericDashHyphenPeriod = stringInput => {
@@ -115,40 +102,6 @@ function formatMonth(num) {
   }
 }
 
-const likesHelper = (namesOfLikesReceivedFrom, user, profilesUserLiked) => {
-  if (!namesOfLikesReceivedFrom) namesOfLikesReceivedFrom = [];
-
-  let arrayOfNames = [];
-  let color = '';
-  for (let i = 0; i < namesOfLikesReceivedFrom.length; i++) {
-    if (namesOfLikesReceivedFrom[i].color == 'yes') arrayOfNames.push(namesOfLikesReceivedFrom[i].visitorName);
-  }
-
-  let peopleWhoLiked = '';
-  if (arrayOfNames.length < 1) {
-    peopleWhoLiked = 'Be the first to like this contact';
-  } else if (arrayOfNames.length == 1) {
-    peopleWhoLiked = `Liked by ${arrayOfNames[0]}`;
-  } else if (arrayOfNames.length == 2) {
-    peopleWhoLiked = `Liked by ${arrayOfNames.slice(0, 1)} & ${arrayOfNames.slice(1).length} other`;
-  } else {
-    peopleWhoLiked = `Liked by ${arrayOfNames.slice(0, 1)} & ${arrayOfNames.slice(1).length} others`;
-  }
-
-  if (user) {
-    if (!profilesUserLiked) {
-      profilesUserLiked = [];
-    }
-    for (var i = 0; i < profilesUserLiked.length; i++) {
-      if (profilesUserLiked[i].profileEmail == user.email) {
-        color = profilesUserLiked[i].color;
-      }
-    }
-  }
-
-  return { peopleWhoLiked, color, text: color == 'yes' ? 'Unlike' : 'Like' };
-};
-
 const commentsHelper = comments => {
   if (comments.length) {
     if (comments.length > 1) {
@@ -161,17 +114,6 @@ const commentsHelper = comments => {
   }
 };
 
-// exports.environment = process.env.NODE_ENV == 'dev' ? 'development' : 'production';
-// exports.isAlphaNumericDashHyphenPeriod = isAlphaNumericDashHyphenPeriod;
-// exports.statsByYear = statsByYear;
-// exports.getUsernameFromHeadersReferrer = getUsernameFromHeadersReferrer;
-// exports.getHMS = getHMS;
-// exports.getMonthDayYear = getMonthDayYear;
-// exports.sortProfiles = sortProfiles;
-// exports.singlePropArrayFilter = singlePropArrayFilter;
-// exports.likesHelper = likesHelper;
-// exports.commentsHelper = commentsHelper;
-
 module.exports = {
   environment: process.env.NODE_ENV == 'dev' ? 'development' : 'production',
   isAlphaNumericDashHyphenPeriod,
@@ -181,6 +123,5 @@ module.exports = {
   getMonthDayYear,
   sortProfiles,
   singlePropArrayFilter,
-  likesHelper,
   commentsHelper,
 };

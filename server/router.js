@@ -56,10 +56,6 @@ router.post('/add-comment', controller.addComment);
 router.post('/delete-comment', controller.deleteComment);
 router.post('/edit-comment', controller.editComment);
 
-// LIKES
-router.post('/likes', controller.likes);
-router.post('/get-visited-profile-doc', controller.getProfile);
-
 router.get('/contacts', controller.contacts);
 
 // ERROR
