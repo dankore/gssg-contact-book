@@ -30,6 +30,7 @@ passport.use(
             // CLEAN UP
             user = {
               _id: userBool._id,
+              google_id: userBool.google_id,
               email: user._json.email,
               firstName: user._json.given_name,
               lastName: user._json.family_name,

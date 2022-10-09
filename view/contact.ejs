@@ -8,11 +8,13 @@
       <div class="flex items-center space-x-5">
         <div class="flex-shrink-0">
           <div class="relative">
-            <% if(profile.photo){ %>
-            <img class="h-16 w-16 rounded-full" src="<%= profile.photo %>" alt="<%= profile.firstName %> <%= profile.lastName %>" />
+            <!--  -->
+            <% if(user.google_id){ %>
+            <img src="<%= user.google_photo %>" class="h-16 w-16 rounded-full" alt="<%= user.firstName%>" />
             <% } else { %>
-            <img class="h-16 w-16 rounded-full" src="../../static/blank.png" alt="Blank profile pic" />
+            <img src="<%=locals.images_folder+user._id%>" class="h-16 w-16 rounded-full" alt="<%= user.firstName%>" />
             <%}%>
+           
             <span class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></span>
           </div>
         </div>
@@ -130,12 +132,13 @@
                   <li id="li-comment">
                     <div class="flex space-x-3">
                       <p class="flex-shrink-0">
-                        <% if(comment.photo){ %>
-                        <img class="h-10 w-10 rounded-full" src="<%= comment.photo %>" alt="" />
+                        <% if(comment.google_id){ %>
+                        <img src="<%= comment.photo %>" class="w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName %>" />
                         <% } else { %>
-                        <img class="h-10 w-10 rounded-full" src="https://gss-gwarinpa.s3.us-east-2.amazonaws.com/blank.png" alt="" />
+                        <img src="<%=locals.images_folder+comment.userId%>" class="w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName %>" />
+                        <%}%>
                       </p>
-                      <%}%>
+
                       <div>
                         <div class="text-sm">
                           <% if(comment.visitorUsername) {%>
@@ -168,7 +171,9 @@
                       </div>
                     </div>
                   </li>
-                  <% }) %> <%}%>
+                  <% }) %>
+                  <!--  -->
+                  <%}%>
                 </ul>
               </div>
             </div>
@@ -178,10 +183,11 @@
             <div class="bg-gray-50 px-4 py-6 sm:px-6">
               <div class="flex space-x-3">
                 <div class="flex-shrink-0">
-                  <% if(photoUrlForComment){ %>
-                  <img class="h-10 w-10 rounded-full" src="<%= photoUrlForComment %>" alt="" />
+                  <!--  -->
+                  <% if(user.google_id){ %>
+                  <img src="<%= user.google_photo %>" class="h-10 w-10 rounded-full" alt="<%= user.firstName%>" />
                   <% } else { %>
-                  <img class="h-10 w-10 rounded-full" src="../../static/blank.png" alt="" />
+                  <img src="<%=locals.images_folder+user._id%>" class="h-10 w-10 rounded-full" alt="<%= user.firstName%>" />
                   <%}%>
                 </div>
 

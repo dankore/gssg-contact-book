@@ -65,9 +65,10 @@ exports.registrationSubmission = async (req, res) => {
 
   user
     .register()
-    .then(_id => {
+    .then(userDoc => {
       req.session.user = {
-        _id,
+        _id: userDoc._id,
+        ...(userDoc.google_id && { google_id: userDoc.google_id }),
         username: user.data.username,
         email: user.data.email,
         firstName: user.data.firstName,
@@ -96,6 +97,7 @@ exports.login = async (req, res) => {
     .then(userDoc => {
       req.session.user = {
         _id: userDoc._id,
+        ...(userDoc.google_id && { google_id: userDoc.google_id }),
         username: userDoc.username,
         email: userDoc.email,
         firstName: userDoc.firstName,
@@ -319,10 +321,12 @@ exports.googleLogin = async (req, res) => {
 
     if (req.user.returningUser) {
       req.session.user._id = req.user._id;
+      req.session.user.google_id = req.user.google._id;
       req.session.save(async _ => await res.redirect('/'));
     } else {
-      const _id = await User.addSocialUser(req.user);
-      req.session.user._id = _id;
+      const userDoc = await User.addSocialUser(req.user);
+      req.session.user._id = userDoc._id;
+      req.session.user.google_id = userDoc.google_id;
       req.flash('success', "Success, Up GSS Gwarinpa! Click 'Edit Profile' to add your nickname, birthday, and more.");
       req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit`));
     }
@@ -335,12 +339,13 @@ exports.googleLogin = async (req, res) => {
 // COMMENTS
 exports.addComment = async (req, res) => {
   const contactUsername = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
-
   const userDoc = await User.findByUsername(req.session.user.username);
-
   const commentDate = helpers.getMonthDayYear() + ', ' + helpers.getHMS();
+
   // GET RID OF BOGUS AND SANITIZE DATA
   const data = {
+    userId: req.session.user._id,
+    ...(userDoc.google_id && { google_id: userDoc.google_id, google_photo: userDoc.photo }),
     commentId: new ObjectId(),
     comment: req.body.comment,
     visitorEmail: req.body.visitorEmail,
@@ -356,8 +361,8 @@ exports.addComment = async (req, res) => {
       response.contactEmail = userDoc.email;
       res.json(response);
     })
-    .catch(errorMessage => {
-      req.flash('errors', error.messageMessage);
+    .catch(error => {
+      req.flash('errors', error.message);
       req.session.save(async _ => {
         await res.redirect(`/contacts/${contactUsername}`);
       });
@@ -379,8 +384,8 @@ exports.editComment = (req, res) => {
     .then(response => {
       res.json(response);
     })
-    .catch(errorMessage => {
-      req.flash('errors', error.messageMessage);
+    .catch(error => {
+      req.flash('errors', error.message);
       req.session.save(async _ => {
         await res.redirect(`/contacts/${profileUsername}`);
       });
@@ -393,8 +398,8 @@ exports.deleteComment = (req, res) => {
     .then(successMessage => {
       res.json(successMessage);
     })
-    .catch(errorMessage => {
-      res.json(errorMessage);
+    .catch(error => {
+      res.json(error.message);
     });
 };
 
@@ -413,7 +418,7 @@ exports.likes = async (req, res) => {
     .then(response => {
       res.json(response);
     })
-    .catch(errorMessage => {
-      res.json(errorMessage);
+    .catch(error => {
+      res.json(error.message);
     });
 };

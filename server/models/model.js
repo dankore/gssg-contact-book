@@ -253,7 +253,7 @@ User.prototype.register = function () {
 
       const userDoc = await usersCollection.insertOne(this.data);
 
-      resolve(userDoc._id);
+      resolve(userDoc);
       // EMAIL USER FOR A SUCCESSFULL REGISTRATION
       new Email().regSuccessEmail(this.data.email, this.data.firstName);
       // EMAIL USER FOR A SUCCESSFULL REGISTRATION ENDS
@@ -825,7 +825,7 @@ User.addSocialUser = data => {
 
       const userDoc = await usersCollection.insertOne(data);
 
-      resolve(userDoc._id);
+      resolve(userDoc);
       // EMAIL USER FOR A SUCCESSFUL REGISTRATION
       new Email().regSuccessEmail(data.email, data.firstName);
       // EMAIL USER FOR A SUCCESSFUL REGISTRATION ENDS
@@ -901,15 +901,7 @@ User.saveComment = data => {
         { email: data.profileEmail },
         {
           $push: {
-            comments: {
-              commentId: data.commentId,
-              comment: data.comment,
-              visitorEmail: data.visitorEmail,
-              visitorUsername: data.visitorUsername,
-              visitorFirstName: data.visitorFirstName,
-              photo: data.photo,
-              commentDate: data.commentDate,
-            },
+            comments: data,
           },
         },
         {
