@@ -133,9 +133,9 @@
                     <div class="flex space-x-3">
                       <p class="flex-shrink-0">
                         <% if(comment.google_id){ %>
-                        <img src="<%= comment.photo %>" class="w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName %>" />
+                        <img src="<%= comment.photo %>" class="w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName.substring(0,1) %>" />
                         <% } else { %>
-                        <img src="<%=locals.images_folder+comment.userId%>" class="w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName %>" />
+                        <img src="<%=locals.images_folder+comment.userId%>" class="w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName.substring(0,1) %>" />
                         <%}%>
                       </p>
 
