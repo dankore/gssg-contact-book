@@ -97,13 +97,18 @@ export default class AddComments {
 
   handleDeleteComment(e) {
     if (confirm('Are you sure?')) {
-      axios
-        .post('/delete-comment', {
+      fetch('/delete-comment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           commentId: e.target.getAttribute('data-comment-id'),
           profileEmail: e.target.getAttribute('data-profile-email'),
-        })
-        .then(_ => {
-          e.target.parentElement.parentElement.parentElement.remove();
+        }),
+      })
+        .then(response => {
+          if (response.status === 200) e.target.parentElement.parentElement.parentElement.parentElement.remove();
         })
         .catch(err => {
           console.log(err);
