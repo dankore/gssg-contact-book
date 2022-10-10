@@ -1,14 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('./controllers/controller');
-const upload = require('./misc/file-upload');
+const upload = require('./misc/file-upload-local');
 const singleUpload = upload.single('photo');
 const passport = require('passport');
 const rateLimit = require('express-rate-limit');
 const csrf = require('csurf');
-
 const csrfProtection = csrf({ cookie: true });
-
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
@@ -57,10 +55,6 @@ router.get('/google-login/callback', passport.authenticate('google', { failureRe
 router.post('/add-comment', controller.addComment);
 router.post('/delete-comment', controller.deleteComment);
 router.post('/edit-comment', controller.editComment);
-
-// LIKES
-router.post('/likes', controller.likes);
-router.post('/get-visited-profile-doc', controller.getProfile);
 
 router.get('/contacts', controller.contacts);
 

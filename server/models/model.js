@@ -8,8 +8,11 @@ const usersCollection = require('../../db.js').db().collection('users'),
   _ = require('lodash');
 // CLASS
 let User = class user {
-  constructor(data, photo, sessionUsername, requestedUsername) {
-    (this.data = data), (this.photo = photo), (this.errors = []), (this.sessionUsername = sessionUsername), (this.requestedUsername = requestedUsername);
+  constructor(data, sessionUsername, requestedUsername) {
+    this.data = data;
+    this.errors = [];
+    this.sessionUsername = sessionUsername;
+    this.requestedUsername = requestedUsername;
   }
 };
 // CLASS ENDS
@@ -248,9 +251,9 @@ User.prototype.register = function () {
       this.data.likes_received_from = [];
       this.data.likes_given_to = [];
 
-      await usersCollection.insertOne(this.data);
+      const userDoc = await usersCollection.insertOne(this.data);
 
-      resolve('Success, Up GSS Gwarinpa! Add your photo, nickname, birthday, and more below.');
+      resolve(userDoc);
       // EMAIL USER FOR A SUCCESSFULL REGISTRATION
       new Email().regSuccessEmail(this.data.email, this.data.firstName);
       // EMAIL USER FOR A SUCCESSFULL REGISTRATION ENDS
@@ -399,7 +402,6 @@ User.prototype.actuallyUpdate = function () {
             year: this.data.year,
             nickname: this.data.nickname,
             username: this.data.username,
-            photo: this.photo,
             residence: this.data.residence,
             class: this.data.class,
             occupation: this.data.occupation,
@@ -454,6 +456,8 @@ User.allProfiles = async function () {
     allProfiles = allProfiles.map(eachDoc => {
       //clean up each document
       eachDoc = {
+        _id: eachDoc._id,
+        ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
         firstName: eachDoc.firstName,
         lastName: eachDoc.lastName,
         year: eachDoc.year,
@@ -481,6 +485,7 @@ User.allProfiles = async function () {
 
       return eachDoc;
     });
+
     resolve(allProfiles);
   });
 };
@@ -491,10 +496,12 @@ User.getRecentProfiles = async function () {
 
     recentContacts = recentContacts.map(eachDoc => {
       eachDoc = {
+        _id: eachDoc._id,
         firstName: eachDoc.firstName,
         lastName: eachDoc.lastName,
         year: eachDoc.year,
         email: eachDoc.email,
+        ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
         nickname: eachDoc.nickname,
         username: eachDoc.username,
         photo: eachDoc.photo,
@@ -565,6 +572,8 @@ User.search = async function (searchedItem) {
       searchedResult = searchedResult.map(eachDoc => {
         //clean up each document
         eachDoc = {
+          _id: eachDoc._id,
+          ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
           firstName: eachDoc.firstName,
           lastName: eachDoc.lastName,
           year: eachDoc.year,
@@ -814,9 +823,9 @@ User.addSocialUser = data => {
       data.likes_received_from = [];
       data.likes_given_to = [];
 
-      await usersCollection.insertOne(data);
+      const userDoc = await usersCollection.insertOne(data);
 
-      resolve("Success, Up GSS Gwarinpa! Click 'Edit Profile' to add your nickname, birthday, and more.");
+      resolve(userDoc);
       // EMAIL USER FOR A SUCCESSFUL REGISTRATION
       new Email().regSuccessEmail(data.email, data.firstName);
       // EMAIL USER FOR A SUCCESSFUL REGISTRATION ENDS
@@ -829,23 +838,49 @@ User.addSocialUser = data => {
 User.sortProfiles = q => {
   return new Promise(async (resolve, reject) => {
     try {
-      let users = await usersCollection
+      let sortedContacts = await usersCollection
         .find()
         .sort({ _id: +q })
         .toArray();
 
-      resolve(users);
+      sortedContacts = sortedContacts.map(eachDoc => {
+        //clean up each document
+        eachDoc = {
+          _id: eachDoc._id,
+          ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
+          firstName: eachDoc.firstName,
+          lastName: eachDoc.lastName,
+          year: eachDoc.year,
+          email: eachDoc.email,
+          nickname: eachDoc.nickname,
+          username: eachDoc.username,
+          photo: eachDoc.photo,
+          residence: eachDoc.residence,
+          class: eachDoc.class,
+          occupation: eachDoc.occupation,
+          teacher: eachDoc.teacher,
+          month: eachDoc.month,
+          day: eachDoc.day,
+          phone: eachDoc.phone,
+          social_type_1: eachDoc.social_type_1,
+          link_social_type_1: eachDoc.link_social_type_1,
+          social_type_2: eachDoc.social_type_2,
+          link_social_type_2: eachDoc.link_social_type_2,
+          relationship: eachDoc.relationship,
+          comments: eachDoc.comments,
+          totalLikes: eachDoc.totalLikes,
+          likes_received_from: eachDoc.likes_received_from,
+          likes_given_to: eachDoc.likes_given_to,
+        };
+
+        return eachDoc;
+      });
+
+      resolve(sortedContacts);
     } catch {
       reject('Abeg no vex, we are having server issues.');
     }
   });
-};
-
-User.validateComment = data => {
-  if (data === '') {
-    reject('Body of comment cannot be empty.');
-    return;
-  }
 };
 
 // ADD COMMENTS
@@ -859,15 +894,7 @@ User.saveComment = data => {
         { email: data.profileEmail },
         {
           $push: {
-            comments: {
-              commentId: data.commentId,
-              comment: data.comment,
-              visitorEmail: data.visitorEmail,
-              visitorUsername: data.visitorUsername,
-              visitorFirstName: data.visitorFirstName,
-              photo: data.photo,
-              commentDate: data.commentDate,
-            },
+            comments: data,
           },
         },
         {
@@ -914,7 +941,7 @@ User.updateCommentFirtName = (email, firstName) => {
 // UPDATE A COMMENT
 User.updateComment = data => {
   return new Promise(async (resolve, reject) => {
-    User.validateComment(data.comment);
+    if (!data) reject();
 
     usersCollection
       .findOneAndUpdate(
@@ -933,15 +960,15 @@ User.updateComment = data => {
       )
       .then(info => {
         // FILTER ONLY THE COMMENT THAT WAS UPDATED
-        const commentUpdatedObject = helpers.singlePropArrayFilter(info.value.comments, data.commentId);
-
-        resolve(commentUpdatedObject);
+        const updatedCommentObject = helpers.singlePropArrayFilter(info.value.comments, data.commentId);
+        resolve(updatedCommentObject);
       })
       .catch(() => {
         reject('Comment was not updated.');
       });
   });
 };
+
 // DELETE A COMMENT
 User.deleteComment = (commentId, profileEmail) => {
   return new Promise(async (resolve, reject) => {
@@ -972,11 +999,7 @@ User.storeLikes = data => {
         { email: data.profileEmail },
         {
           $push: {
-            likes_received_from: {
-              color: data.color,
-              visitorEmail: data.visitorEmail,
-              visitorName: data.visitorName,
-            },
+            likes_received_from: data,
           },
           $inc: { totalLikes: data.like },
         },
@@ -993,10 +1016,6 @@ User.storeLikes = data => {
          * VISITORNAME: VALUE, TOTALLIKES: VALUE} ]
          */
         resolve(visitorInfo);
-
-        // EMAIL USERS FOR A SUCCESSFULL LIKE ENDS
-        new Email().sendLikesSuccessMessage(info.value.likes_received_from, data.profileEmail, data.visitorEmail, data.color, data.visitorName, info.value.firstName, info.value.lastName, info.value.username);
-        // EMAIL USERS FOR A SUCCESSFULL LIKE ENDS
       })
       .catch(_ => {
         reject();

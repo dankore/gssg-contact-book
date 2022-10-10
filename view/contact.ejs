@@ -8,11 +8,13 @@
       <div class="flex items-center space-x-5">
         <div class="flex-shrink-0">
           <div class="relative">
-            <% if(profile.photo){ %>
-            <img class="h-16 w-16 rounded-full" src="<%= profile.photo %>" alt="<%= profile.firstName %> <%= profile.lastName %>" />
+            <!--  -->
+            <% if(user.google_id){ %>
+            <img src="<%= user.google_photo %>" class="h-16 w-16 rounded-full" alt="<%= user.firstName%>" />
             <% } else { %>
-            <img class="h-16 w-16 rounded-full" src="../../static/blank.png" alt="Blank profile pic" />
+            <img src="<%=locals.images_folder+profile._id%>" class="h-16 w-16 rounded-full" alt="<%= user.firstName%>" />
             <%}%>
+
             <span class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></span>
           </div>
         </div>
@@ -130,12 +132,13 @@
                   <li id="li-comment">
                     <div class="flex space-x-3">
                       <p class="flex-shrink-0">
-                        <% if(comment.photo){ %>
-                        <img class="h-10 w-10 rounded-full" src="<%= comment.photo %>" alt="" />
+                        <% if(comment.google_id){ %>
+                        <img src="<%= comment.photo %>" class="w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName %>" />
                         <% } else { %>
-                        <img class="h-10 w-10 rounded-full" src="https://gss-gwarinpa.s3.us-east-2.amazonaws.com/blank.png" alt="" />
+                        <img src="<%=locals.images_folder+comment.userId%>" class="w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName %>" />
+                        <%}%>
                       </p>
-                      <%}%>
+
                       <div>
                         <div class="text-sm">
                           <% if(comment.visitorUsername) {%>
@@ -153,7 +156,7 @@
                           <% if(user && comment.visitorEmail == user.email){ %>
                           <span class="font-medium text-gray-500">&middot;</span>
                           <button id="edit-comment-button" class="font-medium text-gray-900">Edit</button>
-                          <button id="delete-comment-button" data-comment-id="<%- comment.commentId %>" data-contact-email="<%= profile.email %>" class="font-medium text-red-600">Delete</button>
+                          <button id="delete-comment-button" data-comment-id="<%- comment.commentId %>" data-profile-email="<%= profile.email %>" class="font-medium text-red-600">Delete</button>
                           <%}%>
                         </div>
                       </div>
@@ -164,11 +167,13 @@
                       <textarea id="input-comment" data-comment-id="<%= comment.commentId %>" class="w-full p-2 border border-green-400 rounded" style="background-color: #f2f3f5; white-space: pre-wrap; overflow: hidden"><%= comment.comment %></textarea>
                       <div class="flex justify-between py-4">
                         <button id="cancel-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Cancel</button>
-                        <button data-comment-id="<%= comment.commentId %>" data-contact-email="<%= profile.email %>" id="update-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Update</button>
+                        <button data-comment-id="<%= comment.commentId %>" data-profile-email="<%= profile.email %>" id="update-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Update</button>
                       </div>
                     </div>
                   </li>
-                  <% }) %> <%}%>
+                  <% }) %>
+                  <!--  -->
+                  <%}%>
                 </ul>
               </div>
             </div>
@@ -178,10 +183,11 @@
             <div class="bg-gray-50 px-4 py-6 sm:px-6">
               <div class="flex space-x-3">
                 <div class="flex-shrink-0">
-                  <% if(photoUrlForComment){ %>
-                  <img class="h-10 w-10 rounded-full" src="<%= photoUrlForComment %>" alt="" />
+                  <!--  -->
+                  <% if(user.google_id){ %>
+                  <img src="<%= user.google_photo %>" class="h-10 w-10 rounded-full" alt="<%= user.firstName%>" />
                   <% } else { %>
-                  <img class="h-10 w-10 rounded-full" src="../../static/blank.png" alt="" />
+                  <img src="<%=locals.images_folder+user._id%>" class="h-10 w-10 rounded-full" alt="<%= user.firstName%>" />
                   <%}%>
                 </div>
 
@@ -191,7 +197,7 @@
                     <textarea id="input-comment" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="What's on your mind?"></textarea>
                   </div>
                   <div class="mt-3 flex items-center justify-between">
-                    <button id="add-comment-button" data-visitor-email="<%= user.email %>" data-contact-email="<%= profile.email %>" class="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Comment</button>
+                    <button id="add-comment-button" data-visitor-email="<%= user.email %>" data-visitor-id="<%= user._id %>" data-contact-email="<%= profile.email %>" class="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Comment</button>
                   </div>
                 </div>
               </div>
@@ -210,31 +216,6 @@
             <ul class="-mb-8">
               <li>
                 <div class="relative pb-8">
-                  <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                  <div class="relative flex space-x-3">
-                    <div>
-                      <span class="h-8 w-8 svg-container <%= locals.likesHelper.color == 'no' ? ' bg-gray-500' : ' bg-green-500' %> rounded-full flex items-center justify-center ring-8 ring-white">
-                        <!-- Heroicon name: mini/hand-thumb-up -->
-                        <svg id="like-button-svg" class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                          <path d="M1 8.25a1.25 1.25 0 112.5 0v7.5a1.25 1.25 0 11-2.5 0v-7.5zM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0114 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 01-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 01-1.341-.317l-2.734-1.366A3 3 0 006.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 012.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388z" />
-                        </svg>
-                      </span>
-                    </div>
-
-                    <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                      <p id="likes-container" class="first-line:text-sm text-gray-500"><%= locals.likesHelper.peopleWhoLiked %></p>
-                    </div>
-                    <div class="relative whitespace-nowrap text-right text-sm text-gray-500">
-                      <!-- TOGGLE: SHOW NAMES OF USERS WHO LIKED THIS PROFILE -->
-                      <ul id="names-container-ul" class="pt-1.5" style="display: none"></ul>
-                      <!-- TOGGLE: SHOW NAMES OF USERS WHO LIKED THIS PROFILE END-->
-                    </div>
-                  </div>
-                </div>
-              </li>
-
-              <li>
-                <div class="relative pb-8">
                   <div class="relative flex space-x-3">
                     <div>
                       <span class="h-8 w-8 rounded-full <%= locals.commentsCount == 'Be the first to say hello' ? ' bg-gray-500' : ' bg-green-500' %> flex items-center justify-center ring-8 ring-white">
@@ -251,16 +232,6 @@
               </li>
             </ul>
           </div>
-          <% if(user){%>
-          <div class="justify-stretch mt-6 flex flex-col">
-            <button id="likes-button" data-visitor-name="<%= user.firstName %>" data-visitor-email="<%= user.email %>" data-contact-email="<%= profile.email %>" class="<%= locals.likesHelper.color%>-toggle inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-              <svg id="like-button-svg" class="pointer-events-none <%= locals.likesHelper.color%>-fill" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
-              </svg>
-              <p id="like-word" class="pointer-events-none ml-1"><%= locals.likesHelper.text %></p>
-            </button>
-          </div>
-          <%}%>
         </div>
       </section>
     </div>

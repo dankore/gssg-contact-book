@@ -5,8 +5,6 @@ import ConfirmDelete from './modules/confirmDelete';
 import RegistrationFormLiveValidation from './modules/registrationFormLiveValidation';
 import Filter from './modules/filter';
 import ShowAllComments from './modules/comments-show-all';
-import Likes from './modules/likes';
-import ShowNames from './modules/show-those-liked-a-profile';
 import ClickToComment from './modules/clickToComment';
 import AddComment from './modules/addComments';
 import ToggleMobileMenu from './modules/toggleMobileMenu';
@@ -19,8 +17,6 @@ document.querySelector('#registration-form') && new RegistrationFormLiveValidati
 document.querySelector('#registration-form') && new RegistrationFormLiveValidation();
 document.querySelector('#filter-icon-container') && new Filter();
 document.querySelector('#show-all-comments-toggle') && new ShowAllComments();
-document.querySelector('#likes-button') && new Likes();
-document.querySelector('#likes-container') && new ShowNames();
 document.getElementById('click-to-comment') && new ClickToComment();
 document.getElementById('add-comment-button') && new AddComment();
 document.getElementById('open-mobile-menu') && new ToggleMobileMenu();

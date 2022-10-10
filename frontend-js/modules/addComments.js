@@ -35,6 +35,7 @@ export default class AddComments {
     e.target.style.height = 25 + e.target.scrollHeight + 'px';
     this.input.style.height = '1px';
     this.input.style.height = 25 + this.input.scrollHeight + 'px';
+
     // SET INPUT VALUE
     this.userComment = e.target.value;
   }
@@ -79,7 +80,7 @@ export default class AddComments {
       .post('/edit-comment', {
         commentId: inputEditContainer.getAttribute('data-comment-id'),
         comment: inputEditContainer.value,
-        contactEmail: e.target.getAttribute('data-contact-email'),
+        profileEmail: e.target.getAttribute('data-profile-email'),
       })
       .then(res => {
         commentContainerServerSide.innerText = res.data.comment;
@@ -96,13 +97,18 @@ export default class AddComments {
 
   handleDeleteComment(e) {
     if (confirm('Are you sure?')) {
-      axios
-        .post('/delete-comment', {
+      fetch('/delete-comment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           commentId: e.target.getAttribute('data-comment-id'),
-          contactEmail: e.target.getAttribute('data-contact-email'),
-        })
-        .then(_ => {
-          e.target.parentElement.parentElement.parentElement.remove();
+          profileEmail: e.target.getAttribute('data-profile-email'),
+        }),
+      })
+        .then(response => {
+          if (response.status === 200) e.target.parentElement.parentElement.parentElement.parentElement.remove();
         })
         .catch(err => {
           console.log(err);
@@ -119,44 +125,7 @@ export default class AddComments {
       .post('/add-comment', { comment: this.userComment, visitorEmail: e.target.getAttribute('data-visitor-email'), contactEmail: e.target.getAttribute('data-contact-email') })
       .then(res => {
         // INSERT INTO DOM
-        // IF NO PROFILE IMAGE, SET DEFAULT TO BLANK.PNG
-        !res.data.photo ? (res.data.photo = 'https://gss-gwarinpa.s3.us-east-2.amazonaws.com/blank.png') : res.data.photo;
-
-        const { commentId, comment, visitorEmail, contactEmail, visitorUsername, visitorFirstName, commentDate, photo } = res.data;
-
-        this.commentsContainerUl.insertAdjacentHTML(
-          'afterbegin',
-          `<li id="li-comment">
-                    <div class="flex space-x-3">
-                      <a href="/contacts/${visitorUsername}" class="flex-shrink-0">
-                        <img class="h-10 w-10 rounded-full" src="${photo}" alt="profile picture" />
-                      </a>
-                      <div>
-                        <div class="text-sm">
-                          <a href="/contacts/${visitorUsername}" class="font-medium text-gray-900">${visitorFirstName}</a>
-                        </div>
-                        <div class="mt-1 text-sm text-gray-700">
-                          <p class="comment">${comment}</p>
-                        </div>
-                        <div class="mt-2 space-x-2 text-sm">
-                          <datetime datetime="${commentDate}" class="comment-date-time font-medium text-gray-500"> ${commentDate} </datetime>
-                          <span class="font-medium text-gray-500">&middot;</span>
-                          <button id="edit-comment-button" class="font-medium text-gray-900">Edit</button>
-                          <button id="delete-comment-button" data-comment-id="${commentId}" data-contact-email="${contactEmail}" class="font-medium text-red-600">Delete</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- EDIT COMMENT FORM -->
-                    <div class="edit-comment-parent modal shadow-2xl" style="display: none">
-                      <textarea id="input-comment" data-comment-id="${commentId}" class="w-full p-2 border border-green-400 rounded" style="background-color: #f2f3f5; white-space: pre-wrap; overflow: hidden">${comment}</textarea>
-                      <div class="flex justify-between py-4">
-                        <button id="cancel-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Cancel</button>
-                        <button data-comment-id="${commentId}" data-contact-email="${contactEmail}" id="update-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Update</button>
-                      </div>
-                    </div>
-                  </li>`
-        );
+        this.commentsContainerUl.insertAdjacentHTML('afterbegin', this.commentHtml(res.data, e));
 
         this.input.value = '';
         this.input.focus();
@@ -164,6 +133,40 @@ export default class AddComments {
       .catch(err => {
         console.log(err);
       });
+  }
+
+  commentHtml({ commentId, comment, profileEmail, visitorUsername, visitorFirstName, commentDate }, e) {
+    return `<li id="li-comment">
+            <div class="flex space-x-3">
+              <p class="flex-shrink-0">
+                <img s src="/images-dev/${e.target.getAttribute('data-visitor-id')}" class="w-8 h-8 rounded-full" alt="${visitorFirstName}" />
+              </p>
+
+              <div>
+                <div class="text-sm">
+                  <a href="/contacts/${visitorUsername}" class="font-medium text-gray-900">${visitorFirstName}</a>
+                </div>
+                <div class="mt-1 text-sm text-gray-700">
+                  <p class="comment break-all">${comment}</p>
+                </div>
+                <div class="mt-2 space-x-2 text-sm">
+                  <datetime datetime="${commentDate}" class="comment-date-time font-medium text-gray-500">${commentDate}</datetime>
+
+                  <span class="font-medium text-gray-500">&middot;</span>
+                  <button id="edit-comment-button" class="font-medium text-gray-900">Edit</button>
+                  <button id="delete-comment-button" data-comment-id="${commentId}" data-profile-email="${profileEmail}" class="font-medium text-red-600">Delete</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-comment-parent modal shadow-2xl" style="display: none">
+              <textarea id="input-comment" data-comment-id="${commentId}" class="w-full p-2 border border-green-400 rounded" style="background-color: #f2f3f5; white-space: pre-wrap; overflow: hidden">${comment}</textarea>
+              <div class="flex justify-between py-4">
+                <button id="cancel-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Cancel</button>
+                <button data-comment-id="${commentId}" data-profile-email="${profileEmail}" id="update-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Update</button>
+              </div>
+            </div>
+        </li>`;
   }
   // END CLASS
 }

@@ -12,7 +12,7 @@ const express = require('express'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
   cookieParser = require('cookie-parser'),
-  { likesHelper, commentsHelper } = require('./misc/helpers');
+  {  commentsHelper, environment } = require('./misc/helpers');
 
 // GOOGLE
 passport.use(
@@ -25,11 +25,12 @@ passport.use(
     function (accessToken, refreshToken, user, cb) {
       User.doesEmailExists(user._json.email)
         .then(userBool => {
-          console.log('Server 29. New user: ' + userBool);
           if (userBool) {
             // USER EXISTS. LOG IN
             // CLEAN UP
             user = {
+              _id: userBool._id,
+              google_id: userBool.google_id,
               email: user._json.email,
               firstName: user._json.given_name,
               lastName: user._json.family_name,
@@ -111,6 +112,8 @@ server.use(async (req, res, next) => {
   res.locals.user = req.session.user;
   // IF PATH IS HOMEPAGE SHOW SCROLL-TO-TOP
   res.locals.path = req.originalUrl;
+  res.locals.environment = environment;
+  environment == 'development' ? (res.locals.images_folder = '/images-dev/') : (res.locals.images_folder = '/images/');
   // GLOBALS FOR WHEN A USER IS LOGGED IN
   if (req.session.user) {
     await User.findByUsername(req.session.user.username)
@@ -131,7 +134,6 @@ server.use('/contacts/:username', async (req, res, next) => {
   await User.findByUsername(req.params.username)
     .then(userDoc => {
       res.locals.namesOfLikesReceivedFrom = userDoc.likes_received_from;
-      res.locals.likesHelper = likesHelper(userDoc.likes_received_from, req.session.user, res.locals.profilesUserLiked);
       res.locals.commentsCount = commentsHelper(userDoc.comments);
     })
     .catch(err => {

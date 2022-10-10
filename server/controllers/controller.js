@@ -41,7 +41,7 @@ exports.contacts = async (req, res) => {
       profiles = helpers.sortProfiles(profiles);
     }
     res.render('contacts', {
-      profiles: profiles,
+      profiles,
       metatags: metatags({ page: 'contacts' }),
     });
   } catch (error) {
@@ -65,26 +65,22 @@ exports.registrationSubmission = async (req, res) => {
 
   user
     .register()
-    .then(successMessage => {
+    .then(userDoc => {
       req.session.user = {
+        _id: userDoc._id,
+        ...(userDoc.google_id && { google_id: userDoc.google_id }),
         username: user.data.username,
         email: user.data.email,
         firstName: user.data.firstName,
         lastName: user.data.lastName,
       };
 
-      req.flash('success', successMessage);
-      req.session.save(async function () {
-        await res.redirect(`/contacts/${req.session.user.username}/edit`);
-      });
+      req.flash('success', 'Success, Up GSS Gwarinpa! Add your photo, nickname, birthday, and more below.');
+      req.session.save(async () => await res.redirect(`/contacts/${req.session.user.username}/edit`));
     })
     .catch(regErrors => {
-      regErrors.forEach(function (error) {
-        req.flash('reqError', error);
-      });
-      req.session.save(async function () {
-        await res.redirect('/register');
-      });
+      regErrors.forEach(error => req.flash('reqError', error));
+      req.session.save(async () => await res.redirect('/register'));
     });
 };
 
@@ -100,6 +96,8 @@ exports.login = async (req, res) => {
     .login()
     .then(userDoc => {
       req.session.user = {
+        _id: userDoc._id,
+        ...(userDoc.google_id && { google_id: userDoc.google_id }),
         username: userDoc.username,
         email: userDoc.email,
         firstName: userDoc.firstName,
@@ -183,27 +181,19 @@ exports.viewEditScreen = async function (req, res) {
 };
 
 exports.edit = async (req, res) => {
-  const userInfo = await User.findByUsername(req.session.user.username);
-  const imageUrl = userInfo.photo;
-  let profile;
-
-  if (req.file) {
-    profile = new User(req.body, req.file.location, req.session.user.username, req.params.username);
-  } else {
-    profile = new User(req.body, imageUrl, req.session.user.username, req.params.username);
-  }
+  const profile = new User(req.body, req.session.user.username, req.params.username);
 
   profile
     .update()
     .then(async ({ status, userDoc }) => {
       if (status == 'success') {
         req.flash('success', 'Profile successfully updated.');
-        req.session.user = {
-          username: userDoc.username,
-        };
-        req.session.save(async _ => {
-          await res.redirect(`/contacts/${userDoc.username}`);
-        });
+
+        // save these values just in case if they hsave been changed
+        req.session.user.username = userDoc.username;
+        req.session.user.email = userDoc.email;
+
+        req.session.save(async _ => await res.redirect(`/contacts/${userDoc.username}`));
 
         // UPDATE USER COMMENTS INFO ACROSS ALL COMMENTS
         User.updateCommentFirtName(userDoc.email, userDoc.firstName);
@@ -244,7 +234,7 @@ exports.privacy = (req, res) => res.render('privacy', { metatags: metatags({ pag
 exports.changePasswordPage = (req, res) => res.render('changePasswordPage', { metatags: metatags({ page: 'generic', data: { page_name: 'Change Your Password' } }) });
 
 exports.changePassword = function (req, res) {
-  let user = new User(req.body, null, req.session.user.username, req.params.username);
+  let user = new User(req.body, req.session.user.username, req.params.username);
 
   user
     .updatePassword()
@@ -330,10 +320,14 @@ exports.googleLogin = async (req, res) => {
     };
 
     if (req.user.returningUser) {
+      req.session.user._id = req.user._id;
+      req.session.user.google_id = req.user.google._id;
       req.session.save(async _ => await res.redirect('/'));
     } else {
-      const successMessage = await User.addSocialUser(req.user);
-      req.flash('success', successMessage);
+      const userDoc = await User.addSocialUser(req.user);
+      req.session.user._id = userDoc._id;
+      req.session.user.google_id = userDoc.google_id;
+      req.flash('success', "Success, Up GSS Gwarinpa! Click 'Edit Profile' to add your nickname, birthday, and more.");
       req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit`));
     }
   } catch (error) {
@@ -345,12 +339,13 @@ exports.googleLogin = async (req, res) => {
 // COMMENTS
 exports.addComment = async (req, res) => {
   const contactUsername = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
-
   const userDoc = await User.findByUsername(req.session.user.username);
-
   const commentDate = helpers.getMonthDayYear() + ', ' + helpers.getHMS();
+
   // GET RID OF BOGUS AND SANITIZE DATA
   const data = {
+    userId: req.session.user._id,
+    ...(userDoc.google_id && { google_id: userDoc.google_id, google_photo: userDoc.photo }),
     commentId: new ObjectId(),
     comment: req.body.comment,
     visitorEmail: req.body.visitorEmail,
@@ -363,14 +358,10 @@ exports.addComment = async (req, res) => {
 
   User.saveComment(data)
     .then(response => {
-      response.contactEmail = userDoc.email;
       res.json(response);
     })
-    .catch(errorMessage => {
-      req.flash('errors', error.messageMessage);
-      req.session.save(async _ => {
-        await res.redirect(`/contacts/${contactUsername}`);
-      });
+    .catch(error => {
+      res.json(error.message);
     });
 };
 
@@ -381,7 +372,7 @@ exports.editComment = (req, res) => {
   const data = {
     commentId: req.body.commentId,
     comment: req.body.comment,
-    profileEmail: req.body.contactEmail,
+    profileEmail: req.body.profileEmail,
     profileUsername,
   };
 
@@ -389,41 +380,18 @@ exports.editComment = (req, res) => {
     .then(response => {
       res.json(response);
     })
-    .catch(errorMessage => {
-      req.flash('errors', error.messageMessage);
-      req.session.save(async _ => {
-        await res.redirect(`/contacts/${profileUsername}`);
-      });
+    .catch(error => {
+      res.json(error.message);
     });
 };
 
 // DELETE A COMMENT
 exports.deleteComment = (req, res) => {
-  User.deleteComment(req.body.commentId, req.body.contactEmail)
+  User.deleteComment(req.body.commentId, req.body.profileEmail)
     .then(successMessage => {
       res.json(successMessage);
     })
-    .catch(errorMessage => {
-      res.json(errorMessage);
-    });
-};
-
-// LIKES
-exports.likes = async (req, res) => {
-  // TODO: ADD _ID TO EACH LIKE
-  const data = {
-    like: req.body.like,
-    color: req.body.color,
-    visitorEmail: req.body.visitorEmail,
-    visitorName: req.body.visitorName,
-    profileEmail: req.body.contactEmail,
-  };
-
-  User.storeLikes(data)
-    .then(response => {
-      res.json(response);
-    })
-    .catch(errorMessage => {
-      res.json(errorMessage);
+    .catch(error => {
+      res.json(error.message);
     });
 };
