@@ -139,7 +139,7 @@ export default class AddComments {
     return `<li id="li-comment">
             <div class="flex space-x-3">
               <p class="flex-shrink-0">
-                <img s src="/images-dev/${e.target.getAttribute('data-visitor-id')}" class="w-8 h-8 rounded-full" alt="${visitorFirstName}" />
+                <img s src="/images/${e.target.getAttribute('data-visitor-id')}" class="w-8 h-8 rounded-full" alt="${visitorFirstName}" />
               </p>
 
               <div>

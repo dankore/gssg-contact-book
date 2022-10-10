@@ -165,15 +165,7 @@ exports.isVisitorOwner = (req, res, next) => {
   }
 };
 
-exports.profileScreen = (req, res) => {
-  if (req.session.user) {
-    // FILTER ONLY likes_received_from BELONGING TO THE SESSION USER
-    const propExists = req.profileUser.likes_received_from ? req.profileUser.likes_received_from.filter(prop => prop.visitorEmail == req.session.user.username) : [];
-    if (propExists.length > 0) req.profileUser.color = propExists[0].color;
-  }
-
-  res.render('contact', { profile: req.profileUser, metatags: metatags({ page: 'contact', data: req.profileUser }) });
-};
+exports.profileScreen = (req, res) => res.render('contact', { profile: req.profileUser, metatags: metatags({ page: 'contact', data: req.profileUser }) });
 
 exports.viewEditScreen = async function (req, res) {
   let profile = await User.findByUsername(req.session.user.username);
