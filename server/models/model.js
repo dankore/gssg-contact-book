@@ -322,13 +322,14 @@ User.findByUsername = function (username) {
     }
 
     usersCollection
-      .findOne({ username: username })
+      .findOne({ username })
       .then(userDoc => {
         if (userDoc) {
           userDoc = new User(userDoc);
 
           userDoc = {
             _id: userDoc.data._id,
+            ...(userDoc.google_id && { google_id: userDoc.google_id, photo: userDoc.photo }),
             firstName: userDoc.data.firstName,
             lastName: userDoc.data.lastName,
             year: userDoc.data.year,
