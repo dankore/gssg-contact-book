@@ -883,13 +883,6 @@ User.sortProfiles = q => {
   });
 };
 
-User.validateComment = data => {
-  if (data === '') {
-    reject('Body of comment cannot be empty.');
-    return;
-  }
-};
-
 // ADD COMMENTS
 User.saveComment = data => {
   return new Promise(async (resolve, reject) => {
@@ -948,7 +941,7 @@ User.updateCommentFirtName = (email, firstName) => {
 // UPDATE A COMMENT
 User.updateComment = data => {
   return new Promise(async (resolve, reject) => {
-    User.validateComment(data.comment);
+    if (!data) reject();
 
     usersCollection
       .findOneAndUpdate(
@@ -967,15 +960,15 @@ User.updateComment = data => {
       )
       .then(info => {
         // FILTER ONLY THE COMMENT THAT WAS UPDATED
-        const commentUpdatedObject = helpers.singlePropArrayFilter(info.value.comments, data.commentId);
-
-        resolve(commentUpdatedObject);
+        const updatedCommentObject = helpers.singlePropArrayFilter(info.value.comments, data.commentId);
+        resolve(updatedCommentObject);
       })
       .catch(() => {
         reject('Comment was not updated.');
       });
   });
 };
+
 // DELETE A COMMENT
 User.deleteComment = (commentId, profileEmail) => {
   return new Promise(async (resolve, reject) => {

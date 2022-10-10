@@ -358,14 +358,10 @@ exports.addComment = async (req, res) => {
 
   User.saveComment(data)
     .then(response => {
-      response.contactEmail = userDoc.email;
       res.json(response);
     })
     .catch(error => {
-      req.flash('errors', error.message);
-      req.session.save(async _ => {
-        await res.redirect(`/contacts/${contactUsername}`);
-      });
+      res.json(error.message);
     });
 };
 
@@ -376,7 +372,7 @@ exports.editComment = (req, res) => {
   const data = {
     commentId: req.body.commentId,
     comment: req.body.comment,
-    profileEmail: req.body.contactEmail,
+    profileEmail: req.body.profileEmail,
     profileUsername,
   };
 
@@ -385,16 +381,13 @@ exports.editComment = (req, res) => {
       res.json(response);
     })
     .catch(error => {
-      req.flash('errors', error.message);
-      req.session.save(async _ => {
-        await res.redirect(`/contacts/${profileUsername}`);
-      });
+      res.json(error.message);
     });
 };
 
 // DELETE A COMMENT
 exports.deleteComment = (req, res) => {
-  User.deleteComment(req.body.commentId, req.body.contactEmail)
+  User.deleteComment(req.body.commentId, req.body.profileEmail)
     .then(successMessage => {
       res.json(successMessage);
     })
@@ -402,4 +395,3 @@ exports.deleteComment = (req, res) => {
       res.json(error.message);
     });
 };
-

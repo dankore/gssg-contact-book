@@ -12,7 +12,7 @@
             <% if(user.google_id){ %>
             <img src="<%= user.google_photo %>" class="h-16 w-16 rounded-full" alt="<%= user.firstName%>" />
             <% } else { %>
-            <img src="<%=locals.images_folder+user._id%>" class="h-16 w-16 rounded-full" alt="<%= user.firstName%>" />
+            <img src="<%=locals.images_folder+profile._id%>" class="h-16 w-16 rounded-full" alt="<%= user.firstName%>" />
             <%}%>
 
             <span class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></span>
@@ -156,7 +156,7 @@
                           <% if(user && comment.visitorEmail == user.email){ %>
                           <span class="font-medium text-gray-500">&middot;</span>
                           <button id="edit-comment-button" class="font-medium text-gray-900">Edit</button>
-                          <button id="delete-comment-button" data-comment-id="<%- comment.commentId %>" data-contact-email="<%= profile.email %>" class="font-medium text-red-600">Delete</button>
+                          <button id="delete-comment-button" data-comment-id="<%- comment.commentId %>" data-profile-email="<%= profile.email %>" class="font-medium text-red-600">Delete</button>
                           <%}%>
                         </div>
                       </div>
@@ -167,7 +167,7 @@
                       <textarea id="input-comment" data-comment-id="<%= comment.commentId %>" class="w-full p-2 border border-green-400 rounded" style="background-color: #f2f3f5; white-space: pre-wrap; overflow: hidden"><%= comment.comment %></textarea>
                       <div class="flex justify-between py-4">
                         <button id="cancel-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Cancel</button>
-                        <button data-comment-id="<%= comment.commentId %>" data-contact-email="<%= profile.email %>" id="update-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Update</button>
+                        <button data-comment-id="<%= comment.commentId %>" data-profile-email="<%= profile.email %>" id="update-comment-button" class="bg-green-600 text-white px-2 rounded hover:bg-green-800">Update</button>
                       </div>
                     </div>
                   </li>
@@ -197,7 +197,7 @@
                     <textarea id="input-comment" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="What's on your mind?"></textarea>
                   </div>
                   <div class="mt-3 flex items-center justify-between">
-                    <button id="add-comment-button" data-visitor-email="<%= user.email %>" data-contact-email="<%= profile.email %>" class="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Comment</button>
+                    <button id="add-comment-button" data-visitor-email="<%= user.email %>" data-visitor-id="<%= user._id %>" data-contact-email="<%= profile.email %>" class="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Comment</button>
                   </div>
                 </div>
               </div>

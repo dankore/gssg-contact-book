@@ -1,5 +1,4 @@
 const singlePropArrayFilter = (arr, valueToFilter) => {
-  let commentId;
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].commentId == valueToFilter) {
       return arr[i];
