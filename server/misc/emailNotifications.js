@@ -64,7 +64,7 @@ Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visito
                   <p>GSS Gwarinpa Contact Book</p>
                     <hr style="margin-bottom: 50px;">
                     <div style="padding: 10px; margin-bottom: 10px; overflow-wrap: break-word; min-width: 0px; width: 300px; background-color: #F2F3F5; border-radius: 5px;">
-                      <img src=${photoUrl} style="width: 60px; height: 60px; border-radius: 5px;" alt="profile photo"/>
+                      <img loading="lazy" src=${photoUrl} style="width: 60px; height: 60px; border-radius: 5px;" alt="profile photo"/>
                       <span>${visitorFirstName}</span> |
                       <em>${commentDate}</em>
                     <p style="font-size: 15px;"><strong>${comment}</strong></p>
@@ -87,7 +87,7 @@ Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visito
                   <p>GSS Gwarinpa Contact Book</p>
                     <hr style="margin-bottom: 50px;">
                     <div style="padding: 10px; margin-bottom: 10px; overflow-wrap: break-word; min-width: 0px; width: 300px; background-color: #F2F3F5; border-radius: 5px;">
-                      <img src=${photoUrl} style="width: 60px; height: 60px; border-radius: 5px;" alt="profile photo"/>
+                      <img loading="lazy" src=${photoUrl} style="width: 60px; height: 60px; border-radius: 5px;" alt="profile photo"/>
                       <span>${visitorFirstName}</span> |
                       <em>${commentDate}</em>
                     <p style="font-size: 15px;"><strong>${comment}</strong></p>
