@@ -9,10 +9,10 @@
         <div class="flex-shrink-0">
           <div class="relative">
             <!--  -->
-            <% if(profileUser.google_id){ %>
-            <img src="<%= profileUser.google_photo %>" class="h-16 w-16 rounded-full" alt="<%= profileUser.firstName%>" />
+            <% if(profile.google_id){ %>
+            <img src="<%= profile.google_photo %>" class="h-16 w-16 rounded-full" alt="<%= profile.firstName%>" />
             <% } else { %>
-            <img src="<%=locals.images_folder+profile._id%>" class="h-16 w-16 rounded-full" alt="<%= profileUser.firstName%>" />
+            <img src="<%=locals.images_folder+profile._id%>" class="h-16 w-16 rounded-full" alt="<%= profile.firstName%>" />
             <%}%>
 
             <span class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></span>
@@ -184,10 +184,10 @@
               <div class="flex space-x-3">
                 <div class="flex-shrink-0">
                   <!--  -->
-                  <% if(profileUser.google_id){ %>
-                  <img src="<%= profileUser.google_photo %>" class="h-10 w-10 rounded-full" alt="<%= profileUser.firstName%>" />
+                  <% if(profile.google_id){ %>
+                  <img src="<%= profile.google_photo %>" class="h-10 w-10 rounded-full" alt="<%= profile.firstName%>" />
                   <% } else { %>
-                  <img src="<%=locals.images_folder+user._id%>" class="h-10 w-10 rounded-full" alt="<%= profileUser.firstName%>" />
+                  <img src="<%=locals.images_folder+user._id%>" class="h-10 w-10 rounded-full" alt="<%= profile.firstName%>" />
                   <%}%>
                 </div>
 

@@ -135,9 +135,6 @@ server.use('/contacts/:username', async (req, res, next) => {
     .then(userDoc => {
       res.locals.namesOfLikesReceivedFrom = userDoc.likes_received_from;
       res.locals.commentsCount = commentsHelper(userDoc.comments);
-      res.locals.profileUser = {
-        ...(userDoc.google_id && { google_id: userDoc.google_id, photo: userDoc.photo }),
-      };
     })
     .catch(err => {
       console.log('Server line 235 ' + err);
