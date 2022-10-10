@@ -7,12 +7,12 @@
     <div class="mx-auto max-w-3xl px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
       <div class="flex items-center space-x-5">
         <div class="flex-shrink-0">
-          <div class="relative">
+          <div class="relative overflow-hidden">
             <!--  -->
             <% if(profile.google_id){ %>
-            <img src="<%= profile.google_photo %>" class="h-16 w-16 rounded-full" alt="<%= profile.firstName%>" />
+            <img src="<%= profile.google_photo %>" class="h-16 w-16 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
             <% } else { %>
-            <img src="<%=locals.images_folder+profile._id%>" class="h-16 w-16 rounded-full" alt="<%= profile.firstName%>" />
+            <img src="<%=locals.images_folder+profile._id%>" class="h-16 w-16 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
             <%}%>
 
             <span class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></span>
