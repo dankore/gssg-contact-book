@@ -182,12 +182,12 @@
             <% if(user){ %>
             <div class="bg-gray-50 px-4 py-6 sm:px-6">
               <div class="flex space-x-3">
-                <div class="flex-shrink-0">
+                <div class="flex-shrink-0 ">
                   <!--  -->
                   <% if(profile.google_id){ %>
-                  <img src="<%= profile.google_photo %>" class="h-10 w-10 rounded-full" alt="<%= profile.firstName%>" />
+                  <img src="<%= profile.google_photo %>" class="overflow-hidden bg-gradient-to-r from-green-300 via-green-700 to-green-300 h-10 w-10 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
                   <% } else { %>
-                  <img src="<%=locals.images_folder+user._id%>" class="h-10 w-10 rounded-full" alt="<%= profile.firstName%>" />
+                  <img src="<%=locals.images_folder+user._id%>" class=" overflow-hidden bg-gradient-to-r from-green-300 via-green-700 to-green-300 h-10 w-10 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
                   <%}%>
                 </div>
 
