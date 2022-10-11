@@ -1,5 +1,4 @@
 <%- include('includes/header') %>
-
 <div class="min-h-full">
   <main class="py-10">
     <div class="max-w-xs mx-auto"><%- include('includes/flash') %></div>
@@ -8,11 +7,10 @@
       <div class="flex items-center space-x-5">
         <div class="flex-shrink-0">
           <div class="relative overflow-hidden rounded-full block">
-            <!--  -->
             <% if(profile.google_id){ %>
-            <img loading="lazy" src="<%= profile.google_photo %>" class="h-16 w-16 rounded-full from-green-300 via-green-700 to-green-300 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
+            <img loading="lazy" src="<%= profile.google_photo %>" class="h-16 w-16 rounded-full from-indigo-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
             <% } else { %>
-            <img loading="lazy" src="<%=locals.images_folder+profile._id%>" class="h-16 w-16 rounded-full from-green-300 via-green-700 to-green-300 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
+            <img loading="lazy" src="<%=locals.images_folder+profile._id%>" class="h-16 w-16 rounded-full from-indigo-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
             <%}%>
 
             <span class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></span>
@@ -119,7 +117,6 @@
         </section>
 
         <!-- Comments-->
-
         <section id="comments-section" aria-labelledby="notes-title">
           <div class="bg-white shadow sm:overflow-hidden sm:rounded-lg">
             <div class="divide-y divide-gray-200">
@@ -130,12 +127,13 @@
                 <ul id="comment-container-ul" class="space-y-8">
                   <% if(profile.comments){ %> <% profile.comments.reverse().forEach(comment => { %>
                   <li id="li-comment">
+                    <% profileOwnerComment = comment.visitorUsername === profile.username %>
                     <div class="flex space-x-3">
                       <p class="flex-shrink-0">
                         <% if(comment.google_id){ %>
-                        <img loading="lazy" src="<%= comment.photo %>" class="overflow-hidden bg-gradient-to-r from-green-300 via-green-700 to-green-300 w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName.substring(0,1) %>" />
+                        <img loading="lazy" src="<%= comment.photo %>" class="overflow-hidden bg-gradient-to-r <%= profileOwnerComment ? 'from-indigo-500 via-purple-500 to-pink-500' : 'from-green-300 via-green-700 to-green-300' %> w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName.substring(0,1) %>" />
                         <% } else { %>
-                        <img loading="lazy" src="<%=locals.images_folder+comment.userId%>" class="overflow-hidden bg-gradient-to-r from-green-300 via-green-700 to-green-300 w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName.substring(0,1) %>" />
+                        <img loading="lazy" src="<%=locals.images_folder+comment.userId%>" class="overflow-hidden bg-gradient-to-r <%= profileOwnerComment ? 'from-indigo-500 via-purple-500 to-pink-500' : 'from-green-300 via-green-700 to-green-300' %> w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName.substring(0,1) %>" />
                         <%}%>
                       </p>
 
@@ -185,9 +183,9 @@
                 <div class="flex-shrink-0">
                   <!--  -->
                   <% if(profile.google_id){ %>
-                  <img loading="lazy" src="<%= profile.google_photo %>" class="overflow-hidden bg-gradient-to-r from-green-300 via-green-700 to-green-300 h-10 w-10 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
+                  <img loading="lazy" src="<%= profile.google_photo %>" class="overflow-hidden bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-10 w-10 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
                   <% } else { %>
-                  <img loading="lazy" src="<%=locals.images_folder+user._id%>" class="overflow-hidden bg-gradient-to-r from-green-300 via-green-700 to-green-300 h-10 w-10 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
+                  <img loading="lazy" src="<%=locals.images_folder+user._id%>" class="overflow-hidden bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-10 w-10 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
                   <%}%>
                 </div>
 

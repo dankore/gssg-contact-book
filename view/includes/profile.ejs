@@ -1,9 +1,9 @@
 <li>
   <a href="/contacts/<%= profile.username %>" class="space-y-6 overflow-hidden rounded-full block">
     <% if(profile.google_id) {%>
-    <img loading="lazy" class="object-contain mx-auto rounded-full h-56 w-56 bg-gradient-to-r from-green-300 via-green-700 to-green-300" src="<%= profile.photo %>" alt="<%= profile.firstName.substring(0,1) %>" />
+    <img loading="lazy" class="object-contain mx-auto rounded-full h-56 w-56 bg-green-700" src="<%= profile.photo %>" alt="<%= profile.firstName.substring(0,1) %>" />
     <% } else {%>
-    <img loading="lazy" class="object-contain mx-auto rounded-full h-56 w-56 bg-gradient-to-r from-green-300 via-green-700 to-green-300" src="<%=locals.images_folder+profile._id%>" alt="<%= profile.firstName.substring(0,1) %>" />
+    <img loading="lazy" class="object-contain mx-auto rounded-full h-56 w-56 bg-green-700" src="<%=locals.images_folder+profile._id%>" alt="<%= profile.firstName.substring(0,1) %>" />
     <% } %>
     <div class="space-y-2">
       <div class="space-y-1 text-lg font-medium leading-6">
