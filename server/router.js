@@ -29,11 +29,12 @@ router.get('/contacts/:username', controller.ifUserExists, controller.profileScr
 router.get('/contacts/:username/edit', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.viewEditScreen);
 router.post('/contacts/:username/edit', singleUpload, csrfProtection, controller.edit);
 
-// ACCOUNT
-router.get('/account/:username', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.account);
-router.post('/account/:username/delete', controller.account.delete);
-router.get('/account/:username/change-password', controller.mustBeLoggedIn, controller.changePasswordPage);
-router.post('/account/:username/change-password', controller.changePassword);
+// SETTINGS
+router.get('/settings/:username/edit', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.editProfile);
+router.get('/settings/:username/change-profile-photo', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changeProfilePhoto);
+router.post('/settings/:username/delete', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.deleteAccount);
+router.get('/settings/:username/change-password', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changePasswordPage);
+router.post('/settings/:username/change-password', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changePassword);
 
 // RESET PASSWORD
 router.get('/reset-password', csrfProtection, controller.resetPasswordPage);

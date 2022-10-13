@@ -113,7 +113,12 @@ server.use(async (req, res, next) => {
   // IF PATH IS HOMEPAGE SHOW SCROLL-TO-TOP
   res.locals.path = req.originalUrl;
   res.locals.environment = environment;
+
+
+  // set image folder
   environment == 'development' ? (res.locals.images_folder = '/images-dev/') : (res.locals.images_folder = '/images/');
+  // set url
+  environment == 'development' ? (res.locals.domain = 'localhost:3000') : (res.locals.domain =  'gssgcontactbook.com');
   // GLOBALS FOR WHEN A USER IS LOGGED IN
   if (req.session.user) {
     await User.findByUsername(req.session.user.username)

@@ -207,9 +207,10 @@ exports.edit = async (req, res) => {
 
 exports.notFound = (req, res) => res.status(404).render('404', { metatags: metatags({ page: 'generic', data: { page_name: '404' } }) });
 
-exports.account = (req, res) => res.render('account');
+exports.editProfile = (req, res) => res.render('settings/edit-profile', { metatags: metatags({ page: 'generic', data: { page_name: 'Edit Profile', path: `settings/${req.session.user.username}/edit-profile` } }) });
+exports.changeProfilePhoto = (req, res) => res.render('settings/change-profile-photo', { metatags: metatags({ page: 'generic', data: { page_name: 'Change Profile Photo', path: `settings/${req.session.user.username}/change-profile-photo` } }) });
 
-exports.account.delete = (req, res) => {
+exports.deleteAccount = (req, res) => {
   User.delete(req.params.username, req.session.user.username)
     .then(() => {
       req.flash('success', 'Account successfully deleted.');
@@ -232,13 +233,13 @@ exports.changePassword = function (req, res) {
     .updatePassword()
     .then(successMessage => {
       req.flash('success', successMessage);
-      req.session.save(() => res.redirect(`/account/${req.params.username}/change-password`));
+      req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
     })
     .catch(errors => {
       errors.forEach(error => {
         req.flash('errors', error.message);
       });
-      req.session.save(() => res.redirect(`/account/${req.params.username}/change-password`));
+      req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
     });
 };
 
