@@ -233,7 +233,7 @@ exports.deleteAccount = (req, res) => {
 
 exports.privacy = (req, res) => res.render('privacy', { metatags: metatags({ page: 'privacy' }) });
 
-exports.changePasswordPage = (req, res) => res.render('changePasswordPage', { metatags: metatags({ page: 'generic', data: { page_name: 'Change Your Password' } }) });
+exports.changePasswordPage = (req, res) => res.render('settings/change-password', { username: req.session.user.username, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Change Your Password' } }) });
 
 exports.changePassword = function (req, res) {
   let user = new User(req.body, req.session.user.username, req.params.username);

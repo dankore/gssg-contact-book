@@ -113,7 +113,23 @@ const commentsHelper = comments => {
   }
 };
 
+function whichPage(path, username) {
+  switch (path) {
+    case `/settings/${username}/edit-profile`:
+      return 'edit-profile';
+    case `/settings/${username}/change-profile-photo`:
+      return 'change-profile-photo';
+    case `/settings/${username}/change-password`:
+      return 'change-password';
+    case `/settings/${username}/delete`:
+      return 'delete';
+    default:
+      return undefined;
+  }
+}
+
 module.exports = {
+  whichPage,
   environment: process.env.NODE_ENV == 'dev' ? 'development' : 'production',
   isAlphaNumericDashHyphenPeriod,
   statsByYear,

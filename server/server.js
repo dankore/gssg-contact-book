@@ -12,7 +12,7 @@ const express = require('express'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
   cookieParser = require('cookie-parser'),
-  { commentsHelper, environment } = require('./misc/helpers');
+  { commentsHelper, environment, whichPage } = require('./misc/helpers');
 
 // GOOGLE
 passport.use(
@@ -114,11 +114,13 @@ server.use(async (req, res, next) => {
   res.locals.path = req.originalUrl;
   res.locals.environment = environment;
 
+  // for use in settings page
+  res.locals.whichPage = whichPage(req.originalUrl, req.session.user.username);
 
   // set image folder
   environment == 'development' ? (res.locals.images_folder = '/images-dev/') : (res.locals.images_folder = '/images/');
   // set url
-  environment == 'development' ? (res.locals.domain = 'localhost:3000') : (res.locals.domain =  'gssgcontactbook.com');
+  environment == 'development' ? (res.locals.domain = 'localhost:3000') : (res.locals.domain = 'gssgcontactbook.com');
   // GLOBALS FOR WHEN A USER IS LOGGED IN
   if (req.session.user) {
     await User.findByUsername(req.session.user.username)
