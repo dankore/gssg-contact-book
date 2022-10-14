@@ -10,7 +10,7 @@ exports.home = async (req, res) => {
 
     res.render('homePage', { contacts, metatags: metatags({ page: '/' }) });
   } catch (error) {
-    req.flash('errors', error.message);
+    req.flash('errors', error);
     req.session.save(() => res.redirect('/error'));
   }
 };
@@ -20,7 +20,7 @@ exports.about = async (req, res) => {
     const count = await User.contactsCount();
     res.render('about', { count, metatags: metatags({ page: 'about' }) });
   } catch (error) {
-    req.flash('errors', error.message);
+    req.flash('errors', error);
     req.session.save(() => res.redirect('/error'));
   }
 };
@@ -45,7 +45,7 @@ exports.contacts = async (req, res) => {
       metatags: metatags({ page: 'contacts' }),
     });
   } catch (error) {
-    req.flash('errors', error.message);
+    req.flash('errors', error);
     req.session.save(() => res.redirect('/contacts'));
   }
 };
@@ -75,8 +75,8 @@ exports.registrationSubmission = async (req, res) => {
         lastName: user.data.lastName,
       };
 
-      req.flash('success', 'Success, Up GSS Gwarinpa! Add your photo, nickname, birthday, and more below.');
-      req.session.save(async () => await res.redirect(`/contacts/${req.session.user.username}/edit`));
+      req.flash('success', 'Success, Up GSS Gwarinpa! Add your nickname, birthday, and more below.');
+      req.session.save(async () => await res.redirect(`/settings/${req.session.user.username}/edit-profile`));
     })
     .catch(regErrors => {
       regErrors.forEach(error => req.flash('reqError', error));
@@ -193,7 +193,7 @@ exports.edit = async (req, res) => {
         // UPDATE USER COMMENTS END
       } else {
         profile.errors.forEach(error => {
-          req.flash('errors', error.message);
+          req.flash('errors', error);
         });
         console.log(profile.errors);
         req.session.save(async _ => {
@@ -217,6 +217,10 @@ exports.editProfile = async (req, res) => {
 exports.changeProfilePhoto = async (req, res) => {
   const profile = await User.findByUsername(req.session.user.username);
   res.render('settings/change-profile-photo', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Change Profile Photo', path: `settings/${req.session.user.username}/change-profile-photo` } }) });
+};
+
+exports.deleteAccountPage = async (req, res) => {
+  res.render('settings/delete-account', { csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Delete Account', path: `settings/${req.session.user.username}/delete-account` } }) });
 };
 
 exports.deleteAccount = (req, res) => {
@@ -245,8 +249,9 @@ exports.changePassword = function (req, res) {
       req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
     })
     .catch(errors => {
+      console.log(errors);
       errors.forEach(error => {
-        req.flash('errors', error.message);
+        req.flash('errors', error);
       });
       req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
     });
@@ -267,7 +272,7 @@ exports.resetPassword = (req, res) => {
     })
     .catch(errors => {
       errors.forEach(error => {
-        req.flash('errors', error.message);
+        req.flash('errors', error);
       });
 
       res.redirect('/reset-password');
@@ -286,7 +291,7 @@ exports.resetPasswordTokenPage = (req, res) => {
       });
     })
     .catch(error => {
-      req.flash('errors', error.message);
+      req.flash('errors', error);
       res.redirect('/reset-password');
     });
 };
@@ -301,7 +306,7 @@ exports.resetPasswordToken = (req, res) => {
       res.redirect('/login');
     })
     .catch(error => {
-      req.flash('errors', error.message);
+      req.flash('errors', error);
       res.redirect(`/reset-password/${req.params.token}`);
     });
 };
@@ -333,7 +338,7 @@ exports.googleLogin = async (req, res) => {
       req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit`));
     }
   } catch (error) {
-    req.flash('errors', error.message);
+    req.flash('errors', error);
     req.session.save(async _ => await res.redirect('/register'));
   }
 };

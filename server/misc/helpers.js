@@ -121,8 +121,8 @@ function whichPage(path, username) {
       return 'change-profile-photo';
     case `/settings/${username}/change-password`:
       return 'change-password';
-    case `/settings/${username}/delete`:
-      return 'delete';
+    case `/settings/${username}/delete-account`:
+      return 'delete-account';
     default:
       return undefined;
   }

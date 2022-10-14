@@ -437,7 +437,7 @@ User.delete = function (requestedUsername, sessionUsername) {
         // DELETE ACCOUNT
         await usersCollection.deleteOne({ username: requestedUsername });
         // NOW DELETE COMMENTS OF THE USER ACROSS ALL DOCS
-        await usersCollection.updateMany({}, { $pull: { comments: { visitorEmail: sessionUsername } } }, { multi: true });
+        await usersCollection.updateMany({}, { $pull: { comments: { visitorUsername: sessionUsername } } }, { multi: true });
         resolve();
       } else {
         reject();
@@ -641,9 +641,7 @@ User.prototype.passwordChangeValidatation = function () {
 
 User.prototype.updatePassword = function () {
   return new Promise(async (resolve, reject) => {
-    this.passwordChangeValidatation();
-    // FIND OLD PASSWORD AND COMPARE WITH NEW PASSWORD
-    let userDoc = await usersCollection.findOne({ username: this.sessionUsername });
+    await this.passwordChangeValidatation();
 
     if (!this.errors.length) {
       // Hash user password

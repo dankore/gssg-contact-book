@@ -33,7 +33,8 @@ router.post('/contacts/:username/edit', singleUpload, csrfProtection, controller
 router.get('/settings/:username/edit-profile', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.editProfile);
 router.post('/settings/:username/edit-profile', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.edit);
 router.get('/settings/:username/change-profile-photo', csrfProtection, singleUpload, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changeProfilePhoto);
-router.post('/settings/:username/delete', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.deleteAccount);
+router.get('/settings/:username/delete-account', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.deleteAccountPage);
+router.post('/settings/:username/delete-account', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.deleteAccount);
 router.get('/settings/:username/change-password', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changePasswordPage);
 router.post('/settings/:username/change-password', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changePassword);
 

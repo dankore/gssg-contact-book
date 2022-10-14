@@ -114,15 +114,15 @@ server.use(async (req, res, next) => {
   res.locals.path = req.originalUrl;
   res.locals.environment = environment;
 
-  // for use in settings page
-  res.locals.whichPage = whichPage(req.originalUrl, req.session.user.username);
-
   // set image folder
   environment == 'development' ? (res.locals.images_folder = '/images-dev/') : (res.locals.images_folder = '/images/');
   // set url
   environment == 'development' ? (res.locals.domain = 'localhost:3000') : (res.locals.domain = 'gssgcontactbook.com');
   // GLOBALS FOR WHEN A USER IS LOGGED IN
   if (req.session.user) {
+    // for use in settings page
+    res.locals.whichPage = whichPage(req.originalUrl, req.session.user.username);
+
     await User.findByUsername(req.session.user.username)
       .then(userDoc => {
         res.locals.profilesUserLiked = userDoc.likes_given_to;

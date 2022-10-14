@@ -24,9 +24,9 @@
       <span class="truncate">Password</span>
     </a>
 
-    <a href="/settings/<%= user.username %>/delete" class="<%= locals.whichPage == 'delete' ? 'bg-indigo-50 border-indigo-500 text-indigo-700 hover:bg-indigo-50 hover:text-indigo-700' : 'border-transparent text-gray-900 hover:bg-gray-50 hover:text-gray-900' %> group border-l-4 px-3 py-2 flex items-center text-sm font-medium">
+    <a href="/settings/<%= user.username %>/delete-account" class="<%= locals.whichPage == 'delete-account' ? 'bg-indigo-50 border-indigo-500 text-indigo-700 hover:bg-indigo-50 hover:text-indigo-700' : 'border-transparent text-gray-900 hover:bg-gray-50 hover:text-gray-900' %> group border-l-4 px-3 py-2 flex items-center text-sm font-medium">
       <!-- Heroicon name: outline/bell -->
-      <svg class="<%= locals.whichPage == 'delete' ? 'text-indigo-500 group-hover:text-indigo-500' : 'text-gray-400 group-hover:text-gray-500' %> flex-shrink-0 -ml-1 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+      <svg class="<%= locals.whichPage == 'delete-account' ? 'text-indigo-500 group-hover:text-indigo-500' : 'text-gray-400 group-hover:text-gray-500' %> flex-shrink-0 -ml-1 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
       </svg>
       <span class="truncate">Delete Account</span>
