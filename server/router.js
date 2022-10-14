@@ -28,6 +28,7 @@ router.get('/about', controller.about);
 router.get('/contacts/:username', controller.ifUserExists, controller.profileScreen);
 
 // SETTINGS
+router.get('/settings/:username', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.settingsPage);
 router.get('/settings/:username/edit-profile', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.editProfile);
 router.post('/settings/:username/edit-profile', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.edit);
 router.get('/settings/:username/change-profile-photo', csrfProtection, singleUpload, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changeProfilePhoto);

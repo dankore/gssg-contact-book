@@ -203,6 +203,8 @@ exports.edit = async (req, res) => {
 
 exports.notFound = (req, res) => res.status(404).render('404', { metatags: metatags({ page: 'generic', data: { page_name: '404' } }) });
 
+exports.settingsPage = (req, res) => res.status(404).render('settings', { metatags: metatags({ page: 'generic', data: { page_name: 'Settings', path: `settings/${req.session.user.username}` } }) });
+
 exports.editProfile = async (req, res) => {
   const profile = await User.findByUsername(req.session.user.username);
   res.render('settings/edit-profile', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Edit Profile', path: `settings/${req.session.user.username}/edit-profile` } }) });
