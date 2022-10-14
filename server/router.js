@@ -30,8 +30,9 @@ router.get('/contacts/:username/edit', csrfProtection, controller.mustBeLoggedIn
 router.post('/contacts/:username/edit', singleUpload, csrfProtection, controller.edit);
 
 // SETTINGS
-router.get('/settings/:username/edit', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.editProfile);
-router.get('/settings/:username/change-profile-photo', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changeProfilePhoto);
+router.get('/settings/:username/edit', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.editProfile);
+router.post('/settings/:username/edit', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.edit);
+router.get('/settings/:username/change-profile-photo', csrfProtection, singleUpload, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changeProfilePhoto);
 router.post('/settings/:username/delete', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.deleteAccount);
 router.get('/settings/:username/change-password', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changePasswordPage);
 router.post('/settings/:username/change-password', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changePassword);

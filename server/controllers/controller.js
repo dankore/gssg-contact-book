@@ -167,6 +167,7 @@ exports.isVisitorOwner = (req, res, next) => {
 
 exports.profileScreen = (req, res) => res.render('contact', { profile: req.profileUser, metatags: metatags({ page: 'contact', data: req.profileUser }) });
 
+// rm
 exports.viewEditScreen = async function (req, res) {
   let profile = await User.findByUsername(req.session.user.username);
   res.render('editProfilePage', { profile: profile, csrfToken: req.csrfToken() });
@@ -181,11 +182,11 @@ exports.edit = async (req, res) => {
       if (status == 'success') {
         req.flash('success', 'Profile successfully updated.');
 
-        // save these values just in case if they hsave been changed
+        // save these values just in case if they have been changed
         req.session.user.username = userDoc.username;
         req.session.user.email = userDoc.email;
 
-        req.session.save(async _ => await res.redirect(`/contacts/${userDoc.username}`));
+        req.session.save(async _ => await res.redirect(`/contacts/${req.session.user.username}`));
 
         // UPDATE USER COMMENTS INFO ACROSS ALL COMMENTS
         User.updateCommentFirtName(userDoc.email, userDoc.firstName);
@@ -194,8 +195,9 @@ exports.edit = async (req, res) => {
         profile.errors.forEach(error => {
           req.flash('errors', error.message);
         });
+        console.log(profile.errors);
         req.session.save(async _ => {
-          await res.redirect(`/contacts/${userDoc.username}/edit`);
+          await res.redirect(`/settings/${req.session.user.username}/edit`);
         });
       }
     })
@@ -207,7 +209,12 @@ exports.edit = async (req, res) => {
 
 exports.notFound = (req, res) => res.status(404).render('404', { metatags: metatags({ page: 'generic', data: { page_name: '404' } }) });
 
-exports.editProfile = (req, res) => res.render('settings/edit-profile', { metatags: metatags({ page: 'generic', data: { page_name: 'Edit Profile', path: `settings/${req.session.user.username}/edit-profile` } }) });
+exports.editProfile = async (req, res) => {
+  console.log(req.profileUser);
+  const profile = await User.findByUsername(req.session.user.username);
+  res.render('settings/edit-profile', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Edit Profile', path: `settings/${req.session.user.username}/edit-profile` } }) });
+};
+
 exports.changeProfilePhoto = (req, res) => res.render('settings/change-profile-photo', { metatags: metatags({ page: 'generic', data: { page_name: 'Change Profile Photo', path: `settings/${req.session.user.username}/change-profile-photo` } }) });
 
 exports.deleteAccount = (req, res) => {
