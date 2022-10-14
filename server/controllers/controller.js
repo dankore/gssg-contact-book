@@ -167,12 +167,6 @@ exports.isVisitorOwner = (req, res, next) => {
 
 exports.profileScreen = (req, res) => res.render('contact', { profile: req.profileUser, metatags: metatags({ page: 'contact', data: req.profileUser }) });
 
-// rm
-exports.viewEditScreen = async function (req, res) {
-  let profile = await User.findByUsername(req.session.user.username);
-  res.render('editProfilePage', { profile: profile, csrfToken: req.csrfToken() });
-};
-
 exports.edit = async (req, res) => {
   const profile = new User(req.body, req.session.user.username, req.params.username);
 
@@ -186,7 +180,7 @@ exports.edit = async (req, res) => {
         req.session.user.username = userDoc.username;
         req.session.user.email = userDoc.email;
 
-        req.session.save(async _ => await res.redirect(`/contacts/${req.session.user.username}`));
+        req.session.save(async _ => await res.redirect(`/contacts/${userDoc.username}`));
 
         // UPDATE USER COMMENTS INFO ACROSS ALL COMMENTS
         User.updateCommentFirtName(userDoc.email, userDoc.firstName);
@@ -195,9 +189,9 @@ exports.edit = async (req, res) => {
         profile.errors.forEach(error => {
           req.flash('errors', error);
         });
-        console.log(profile.errors);
+
         req.session.save(async _ => {
-          await res.redirect(`/settings/${req.session.user.username}/edit`);
+          await res.redirect(`/settings/${req.session.user.username}/edit-profile`);
         });
       }
     })
@@ -335,7 +329,7 @@ exports.googleLogin = async (req, res) => {
       req.session.user._id = userDoc._id;
       req.session.user.google_id = userDoc.google_id;
       req.flash('success', "Success, Up GSS Gwarinpa! Click 'Edit Profile' to add your nickname, birthday, and more.");
-      req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit`));
+      req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit-profile`));
     }
   } catch (error) {
     req.flash('errors', error);
