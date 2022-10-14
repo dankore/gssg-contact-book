@@ -210,12 +210,14 @@ exports.edit = async (req, res) => {
 exports.notFound = (req, res) => res.status(404).render('404', { metatags: metatags({ page: 'generic', data: { page_name: '404' } }) });
 
 exports.editProfile = async (req, res) => {
-  console.log(req.profileUser);
   const profile = await User.findByUsername(req.session.user.username);
   res.render('settings/edit-profile', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Edit Profile', path: `settings/${req.session.user.username}/edit-profile` } }) });
 };
 
-exports.changeProfilePhoto = (req, res) => res.render('settings/change-profile-photo', { metatags: metatags({ page: 'generic', data: { page_name: 'Change Profile Photo', path: `settings/${req.session.user.username}/change-profile-photo` } }) });
+exports.changeProfilePhoto = async (req, res) => {
+  const profile = await User.findByUsername(req.session.user.username);
+  res.render('settings/change-profile-photo', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Change Profile Photo', path: `settings/${req.session.user.username}/change-profile-photo` } }) });
+};
 
 exports.deleteAccount = (req, res) => {
   User.delete(req.params.username, req.session.user.username)
