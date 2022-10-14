@@ -24,11 +24,6 @@ router.post('/login', csrfProtection, apiLimiter, controller.login);
 router.post('/logout', controller.logout);
 router.get('/about', controller.about);
 
-// PROFILE
-router.get('/contacts/:username', controller.ifUserExists, controller.profileScreen);
-router.get('/contacts/:username/edit', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.viewEditScreen);
-router.post('/contacts/:username/edit', singleUpload, csrfProtection, controller.edit);
-
 // SETTINGS
 router.get('/settings/:username/edit-profile', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.editProfile);
 router.post('/settings/:username/edit-profile', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.edit);
