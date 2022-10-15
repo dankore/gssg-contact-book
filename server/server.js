@@ -12,7 +12,7 @@ const express = require('express'),
   passport = require('passport'),
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
   cookieParser = require('cookie-parser'),
-  { commentsHelper, environment } = require('./misc/helpers');
+  { commentsHelper, environment, whichPage } = require('./misc/helpers');
 
 // GOOGLE
 passport.use(
@@ -35,6 +35,7 @@ passport.use(
               firstName: user._json.given_name,
               lastName: user._json.family_name,
               username: user._json.email.split('@')[0],
+              photo: userBool.photo,
               returningUser: true,
             };
             return cb(null, user);
@@ -113,9 +114,16 @@ server.use(async (req, res, next) => {
   // IF PATH IS HOMEPAGE SHOW SCROLL-TO-TOP
   res.locals.path = req.originalUrl;
   res.locals.environment = environment;
+
+  // set image folder
   environment == 'development' ? (res.locals.images_folder = '/images-dev/') : (res.locals.images_folder = '/images/');
+  // set url
+  environment == 'development' ? (res.locals.domain = 'localhost:3000') : (res.locals.domain = 'gssgcontactbook.com');
   // GLOBALS FOR WHEN A USER IS LOGGED IN
   if (req.session.user) {
+    // for use in settings page
+    res.locals.whichPage = whichPage(req.originalUrl, req.session.user.username);
+
     await User.findByUsername(req.session.user.username)
       .then(userDoc => {
         res.locals.profilesUserLiked = userDoc.likes_given_to;

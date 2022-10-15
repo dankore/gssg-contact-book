@@ -34,9 +34,7 @@ const download = async () => {
           const userDoc = await usersCollection.findOne({ email: s3_obj.Metadata.email });
           if (userDoc) {
             const filename = userDoc._id;
-            const file_path = `${process.cwd()}/public/contact-images/${filename}`;
-            console.log(`${process.cwd()}/public/contact-images/${filename}`);
-            write_to_file(file_path, s3_obj.Body);
+            console.log('userId', filename);
           } else {
             console.log('No userdoc');
           }

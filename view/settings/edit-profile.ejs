@@ -1,0 +1,164 @@
+<%- include('../includes/header') %>
+<header class="relative py-10">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold tracking-tight">Settings</h1>
+  </div>
+</header>
+<main class="relative">
+  <div class="mx-auto max-w-screen-xl px-4 pb-6 sm:px-6 lg:px-8 lg:pb-16">
+    <div class="overflow-hidden rounded-lg bg-white shadow">
+      <div class="divide-y divide-gray-200 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x">
+        <%- include('../includes/settingsNav') %>
+
+        <form class="divide-y divide-gray-200 lg:col-span-9" action="/settings/<%= profile.username %>/edit-profile" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+
+          <div class="py-6 px-4 sm:p-6 lg:pb-8">
+            <div>
+              <h2 class="text-lg font-medium leading-6 text-gray-900">Edit Your Profile</h2>
+              <p class="mt-1 text-sm text-gray-500">This information will be displayed publicly so be careful what you share.</p>
+            </div>
+            <%- include('../includes/flash') %>
+            <div class="mt-6 flex flex-col lg:flex-row">
+              <div class="flex-grow space-y-6">
+                <div>
+                  <label for="username" class="block text-sm font-medium text-gray-700 required:text-red-500"> Username <span class="text-red-600">*</span></label>
+                  <div class="mt-1 flex rounded-md shadow-sm">
+                    <span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500 sm:text-sm"><%=locals.domain%>/</span>
+                    <input type="text" name="username" id="username" autocomplete="username" class="block w-full min-w-0 flex-grow rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" value="<%= profile.username %>" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 grid grid-cols-12 gap-6">
+              <div class="col-span-12 sm:col-span-6">
+                <label for="first-name" class="block text-sm font-medium text-gray-700">First name <span class="text-red-600">*</span></label>
+                <input type="text" name="firstName" value="<%= profile.firstName %>" id="first-name" autocomplete="given-name" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+
+              <div class="col-span-12 sm:col-span-6">
+                <label for="last-name" class="block text-sm font-medium text-gray-700">Last name <span class="text-red-600">*</span></label>
+                <input type="text" name="lastName" value="<%= profile.lastName %>" id="last-name" autocomplete="family-name" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+
+              <div class="col-span-12">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email <span class="text-red-600">*</span></label>
+                <input readonly type="text" name="email" value="<%= profile.email %>" id="email" autocomplete="email" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+
+              <div class="col-span-12">
+                <label for="year" class="block text-sm font-medium text-gray-700"> What year did you graduated OR will graduate GSS Gwarinpa? <span class="text-red-600">*</span></label>
+                <input type="text" name="year" value="<%= profile.year %>" id="year" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+
+              <div class="col-span-12">
+                <label for="nickname" class="block text-sm font-medium text-gray-700">What is/was your nickname in school?</label>
+                <input type="text" name="nickname" value="<%= profile.nickname %>" id="nickname" autocomplete="nickname" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+
+              <div class="col-span-12 sm:col-span-6">
+                <label for="phone" class="block text-sm font-medium text-gray-700"> What is your phone number?</label>
+                <input type="text" name="phone" value="<%= profile.phone %>" id="phone" autocomplete="tel" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+
+              <div class="col-span-12 sm:col-span-6">
+                <label for="residence" class="block text-sm font-medium text-gray-700"> Where do you currently live?</label>
+                <input type="text" name="residence" value="<%= profile.residence %>" id="residence" autocomplete="address-line3" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+
+              <div class="col-span-12">
+                <label for="occupation" class="block text-sm font-medium text-gray-700"> What is your occupation?</label>
+                <input type="text" name="occupation" value="<%= profile.occupation %>" id="occupation" autocomplete="work" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+
+              <div class="col-span-12 sm:col-span-6">
+                <label for="class" class="block text-sm font-medium text-gray-700">What is/was your class in school?</label>
+                <input type="text" name="class" value="<%= profile.class %>" id="class" autocomplete="class" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+              <div class="col-span-12 sm:col-span-6">
+                <label for="teacher" class="block text-sm font-medium text-gray-700"> Your favorite teacher is/was?</label>
+                <input type="text" name="teacher" value="<%= profile.teacher %>" id="teacher" autocomplete="teacher" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+
+              <div class="col-span-12 sm:col-span-6">
+                <label for="month" class="block text-sm font-medium text-gray-700">month</label>
+                <select id="month" name="month" class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                  <option value="January" selected="<%= profile.month === 'January' %>">January</option>
+                  <option value="February" selected="<%= profile.month === 'February' %>">February</option>
+                  <option value="March" selected="<%= profile.month === 'March' %>">March</option>
+                  <option value="April" selected="<%= profile.month === 'April' %>">April</option>
+                  <option value="May" selected="<%= profile.month === 'May' %>">May</option>
+                  <option value="June" selected="<%= profile.month === 'June' %>">June</option>
+                  <option value="July" selected="<%= profile.month === 'July' %>">July</option>
+                  <option value="August" selected="<%= profile.month === 'August' %>">August</option>
+                  <option value="September" selected="<%= profile.month === 'September' %>">September</option>
+                  <option value="October" selected="<%= profile.month === 'October' %>">October</option>
+                  <option value="November" selected="<%= profile.month === 'November' %>">November</option>
+                  <option value="December" selected="<%= profile.month === 'December' %>">December</option>
+                </select>
+              </div>
+              <div class="col-span-12 sm:col-span-6">
+                <label for="day" class="block text-sm font-medium text-gray-700">Day of Birth</label>
+                <input type="text" name="day" value="<%= profile.day %>" id="day" autocomplete="bday-day" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+
+              <div class="col-span-12">
+                <label for="relationship" class="block text-sm font-medium text-gray-700">relationship</label>
+                <select id="relationship" name="relationship" class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                  <option value="Single" selected="<%= profile.relationship === 'Single' %>">Single</option>
+                  <option value="Married" selected="<%= profile.relationship === 'Married' %>">Married</option>
+                  <option value="Engaged" selected="<%= profile.relationship === 'Engaged' %>">Engaged</option>
+                  <option value="In a relationship" selected="<%= profile.relationship === 'In a relationship' %>">In a relationship</option>
+                  <option value="In a domestic partnership" selected="<%= profile.relationship === 'In a domestic partnership' %>">In a domestic partnership</option>
+                  <option value="Separated" selected="<%= profile.relationship === 'Separated' %>">Separated</option>
+                  <option value="Divorced" selected="<%= profile.relationship === 'Divorced' %>">Divorced</option>
+                  <option value="In an open relationship" selected="<%= profile.relationship === 'In an open relationship' %>">In an open relationship</option>
+                  <option value="It's complicated" selected="<%= profile.relationship === 'It\'s complicated' %>">It's complicated</option>
+                  <option value="Widowed" selected="<%= profile.relationship === 'Widowed' %>">Widowed</option>
+                </select>
+              </div>
+
+              <div class="col-span-12 sm:col-span-6">
+                <label for="social_type_1" class="block text-sm font-medium text-gray-700"> Select Social media type #1</label>
+                <select id="social_type_1" name="social_type_1" class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                  <option value="Twitter" <%= profile.social_type_1 === 'Twitter' ? 'selected' : '' %> >Twitter</option>
+                  <option value="Instagram" <%= profile.social_type_1 === 'Instagram' ? 'selected' : '' %> >Instagram</option>
+                  <option value="WhatsApp" <%= profile.social_type_1 === 'WhatsApp' ? 'selected' : '' %> >WhatsApp</option>
+                  <option value="Facebook" <%= profile.social_type_1 === 'Facebook' ? 'selected' : '' %> >Facebook</option>
+                </select>
+              </div>
+              <div class="col-span-12 sm:col-span-6">
+                <label for="link_social_type_1" class="block text-sm font-medium text-gray-700"> Link to social media #1 </label>
+                <input type="url" name="link_social_type_1" value="<%= profile.link_social_type_1 %>" id="link_social_type_1" autocomplete="url" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+
+              <div class="col-span-12 sm:col-span-6">
+                <label for="social_type_2" class="block text-sm font-medium text-gray-700"> Select Social media type #2</label>
+                <select id="social_type_2" name="social_type_2" class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                  <option value="Twitter" <%= profile.social_type_2 === 'Twitter' ? 'selected' : '' %> >Twitter</option>
+                  <option value="Instagram" <%= profile.social_type_2 === 'Instagram' ? 'selected' : '' %> >Instagram</option>
+                  <option value="WhatsApp" <%= profile.social_type_2 === 'WhatsApp' ? 'selected' : '' %> >WhatsApp</option>
+                  <option value="Facebook" <%= profile.social_type_2 === 'Facebook' ? 'selected' : '' %> >Facebook</option>
+                </select>
+              </div>
+              <div class="col-span-12 sm:col-span-6">
+                <label for="link_social_type_2" class="block text-sm font-medium text-gray-700"> Link to social media #1 </label>
+                <input type="url" name="link_social_type_2" value="<%= profile.link_social_type_2 %>" id="link_social_type_2" autocomplete="url" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
+              </div>
+            </div>
+          </div>
+          
+          <div class="divide-y divide-gray-200 pt-6">
+            <div class="mt-4 flex justify-end py-4 px-4 sm:px-6">
+              <a href="/contacts/<%= user.username %>" class="inline-flex justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Cancel</a>
+              <button type="submit" class="ml-5 inline-flex justify-center rounded-md border border-transparent bg-indigo-700 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../includes/footer') %>

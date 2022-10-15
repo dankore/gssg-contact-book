@@ -10,7 +10,7 @@
             <% if(profile.google_id){ %>
             <img loading="lazy" src="<%= profile.google_photo %>" class="h-16 w-16 rounded-full from-indigo-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
             <% } else { %>
-            <img loading="lazy" src="<%=locals.images_folder+profile._id%>" class="h-16 w-16 rounded-full from-indigo-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
+            <img loading="lazy" src="<%= profile.photo %>" class="h-16 w-16 rounded-full from-indigo-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
             <%}%>
 
             <span class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></span>
@@ -24,15 +24,15 @@
       <div class="justify-stretch mt-6 flex flex-col-reverse space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-y-0 sm:space-x-3 sm:space-x-reverse md:mt-0 md:flex-row md:space-x-3">
         <div class="justify-stretch mt-6 flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
           <% if(user && profile.username === user.username){ %>
-          <a href="/contacts/<%= user.username %>/edit" class="mr-3 inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+          <a href="/settings/<%= user.username %>/edit-profile" class="mr-3 inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
             <!-- Heroicon name: mini/pencil -->
             <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path d="M2.695 14.763l-1.262 3.154a.5.5 0 00.65.65l3.155-1.262a4 4 0 001.343-.885L17.5 5.5a2.121 2.121 0 00-3-3L3.58 13.42a4 4 0 00-.885 1.343z" />
             </svg>
-            <span>Edit</span>
+            <span>Edit Profile</span>
           </a>
 
-          <a href="/account/<%= user.username %>" class="mr-3 inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+          <a href="/settings/<%= user.username %>" class="mr-3 inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
             <!-- Heroicon name: mini/cog -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="-ml-1 mr-2 h-5 w-5 text-gray-400" aria-hidden="true">
               <path fill-rule="evenodd" d="M7.84 1.804A1 1 0 018.82 1h2.36a1 1 0 01.98.804l.331 1.652a6.993 6.993 0 011.929 1.115l1.598-.54a1 1 0 011.186.447l1.18 2.044a1 1 0 01-.205 1.251l-1.267 1.113a7.047 7.047 0 010 2.228l1.267 1.113a1 1 0 01.206 1.25l-1.18 2.045a1 1 0 01-1.187.447l-1.598-.54a6.993 6.993 0 01-1.929 1.115l-.33 1.652a1 1 0 01-.98.804H8.82a1 1 0 01-.98-.804l-.331-1.652a6.993 6.993 0 01-1.929-1.115l-1.598.54a1 1 0 01-1.186-.447l-1.18-2.044a1 1 0 01.205-1.251l1.267-1.114a7.05 7.05 0 010-2.227L1.821 7.773a1 1 0 01-.206-1.25l1.18-2.045a1 1 0 011.187-.447l1.598.54A6.993 6.993 0 017.51 3.456l.33-1.652zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
@@ -111,6 +111,22 @@
                   <dd class="mt-1 text-sm text-gray-900"><%= profile.phone %></dd>
                 </div>
                 <%}%>
+
+                <!-- SOCIAL MEDIA #1 -->
+                <% if(profile.social_type_1){%>
+                <div class="sm:col-span-2">
+                  <dt class="text-sm font-medium text-gray-500"><%= profile.social_type_1 %></dt>
+                  <dd class="mt-1 text-sm text-gray-900"><a href="<%= profile.link_social_type_1 %>">Check out my <%= profile.social_type_1 %></a></dd>
+                </div>
+                <%}%>
+
+                <!-- SOCIAL MEDIA #2 -->
+                <% if(profile.social_type_1){%>
+                <div class="sm:col-span-2">
+                  <dt class="text-sm font-medium text-gray-500"><%= profile.social_type_2 %></dt>
+                  <dd class="mt-1 text-sm text-gray-900"><a href="<%= profile.link_social_type_2 %>">Check out my <%= profile.social_type_2 %></a></dd>
+                </div>
+                <%}%>
               </dl>
             </div>
           </div>
@@ -130,11 +146,7 @@
                     <% profileOwnerComment = comment.visitorUsername === profile.username %>
                     <div class="flex space-x-3">
                       <p class="flex-shrink-0">
-                        <% if(comment.google_id){ %>
                         <img loading="lazy" src="<%= comment.photo %>" class="overflow-hidden bg-gradient-to-r <%= profileOwnerComment ? 'from-indigo-500 via-purple-500 to-pink-500' : 'from-green-300 via-green-700 to-green-300' %> w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName.substring(0,1) %>" />
-                        <% } else { %>
-                        <img loading="lazy" src="<%=locals.images_folder+comment.userId%>" class="overflow-hidden bg-gradient-to-r <%= profileOwnerComment ? 'from-indigo-500 via-purple-500 to-pink-500' : 'from-green-300 via-green-700 to-green-300' %> w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName.substring(0,1) %>" />
-                        <%}%>
                       </p>
 
                       <div>
@@ -181,12 +193,7 @@
             <div class="bg-gray-50 px-4 py-6 sm:px-6">
               <div class="flex space-x-3">
                 <div class="flex-shrink-0">
-                  <!--  -->
-                  <% if(profile.google_id){ %>
-                  <img loading="lazy" src="<%= profile.google_photo %>" class="overflow-hidden bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-10 w-10 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
-                  <% } else { %>
-                  <img loading="lazy" src="<%=locals.images_folder+user._id%>" class="overflow-hidden bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-10 w-10 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
-                  <%}%>
+                  <img loading="lazy" src="<%= user.photo %>" class="overflow-hidden bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-10 w-10 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
                 </div>
 
                 <div class="min-w-0 flex-1">

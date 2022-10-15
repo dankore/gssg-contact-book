@@ -8,6 +8,7 @@ import ShowAllComments from './modules/comments-show-all';
 import ClickToComment from './modules/clickToComment';
 import AddComment from './modules/addComments';
 import ToggleMobileMenu from './modules/toggleMobileMenu';
+import ImagePreview from './modules/image-preview';
 
 document.querySelector('#more-profile-btn') && new ToggleProfile();
 document.querySelector('#btn-optional-fields') && new ToggleEditPage();
@@ -20,3 +21,4 @@ document.querySelector('#show-all-comments-toggle') && new ShowAllComments();
 document.getElementById('click-to-comment') && new ClickToComment();
 document.getElementById('add-comment-button') && new AddComment();
 document.getElementById('open-mobile-menu') && new ToggleMobileMenu();
+document.getElementById('change-profile-photo-form') && new ImagePreview();

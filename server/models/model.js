@@ -425,6 +425,17 @@ User.prototype.actuallyUpdate = function () {
   });
 };
 
+User.storeImage = async (imageUrl, username) => {
+  await usersCollection.findOneAndUpdate(
+    { username },
+    {
+      $set: {
+        photo: imageUrl,
+      },
+    }
+  );
+};
+
 User.isVisitorOwner = function (sessionUsername, requestedUsername) {
   return sessionUsername == requestedUsername;
 };
@@ -437,7 +448,7 @@ User.delete = function (requestedUsername, sessionUsername) {
         // DELETE ACCOUNT
         await usersCollection.deleteOne({ username: requestedUsername });
         // NOW DELETE COMMENTS OF THE USER ACROSS ALL DOCS
-        await usersCollection.updateMany({}, { $pull: { comments: { visitorEmail: sessionUsername } } }, { multi: true });
+        await usersCollection.updateMany({}, { $pull: { comments: { visitorUsername: sessionUsername } } }, { multi: true });
         resolve();
       } else {
         reject();
@@ -641,9 +652,7 @@ User.prototype.passwordChangeValidatation = function () {
 
 User.prototype.updatePassword = function () {
   return new Promise(async (resolve, reject) => {
-    this.passwordChangeValidatation();
-    // FIND OLD PASSWORD AND COMPARE WITH NEW PASSWORD
-    let userDoc = await usersCollection.findOne({ username: this.sessionUsername });
+    await this.passwordChangeValidatation();
 
     if (!this.errors.length) {
       // Hash user password
@@ -923,6 +932,29 @@ User.updateCommentFirtName = (email, firstName) => {
         {
           $set: {
             'comments.$[elem].visitorFirstName': firstName,
+          },
+        },
+        {
+          arrayFilters: [{ 'elem.visitorEmail': email }],
+          multi: true,
+        }
+      );
+      resolve();
+    } catch {
+      reject(err => console.log("Error updating user's comments firstname." + err));
+    }
+  });
+};
+
+// UPDATE PHOTO IN COMMENTS FOR A USER WHO UPDATES THEIR PROFILE
+User.updateCommentPhoto = (email, photo) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await usersCollection.updateMany(
+        { 'comments.visitorEmail': email },
+        {
+          $set: {
+            'comments.$[elem].photo': photo,
           },
         },
         {

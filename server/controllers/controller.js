@@ -1,8 +1,8 @@
 const { metatags } = require('../misc/metatags');
-
-const User = require('../models/model'),
-  helpers = require('../misc/helpers'),
-  ObjectId = require('mongodb').ObjectID;
+const { cloudinary, transformImage } = require('../misc/file-upload-cloudinary');
+const User = require('../models/model');
+const helpers = require('../misc/helpers');
+const ObjectId = require('mongodb').ObjectID;
 
 exports.home = async (req, res) => {
   try {
@@ -10,7 +10,7 @@ exports.home = async (req, res) => {
 
     res.render('homePage', { contacts, metatags: metatags({ page: '/' }) });
   } catch (error) {
-    req.flash('errors', error.message);
+    req.flash('errors', error);
     req.session.save(() => res.redirect('/error'));
   }
 };
@@ -45,7 +45,7 @@ exports.contacts = async (req, res) => {
       metatags: metatags({ page: 'contacts' }),
     });
   } catch (error) {
-    req.flash('errors', error.message);
+    req.flash('errors', error);
     req.session.save(() => res.redirect('/contacts'));
   }
 };
@@ -73,10 +73,11 @@ exports.registrationSubmission = async (req, res) => {
         email: user.data.email,
         firstName: user.data.firstName,
         lastName: user.data.lastName,
+        photo: userDoc.photo,
       };
 
-      req.flash('success', 'Success, Up GSS Gwarinpa! Add your photo, nickname, birthday, and more below.');
-      req.session.save(async () => await res.redirect(`/contacts/${req.session.user.username}/edit`));
+      req.flash('success', 'Success, Up GSS Gwarinpa! Add your nickname, birthday, and more below.');
+      req.session.save(async () => await res.redirect(`/settings/${req.session.user.username}/edit-profile`));
     })
     .catch(regErrors => {
       regErrors.forEach(error => req.flash('reqError', error));
@@ -102,6 +103,7 @@ exports.login = async (req, res) => {
         email: userDoc.email,
         firstName: userDoc.firstName,
         lastName: userDoc.lastName,
+        photo: userDoc.photo,
       };
 
       req.session.save(() => {
@@ -167,11 +169,6 @@ exports.isVisitorOwner = (req, res, next) => {
 
 exports.profileScreen = (req, res) => res.render('contact', { profile: req.profileUser, metatags: metatags({ page: 'contact', data: req.profileUser }) });
 
-exports.viewEditScreen = async function (req, res) {
-  let profile = await User.findByUsername(req.session.user.username);
-  res.render('editProfilePage', { profile: profile, csrfToken: req.csrfToken() });
-};
-
 exports.edit = async (req, res) => {
   const profile = new User(req.body, req.session.user.username, req.params.username);
 
@@ -181,7 +178,7 @@ exports.edit = async (req, res) => {
       if (status == 'success') {
         req.flash('success', 'Profile successfully updated.');
 
-        // save these values just in case if they hsave been changed
+        // save these values just in case if they have been changed
         req.session.user.username = userDoc.username;
         req.session.user.email = userDoc.email;
 
@@ -192,10 +189,11 @@ exports.edit = async (req, res) => {
         // UPDATE USER COMMENTS END
       } else {
         profile.errors.forEach(error => {
-          req.flash('errors', error.message);
+          req.flash('errors', error);
         });
+
         req.session.save(async _ => {
-          await res.redirect(`/contacts/${userDoc.username}/edit`);
+          await res.redirect(`/settings/${req.session.user.username}/edit-profile`);
         });
       }
     })
@@ -207,9 +205,35 @@ exports.edit = async (req, res) => {
 
 exports.notFound = (req, res) => res.status(404).render('404', { metatags: metatags({ page: 'generic', data: { page_name: '404' } }) });
 
-exports.account = (req, res) => res.render('account');
+exports.settingsPage = (req, res) => res.status(404).render('settings', { metatags: metatags({ page: 'generic', data: { page_name: 'Settings', path: `settings/${req.session.user.username}` } }) });
 
-exports.account.delete = (req, res) => {
+exports.editProfile = async (req, res) => {
+  const profile = await User.findByUsername(req.session.user.username);
+  res.render('settings/edit-profile', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Edit Profile', path: `settings/${req.session.user.username}/edit-profile` } }) });
+};
+
+exports.changeProfilePhotoPage = async (req, res) => {
+  const profile = await User.findByUsername(req.session.user.username);
+  res.render('settings/change-profile-photo', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Change Profile Photo', path: `settings/${req.session.user.username}/change-profile-photo` } }) });
+};
+
+// refactor like this!
+exports.changeProfilePhoto = async (req, res) => {
+  try {
+    const imageUrl = await transformImage(req.file.path, req.session.user._id);
+    await User.storeImage(imageUrl, req.session.user.username);
+
+    User.updateCommentPhoto(req.session.user.email, imageUrl);
+
+    res.redirect(`/contacts/${req.session.user.username}`);
+  } catch (error) {
+    console.log(error.message, 44);
+  }
+};
+
+exports.deleteAccountPage = async (req, res) => res.render('settings/delete-account', { csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Delete Account', path: `settings/${req.session.user.username}/delete-account` } }) });
+
+exports.deleteAccount = (req, res) => {
   User.delete(req.params.username, req.session.user.username)
     .then(() => {
       req.flash('success', 'Account successfully deleted.');
@@ -223,7 +247,7 @@ exports.account.delete = (req, res) => {
 
 exports.privacy = (req, res) => res.render('privacy', { metatags: metatags({ page: 'privacy' }) });
 
-exports.changePasswordPage = (req, res) => res.render('changePasswordPage', { metatags: metatags({ page: 'generic', data: { page_name: 'Change Your Password' } }) });
+exports.changePasswordPage = (req, res) => res.render('settings/change-password', { username: req.session.user.username, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Change Your Password' } }) });
 
 exports.changePassword = function (req, res) {
   let user = new User(req.body, req.session.user.username, req.params.username);
@@ -232,13 +256,14 @@ exports.changePassword = function (req, res) {
     .updatePassword()
     .then(successMessage => {
       req.flash('success', successMessage);
-      req.session.save(() => res.redirect(`/account/${req.params.username}/change-password`));
+      req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
     })
     .catch(errors => {
+      console.log(errors);
       errors.forEach(error => {
-        req.flash('errors', error.message);
+        req.flash('errors', error);
       });
-      req.session.save(() => res.redirect(`/account/${req.params.username}/change-password`));
+      req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
     });
 };
 
@@ -257,7 +282,7 @@ exports.resetPassword = (req, res) => {
     })
     .catch(errors => {
       errors.forEach(error => {
-        req.flash('errors', error.message);
+        req.flash('errors', error);
       });
 
       res.redirect('/reset-password');
@@ -276,7 +301,7 @@ exports.resetPasswordTokenPage = (req, res) => {
       });
     })
     .catch(error => {
-      req.flash('errors', error.message);
+      req.flash('errors', error);
       res.redirect('/reset-password');
     });
 };
@@ -291,7 +316,7 @@ exports.resetPasswordToken = (req, res) => {
       res.redirect('/login');
     })
     .catch(error => {
-      req.flash('errors', error.message);
+      req.flash('errors', error);
       res.redirect(`/reset-password/${req.params.token}`);
     });
 };
@@ -309,6 +334,7 @@ exports.googleLogin = async (req, res) => {
       username: req.user.username,
       firstName: req.user.firstName,
       lastName: req.user.lastName,
+      photo: req.user.photo,
     };
 
     if (req.user.returningUser) {
@@ -320,10 +346,10 @@ exports.googleLogin = async (req, res) => {
       req.session.user._id = userDoc._id;
       req.session.user.google_id = userDoc.google_id;
       req.flash('success', "Success, Up GSS Gwarinpa! Click 'Edit Profile' to add your nickname, birthday, and more.");
-      req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit`));
+      req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit-profile`));
     }
   } catch (error) {
-    req.flash('errors', error.message);
+    req.flash('errors', error);
     req.session.save(async _ => await res.redirect('/register'));
   }
 };

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('./controllers/controller');
-const upload = require('./misc/file-upload-local');
-const singleUpload = upload.single('photo');
+const { upload_to_cloudinary } = require('./misc/file-upload-cloudinary');
+const singleUpload = upload_to_cloudinary.single('photo');
 const passport = require('passport');
 const rateLimit = require('express-rate-limit');
 const csrf = require('csurf');
@@ -26,14 +26,17 @@ router.get('/about', controller.about);
 
 // PROFILE
 router.get('/contacts/:username', controller.ifUserExists, controller.profileScreen);
-router.get('/contacts/:username/edit', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.viewEditScreen);
-router.post('/contacts/:username/edit', singleUpload, csrfProtection, controller.edit);
 
-// ACCOUNT
-router.get('/account/:username', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.account);
-router.post('/account/:username/delete', controller.account.delete);
-router.get('/account/:username/change-password', controller.mustBeLoggedIn, controller.changePasswordPage);
-router.post('/account/:username/change-password', controller.changePassword);
+// SETTINGS
+router.get('/settings/:username', controller.mustBeLoggedIn, controller.isVisitorOwner, controller.settingsPage);
+router.get('/settings/:username/edit-profile', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.editProfile);
+router.post('/settings/:username/edit-profile', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.edit);
+router.get('/settings/:username/change-profile-photo', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changeProfilePhotoPage);
+router.post('/settings/:username/change-profile-photo', controller.mustBeLoggedIn, singleUpload, csrfProtection, controller.isVisitorOwner, controller.changeProfilePhoto);
+router.get('/settings/:username/delete-account', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.deleteAccountPage);
+router.post('/settings/:username/delete-account', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.deleteAccount);
+router.get('/settings/:username/change-password', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changePasswordPage);
+router.post('/settings/:username/change-password', csrfProtection, controller.mustBeLoggedIn, controller.isVisitorOwner, controller.changePassword);
 
 // RESET PASSWORD
 router.get('/reset-password', csrfProtection, controller.resetPasswordPage);
