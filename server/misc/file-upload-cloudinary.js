@@ -17,7 +17,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'gssg-contact-book',
+    folder: 'gssgcontactbook.com',
     allowedFormats: ['jpeg', 'png', 'jpg'],
     public_id: (req, res) => req.session.user._id,
   },
@@ -45,13 +45,22 @@ const transformImage = async (imageUrl, userId) => {
 
 const fileDownloadCloudinary = () => {
   cloudinary.api
-    .resources({ tags: true, max_results: 500, type: 'upload', prefix: 'gssgcontactbook.com/' }, function (error, result) {
+    .resources({ tags: true, max_results: 500, type: 'upload', prefix: 'XXXXXXXXUPDATE MEXXXXXX' }, function (error, result) {
       if (error) throw error;
       result.resources.map(async (resource, index) => {
         if (resource.tags.length) {
           const email = resource.tags[0];
           const url = resource.secure_url;
-          //const my_image = await transformImage(url, resource.public_id);
+          const my_image = await transformImage(url, resource.public_id);
+          const userDoc = await usersCollection.findOneAndUpdate(
+            { email },
+            {
+              $set: {
+                photo: my_image,
+              },
+            }
+          );
+          console.log(userDoc);
         }
       });
     })

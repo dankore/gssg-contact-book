@@ -1,5 +1,5 @@
 const { metatags } = require('../misc/metatags');
-const { cloudinary, transformImage } = require('../misc/file-upload-cloudinary');
+const { transformImage } = require('../misc/file-upload-cloudinary');
 const User = require('../models/model');
 const helpers = require('../misc/helpers');
 const ObjectId = require('mongodb').ObjectID;
