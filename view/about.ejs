@@ -1,7 +1,7 @@
 <!-- HEADER -->
 <%- include('includes/header') %>
 <!-- HEADER END-->
-<div class="bg-white">
+<div>
   <div class="mx-auto max-w-7xl py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
     <div class="text-center">
       <p class="text-lg font-semibold text-green-600">About</p>
@@ -73,7 +73,7 @@
                 <dd class="text-3xl font-bold tracking-tight text-gray-900"><%= count %></dd>
               </div>
             </dl>
-            <div class="mt-10">
+            <div class="py-10">
               <a href="/<%- user ? 'contacts/'+user.username : 'register' %>" class="text-base font-medium text-green-600">
                 <%- user ? 'Go to your profile' : 'Add Your Contact' %>
                 <span aria-hidden="true"> &rarr;</span>

@@ -9,11 +9,11 @@
       <%- include('includes/flash') %>
       <!-- ERROR FLASH MESSAGE END-->
       <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
-        <p class="text-lg font-semibold text-green-600">Welcome</p>
+        <p class="text-lg font-semibold text-green-700">Welcome</p>
         <span class="block xl:inline">Discover Present & Past</span>
         <span class="block text-green-600 xl:inline">GSS Gwarinpa Students</span>
       </h1>
-      <p class="mx-auto mt-3 max-w-md text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl">Are you a current or past student of Junior or Senior Goverment Secondary Gwarinpa, Abuja - F.C.T? Add your contact or view and search the contacts of your school and classmmates. Project by GSS Gwarinpa class of 2006.</p>
+      <p class="mx-auto mt-3 max-w-md text-lg text-gray-700 sm:text-xl md:mt-5 md:max-w-3xl">Are you a current or past student of Junior or Senior Goverment Secondary Gwarinpa, Abuja - F.C.T? Add your contact or view and search the contacts of your school and classmmates. Project by GSS Gwarinpa class of 2006.</p>
       <div class="mt-10 sm:flex sm:justify-center lg:justify-start">
         <div class="rounded-md shadow">
           <a href="/<%- user ? 'contacts/'+user.username : 'register' %>" class="flex w-full items-center justify-center rounded-md border bg-green-600 px-8 py-3 text-base font-medium text-white hover:bg-green-700 md:py-4 md:px-10 md:text-lg"><%- user ? 'Go to your profile' : 'Add Your Contact' %></a>
