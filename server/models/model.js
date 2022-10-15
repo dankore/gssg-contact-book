@@ -425,6 +425,17 @@ User.prototype.actuallyUpdate = function () {
   });
 };
 
+User.storeImage = async (imageUrl, username) => {
+  await usersCollection.findOneAndUpdate(
+    { username },
+    {
+      $set: {
+        photo: imageUrl,
+      },
+    }
+  );
+};
+
 User.isVisitorOwner = function (sessionUsername, requestedUsername) {
   return sessionUsername == requestedUsername;
 };

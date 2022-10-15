@@ -20,7 +20,7 @@ exports.about = async (req, res) => {
     const count = await User.contactsCount();
     res.render('about', { count, metatags: metatags({ page: 'about' }) });
   } catch (error) {
-    req.flash('errors', error);
+    req.flash('errors', error.message);
     req.session.save(() => res.redirect('/error'));
   }
 };
@@ -215,19 +215,19 @@ exports.changeProfilePhotoPage = async (req, res) => {
   res.render('settings/change-profile-photo', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Change Profile Photo', path: `settings/${req.session.user.username}/change-profile-photo` } }) });
 };
 
+// refactor like this!
 exports.changeProfilePhoto = async (req, res) => {
   try {
     const imageUrl = await transformImage(req.file.path, req.session.user._id);
+    await User.storeImage(imageUrl, req.session.user.username);
 
-    return res.json({ picture: imageUrl });
+    res.redirect(`/contacts/${req.session.user.username}`);
   } catch (error) {
-    console.log(error);
+    console.log(error.message, 44);
   }
 };
 
-exports.deleteAccountPage = async (req, res) => {
-  res.render('settings/delete-account', { csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Delete Account', path: `settings/${req.session.user.username}/delete-account` } }) });
-};
+exports.deleteAccountPage = async (req, res) => res.render('settings/delete-account', { csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Delete Account', path: `settings/${req.session.user.username}/delete-account` } }) });
 
 exports.deleteAccount = (req, res) => {
   User.delete(req.params.username, req.session.user.username)
