@@ -1,8 +1,8 @@
 const { metatags } = require('../misc/metatags');
-
-const User = require('../models/model'),
-  helpers = require('../misc/helpers'),
-  ObjectId = require('mongodb').ObjectID;
+const { cloudinary, transformImage } = require('../misc/file-upload-cloudinary');
+const User = require('../models/model');
+const helpers = require('../misc/helpers');
+const ObjectId = require('mongodb').ObjectID;
 
 exports.home = async (req, res) => {
   try {
@@ -210,9 +210,19 @@ exports.editProfile = async (req, res) => {
   res.render('settings/edit-profile', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Edit Profile', path: `settings/${req.session.user.username}/edit-profile` } }) });
 };
 
-exports.changeProfilePhoto = async (req, res) => {
+exports.changeProfilePhotoPage = async (req, res) => {
   const profile = await User.findByUsername(req.session.user.username);
   res.render('settings/change-profile-photo', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Change Profile Photo', path: `settings/${req.session.user.username}/change-profile-photo` } }) });
+};
+
+exports.changeProfilePhoto = async (req, res) => {
+  try {
+    const imageUrl = await transformImage(req.file.path, req.session.user._id);
+
+    return res.json({ picture: imageUrl });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.deleteAccountPage = async (req, res) => {
