@@ -152,9 +152,9 @@ export default class AddComments {
                   <p class="comment break-all">${comment}</p>
                 </div>
                 <div class="mt-2 space-x-2 text-sm">
-                  <datetime datetime="${commentDate}" class="comment-date-time font-medium text-gray-500">${commentDate}</datetime>
+                  <datetime datetime="${commentDate}" class="comment-date-time font-medium text-gray-600">${commentDate}</datetime>
 
-                  <span class="font-medium text-gray-500">&middot;</span>
+                  <span class="font-medium text-gray-600">&middot;</span>
                   <button id="edit-comment-button" class="font-medium text-gray-900">Edit</button>
                   <button id="delete-comment-button" data-comment-id="${commentId}" data-profile-email="${profileEmail}" class="font-medium text-red-600">Delete</button>
                 </div>
