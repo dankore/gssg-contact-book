@@ -946,6 +946,29 @@ User.updateCommentFirtName = (email, firstName) => {
   });
 };
 
+// UPDATE PHOTO IN COMMENTS FOR A USER WHO UPDATES THEIR PROFILE
+User.updateCommentPhoto = (email, photo) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await usersCollection.updateMany(
+        { 'comments.visitorEmail': email },
+        {
+          $set: {
+            'comments.$[elem].photo': photo,
+          },
+        },
+        {
+          arrayFilters: [{ 'elem.visitorEmail': email }],
+          multi: true,
+        }
+      );
+      resolve();
+    } catch {
+      reject(err => console.log("Error updating user's comments firstname." + err));
+    }
+  });
+};
+
 // UPDATE A COMMENT
 User.updateComment = data => {
   return new Promise(async (resolve, reject) => {

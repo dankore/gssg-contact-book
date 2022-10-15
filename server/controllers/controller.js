@@ -73,6 +73,7 @@ exports.registrationSubmission = async (req, res) => {
         email: user.data.email,
         firstName: user.data.firstName,
         lastName: user.data.lastName,
+        photo: userDoc.photo,
       };
 
       req.flash('success', 'Success, Up GSS Gwarinpa! Add your nickname, birthday, and more below.');
@@ -102,6 +103,7 @@ exports.login = async (req, res) => {
         email: userDoc.email,
         firstName: userDoc.firstName,
         lastName: userDoc.lastName,
+        photo: userDoc.photo,
       };
 
       req.session.save(() => {
@@ -221,6 +223,8 @@ exports.changeProfilePhoto = async (req, res) => {
     const imageUrl = await transformImage(req.file.path, req.session.user._id);
     await User.storeImage(imageUrl, req.session.user.username);
 
+    User.updateCommentPhoto(req.session.user.email, imageUrl);
+
     res.redirect(`/contacts/${req.session.user.username}`);
   } catch (error) {
     console.log(error.message, 44);
@@ -330,6 +334,7 @@ exports.googleLogin = async (req, res) => {
       username: req.user.username,
       firstName: req.user.firstName,
       lastName: req.user.lastName,
+      photo: req.user.photo,
     };
 
     if (req.user.returningUser) {

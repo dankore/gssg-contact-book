@@ -35,6 +35,7 @@ passport.use(
               firstName: user._json.given_name,
               lastName: user._json.family_name,
               username: user._json.email.split('@')[0],
+              photo: userBool.photo,
               returningUser: true,
             };
             return cb(null, user);
