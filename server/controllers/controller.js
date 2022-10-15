@@ -208,26 +208,41 @@ exports.notFound = (req, res) => res.status(404).render('404', { metatags: metat
 exports.settingsPage = (req, res) => res.status(404).render('settings', { metatags: metatags({ page: 'generic', data: { page_name: 'Settings', path: `settings/${req.session.user.username}` } }) });
 
 exports.editProfile = async (req, res) => {
-  const profile = await User.findByUsername(req.session.user.username);
-  res.render('settings/edit-profile', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Edit Profile', path: `settings/${req.session.user.username}/edit-profile` } }) });
+  try {
+    const profile = await User.findByUsername(req.session.user.username);
+    res.render('settings/edit-profile', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Edit Profile', path: `settings/${req.session.user.username}/edit-profile` } }) });
+  } catch (error) {
+    req.flash('errors', error.message);
+    res.redirect(`/settings/${req.session.user.username}/change-profile-photo`);
+  }
 };
 
 exports.changeProfilePhotoPage = async (req, res) => {
-  const profile = await User.findByUsername(req.session.user.username);
-  res.render('settings/change-profile-photo', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Change Profile Photo', path: `settings/${req.session.user.username}/change-profile-photo` } }) });
+  try {
+    const profile = await User.findByUsername(req.session.user.username);
+    res.render('settings/change-profile-photo', { profile, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Change Profile Photo', path: `settings/${req.session.user.username}/change-profile-photo` } }) });
+  } catch (error) {
+    req.flash('errors', error.message);
+    res.redirect(`/settings/${req.session.user.username}/change-profile-photo`);
+  }
 };
 
-// refactor like this!
+// todo: refactor like this!
 exports.changeProfilePhoto = async (req, res) => {
   try {
     const imageUrl = await transformImage(req.file.path, req.session.user._id);
     await User.storeImage(imageUrl, req.session.user.username);
 
+    // update all comments by user
     User.updateCommentPhoto(req.session.user.email, imageUrl);
 
-    res.redirect(`/contacts/${req.session.user.username}`);
+    // update session user object with the new photo
+    req.session.user.photo = imageUrl;
+
+    req.session.save(async () => res.redirect(`/contacts/${req.session.user.username}`));
   } catch (error) {
-    console.log(error.message, 44);
+    req.flash('errors', error.message);
+    res.redirect(`/settings/${req.session.user.username}/change-profile-photo`);
   }
 };
 
@@ -259,7 +274,6 @@ exports.changePassword = function (req, res) {
       req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
     })
     .catch(errors => {
-      console.log(errors);
       errors.forEach(error => {
         req.flash('errors', error);
       });
