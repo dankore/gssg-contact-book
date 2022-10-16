@@ -61,6 +61,9 @@ router.post('/edit-comment', controller.editComment);
 
 router.get('/contacts', controller.contacts);
 
+// SITE MAP
+router.get('/sitemap.xml', controller.sitemap);
+
 // ERROR
 router.get('/error', controller.error);
 

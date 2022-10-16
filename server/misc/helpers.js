@@ -128,9 +128,12 @@ function whichPage(path, username) {
   }
 }
 
+const working_url = process.env.NODE_ENV == 'dev' ? 'http://localhost:3000' : 'https://www.gssgcontactbook.com';
+
 module.exports = {
   whichPage,
   environment: process.env.NODE_ENV == 'dev' ? 'development' : 'production',
+  working_url,
   isAlphaNumericDashHyphenPeriod,
   statsByYear,
   getUsernameFromHeadersReferrer,

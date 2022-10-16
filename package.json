@@ -51,6 +51,7 @@
     "passport-google-oauth": "^2.0.0",
     "passport-yahoo-oauth": "^0.2.0",
     "sanitize-html": "^2.3.2",
+    "sitemap": "^7.1.1",
     "validator": "^13.7.0",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
