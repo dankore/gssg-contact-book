@@ -24,4 +24,4 @@ USER gwarinpa-user
 EXPOSE 3000
 ENV PORT 3000
 
-CMD ["node", "db.js"]
+CMD ["nodemon", "db.js"]
