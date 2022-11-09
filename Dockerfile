@@ -13,16 +13,15 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
+# Production image, copy all the files
+COPY . .
 ENV NODE_ENV production
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 gwarinpa-user
-
-
 USER gwarinpa-user
 
 EXPOSE 3000
-
 ENV PORT 3000
 
 CMD ["node", "db.js"]
