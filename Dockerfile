@@ -21,7 +21,6 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 gwarinpa-user
 USER gwarinpa-user
 
-EXPOSE 3000
-ENV PORT 3000
+EXPOSE 80
 
-CMD ["nodemon", "db.js"]
+CMD ["node", "db.js"]
