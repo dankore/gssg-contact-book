@@ -69,18 +69,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.use('/contacts/:username', async (req, res, next) => {
-  await User.findByUsername(req.params.username)
-    .then(userDoc => {
-      res.locals.namesOfLikesReceivedFrom = userDoc.likes_received_from;
-      res.locals.commentsCount = commentsHelper(userDoc.comments);
-    })
-    .catch(err => {
-      console.log('Server line 235 ' + err);
-    });
-  next();
-});
-
+app.use('/contacts/:username', require('./misc/user-data')(app));
 app.use('/', router);
 app.use(errorHandlers);
 
