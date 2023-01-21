@@ -9,7 +9,8 @@ export default class AddComments {
     this.commentWordContainer = document.querySelector('#comment-word');
     this.commentsSection = document.querySelector('#comments-section');
     this.modalOverlay = document.querySelector('.modal-overlay');
-    this.is_dev_environment = document.getElementById('gssg-environment').value == 'development';
+    this.is_dev_environment = document.getElementById('app-env').value == 'development';
+    this.sessionUser = document.getElementById('session-user').value;
     this.events();
   }
   // EVENTS
@@ -137,11 +138,12 @@ export default class AddComments {
   }
 
   commentHtml({ commentId, comment, profileEmail, visitorUsername, visitorFirstName, commentDate }, e) {
-    const images_folder = this.is_dev_environment ? 'images-dev' : 'images';
+    const session_user = JSON.parse(this.sessionUser);
+
     return `<li id="li-comment">
             <div class="flex space-x-3">
               <p class="flex-shrink-0">
-                <img loading="lazy" s src="/${images_folder}/${e.target.getAttribute('data-visitor-id')}" class="w-8 h-8 rounded-full" alt="${visitorFirstName}" />
+                <img loading="lazy" s src="${session_user.photo}" class="w-8 h-8 rounded-full" alt="${visitorFirstName}" />
               </p>
 
               <div>
