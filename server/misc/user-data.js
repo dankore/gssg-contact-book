@@ -1,5 +1,5 @@
 //user-data.js
-const User = require('../models/model');
+const User = require('../models/user');
 const { commentsHelper } = require('../misc/helpers');
 
 module.exports = function (app) {

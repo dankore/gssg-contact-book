@@ -1,8 +1,8 @@
 const sanitizeHTML = require('sanitize-html');
-const User = require('../models/model');
+const User = require('../models/user');
 const { environment, whichPage } = require('../misc/helpers');
 
-module.exports = function(app) {
+module.exports = function (app) {
   return async (req, res, next) => {
     // MAKE MARKDOWN AVAILABLE GLOBALLY
     res.locals.filterUserHTML = content => {
@@ -39,4 +39,4 @@ module.exports = function(app) {
     }
     next();
   };
-}
+};

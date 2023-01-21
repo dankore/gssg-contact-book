@@ -2,8 +2,8 @@ const usersCollection = require('../../db.js').db().collection('users'),
   validator = require('validator'),
   bcrypt = require('bcryptjs'),
   crypto = require('crypto'),
-  Email = require('../misc/emailNotifications'),
-  helpers = require('../misc/helpers'),
+  Email = require('../misc/emailNotifications.js'),
+  helpers = require('../misc/helpers.js'),
   ObjectId = require('mongodb').ObjectID,
   _ = require('lodash');
 // CLASS
@@ -846,10 +846,7 @@ User.addSocialUser = data => {
 User.sortProfiles = q => {
   return new Promise(async (resolve, reject) => {
     try {
-      let sortedContacts = await usersCollection
-        .find()
-        .sort({ _id: +q })
-        .toArray();
+      let sortedContacts = await usersCollection.find().sort({ _id: +q }).toArray();
 
       sortedContacts = sortedContacts.map(eachDoc => {
         //clean up each document
