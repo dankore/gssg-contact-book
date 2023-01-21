@@ -1,13 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash');
 const sanitizeHTML = require('sanitize-html');
 const bodyParser = require('body-parser');
 const compression = require('compression');
-const passport = require('passport');
-const cookieParser = require('cookie-parser');
 
 const router = require('./router');
 const User = require('./models/model');
@@ -17,20 +13,7 @@ const app = express();
 require('./misc/passport-config');
 
 // EXPRESS SESSIONS
-let sessionOptions = session({
-  secret: process.env.SESSION_SECRET,
-  store: new MongoStore({ client: require('../db.js') }),
-  resave: false,
-  secure: true,
-  httpOnly: true,
-  domain: 'gssgcontactbook.com',
-  saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 * 24 * 14, httpOnly: true }, // COOKIES EXPIRE IN 14 DAYS
-});
-
-app.use(cookieParser());
-app.use(sessionOptions);
-app.use(passport.initialize({ session: true }));
+require('./misc/session-config')(app);
 
 app.set('views', 'view');
 app.set('view engine', 'ejs');
