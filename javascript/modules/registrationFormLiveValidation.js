@@ -1,4 +1,3 @@
-import axios from 'axios';
 export default class RegistrationFormLiveValidation {
   constructor() {
     this.form = document.querySelector('#registration-form');
@@ -134,10 +133,14 @@ export default class RegistrationFormLiveValidation {
       this.showValidationError(this.email, 'You must provide a valid email address.');
     }
     if (!this.email.errors) {
-      axios
-        .post('/doesEmailExists', { email: this.email.value })
-        .then(response => {
-          if (response.data) {
+      fetch('/doesEmailExists', {
+        method: 'POST',
+        body: JSON.stringify({ email: this.email.value }),
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then(responseData => responseData.json())
+        .then(data => {
+          if (data) {
             this.email.isUnique = false;
             this.showValidationError(this.email, 'That email is already being used.');
           } else {
@@ -145,8 +148,8 @@ export default class RegistrationFormLiveValidation {
             this.hideValidationError(this.email);
           }
         })
-        .catch(() => {
-          console.log('Please try again later.');
+        .catch(err => {
+          console.log('Please try again later.', err);
         });
     }
   }

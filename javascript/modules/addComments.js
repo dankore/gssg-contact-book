@@ -1,5 +1,3 @@
-const axios = require('axios');
-
 export default class AddComments {
   constructor() {
     this.input = document.querySelector('#input-comment');
@@ -78,18 +76,22 @@ export default class AddComments {
 
     if (!inputEditContainer.value) return; // DIS-ALLOW EMPTY TEXT
 
-    axios
-      .post('/edit-comment', {
+    fetch('/edit-comment', {
+      method: 'POST',
+      body: JSON.stringify({
         commentId: inputEditContainer.getAttribute('data-comment-id'),
         comment: inputEditContainer.value,
         profileEmail: e.target.getAttribute('data-profile-email'),
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(responseData => responseData.json())
+      .then(data => {
+        commentContainerServerSide.innerText = data.comment;
+        timesStampContainerServerSide.innerText = data.commentDate;
       })
-      .then(res => {
-        commentContainerServerSide.innerText = res.data.comment;
-        timesStampContainerServerSide.innerText = res.data.commentDate;
-      })
-      .catch(_ => {
-        console.log('Error updating comment.');
+      .catch(err => {
+        console.log('Error updating comment.', err);
       });
 
     this.modalOverlay.classList.remove('active');
@@ -123,11 +125,15 @@ export default class AddComments {
     if (!this.userComment) return;
 
     // SEND DATA TO DB
-    axios
-      .post('/add-comment', { comment: this.userComment, visitorEmail: e.target.getAttribute('data-visitor-email'), contactEmail: e.target.getAttribute('data-contact-email') })
-      .then(res => {
+    fetch('/add-comment', {
+      method: 'POST',
+      body: JSON.stringify({ comment: this.userComment, visitorEmail: e.target.getAttribute('data-visitor-email'), contactEmail: e.target.getAttribute('data-contact-email') }),
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(responseData => responseData.json())
+      .then(data => {
         // INSERT INTO DOM
-        this.commentsContainerUl.insertAdjacentHTML('afterbegin', this.commentHtml(res.data, e));
+        this.commentsContainerUl.insertAdjacentHTML('afterbegin', this.commentHtml(data, e));
 
         this.input.value = '';
         this.input.focus();

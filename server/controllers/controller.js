@@ -338,7 +338,7 @@ exports.resetPasswordToken = (req, res) => {
       res.redirect(`/reset-password/${req.params.token}`);
     });
 };
-// AXIOS
+
 exports.doesEmailExists = async (req, res) => {
   let emailBool = await User.doesEmailExists(req.body.email);
   res.json(emailBool);
@@ -455,7 +455,6 @@ exports.sitemap = (req, res) => {
     smStream.write({ url: '/google-login' });
     smStream.write({ url: '/privacy' });
     smStream.write({ url: '/contacts', changefreq: 'weekly', priority: 0.3 });
-
 
     // cache the response
     streamToPromise(pipeline).then(sm => (sitemap = sm));

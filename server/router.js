@@ -47,7 +47,6 @@ router.post('/reset-password/:token', csrfProtection, controller.resetPasswordTo
 // PRIVACY
 router.get('/privacy', controller.privacy);
 
-// AXIOS
 router.post('/doesEmailExists', controller.doesEmailExists);
 
 // GOOGLE
