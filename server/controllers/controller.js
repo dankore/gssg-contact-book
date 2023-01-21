@@ -5,7 +5,6 @@ const helpers = require('../misc/helpers');
 const ObjectId = require('mongodb').ObjectID;
 const { SitemapStream, streamToPromise } = require('sitemap');
 const { createGzip } = require('zlib');
-const { Readable } = require('stream');
 const { working_url } = require('../misc/helpers');
 
 exports.home = async (req, res) => {
@@ -456,10 +455,7 @@ exports.sitemap = (req, res) => {
     smStream.write({ url: '/google-login' });
     smStream.write({ url: '/privacy' });
     smStream.write({ url: '/contacts', changefreq: 'weekly', priority: 0.3 });
-    /* or use
-    Readable.from([{url: '/page-1'}...]).pipe(smStream)
-    if you are looking to avoid writing your own loop.
-    */
+
 
     // cache the response
     streamToPromise(pipeline).then(sm => (sitemap = sm));

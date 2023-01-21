@@ -3,8 +3,8 @@ const express = require('express');
 const flash = require('connect-flash');
 const compression = require('compression');
 const router = require('./router');
-const errorHandlers = require('./misc/error-handlers');
-const globalVariables = require('./misc/global-variables');
+const errorHandlers = require('./middlewares/error-handlers');
+const globalVariables = require('./middlewares/global-variables');
 const userData = require('./misc/user-data');
 
 const app = express();

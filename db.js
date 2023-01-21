@@ -17,7 +17,7 @@ MongoClient.connect(process.env.CONNECTIONSTRING, { useNewUrlParser: true, useUn
     if (!indexesCreated) await createIndexes(db);
 
     const port = process.env.PORT || 3000;
-    const server = require('./server/server');
+    const server = require('./server/app');
     server.listen(port, () => console.log('Listening on port ' + port));
   })
   .catch(error => console.log(error));
