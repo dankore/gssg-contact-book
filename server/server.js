@@ -9,16 +9,15 @@ const router = require('./router');
 const User = require('./models/model');
 const { commentsHelper, environment, whichPage } = require('./misc/helpers');
 const app = express();
+const errorHandlers = require('./misc/error-handlers');
 
 require('./misc/passport-config');
-
-// EXPRESS SESSIONS
 require('./misc/session-config')(app);
+
 
 app.set('views', 'view');
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -26,6 +25,8 @@ app.use(express.json());
 app.use(flash());
 app.use(compression());
 app.use('/favicon.ico', express.static('public/favicon.ico'));
+
+
 app.use(async (req, res, next) => {
   // MAKE MARKDOWN AVAILABLE GLOBALLY
   res.locals.filterUserHTML = content => {
@@ -81,23 +82,7 @@ app.use('/contacts/:username', async (req, res, next) => {
 });
 
 app.use('/', router);
-
-app.use(function (err, req, res, next) {
-  if (err.code !== 'EBADCSRFTOKEN') return next(err);
-
-  // handle CSRF token errors here
-  res.status(403);
-  res.send(`
-    <p>Error: Bad CSRF token</p>
-    <p>
-      We are so sorry but we suspected this form submission has been tampered with.
-    </p>
-    <p>
-      If you believe this should not happen please contact us at adamu.dankore@gmail.com.
-    </p>
-    <a style="color:green" href="/">Go to homepage</a>
-  `);
-});
+app.use(errorHandlers);
 
 // EXPORT CODE
 module.exports = app;
