@@ -14,6 +14,7 @@ exports.home = async (req, res) => {
 
     res.render('homePage', { contacts, metatags: metatags({ page: '/' }) });
   } catch (error) {
+    console.log(error);
     req.flash('errors', error);
     req.session.save(() => res.redirect('/error'));
   }
