@@ -6,6 +6,7 @@ const usersCollection = require('../../db.js').db().collection('users'),
   helpers = require('../misc/helpers.js'),
   ObjectId = require('mongodb').ObjectID,
   _ = require('lodash');
+
 // CLASS
 let User = class user {
   constructor(data, sessionUsername, requestedUsername) {
