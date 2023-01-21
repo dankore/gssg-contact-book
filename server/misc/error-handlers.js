@@ -1,4 +1,3 @@
-// error-handlers.js
 module.exports = function (err, req, res, next) {
   if (err.code !== 'EBADCSRFTOKEN') return next(err);
   res.status(403);
