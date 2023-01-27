@@ -9,6 +9,7 @@ import ClickToComment from './modules/clickToComment';
 import AddComment from './modules/addComments';
 import ToggleMobileMenu from './modules/toggleMobileMenu';
 import ImagePreview from './modules/image-preview';
+import ImageZoom from './modules/image-zoom';
 
 document.querySelector('#more-profile-btn') && new ToggleProfile();
 document.querySelector('#btn-optional-fields') && new ToggleEditPage();
@@ -22,3 +23,10 @@ document.getElementById('click-to-comment') && new ClickToComment();
 document.getElementById('add-comment-button') && new AddComment();
 document.getElementById('open-mobile-menu') && new ToggleMobileMenu();
 document.getElementById('change-profile-photo-form') && new ImagePreview();
+
+if (document.getElementById('preview-button')) {
+  document.getElementById('preview-button').addEventListener('click', event => {
+    event.preventDefault();
+    new ImageZoom(event.target.dataset.image);
+  });
+}
