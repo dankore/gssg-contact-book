@@ -1,23 +1,49 @@
 const dotenv = require('dotenv');
-const MongoClient = require('mongodb').MongoClient;
+const { MongoClient } = require('mongodb');
+
 dotenv.config();
 
-MongoClient.connect(process.env.CONNECTIONSTRING, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(async function (client) {
+const startMongodb = async () => {
+  try {
+    const client = await MongoClient.connect(process.env.CONNECTIONSTRING, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     module.exports = client;
 
-    const db = await client.db();
+    const db = client.db();
+    await createIndexes(db);
 
-    let indexesCreated = false;
-    async function createIndexes(db) {
-      await Promise.all([db.collection('sessions'), db.collection('users').createIndex({ email: 1, firstName: 1, lastName: 1, year: 1, username: 1 })]);
-      indexesCreated = true;
-    }
-
-    if (!indexesCreated) await createIndexes(db);
-
-    const port = process.env.PORT || 3000;
+    const port = 3000;
     const server = require('../server/app');
-    server.listen(port, () => console.log('Listening on port ' + port));
-  })
-  .catch(error => console.log(error));
+    server.listen(port, () => {
+      console.log(`🚀 🎉 GSS Gwarinpa server is now up and running on port ${port}! 🎉 🚀`);
+      console.log(`The server is ready to serve all requests with grace and efficiency.`);
+      console.log(`Keep an eye on the logs for any incoming requests and their status.`);
+    });
+
+  } catch (error) {
+    console.error(`An error occurred: ${error}`);
+    process.exit(1);
+  }
+};
+
+const createIndexes = async db => {
+  try {
+    await Promise.all([
+      db.collection('sessions'),
+      db.collection('users').createIndex({
+        email: 1,
+        firstName: 1,
+        lastName: 1,
+        year: 1,
+        username: 1,
+      }),
+    ]);
+  } catch (error) {
+    console.error(`An error occurred while creating indexes: ${error}`);
+    process.exit(1);
+  }
+};
+
+startMongodb();
