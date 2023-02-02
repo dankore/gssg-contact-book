@@ -5,7 +5,6 @@ const compression = require('compression');
 const router = require('./router');
 const handleCSRFTokenError = require('./middlewares/handle-csrf-token-errors');
 const globalVariables = require('./middlewares/global-variables');
-const userData = require('./middlewares/user-data');
 
 const app = express();
 
