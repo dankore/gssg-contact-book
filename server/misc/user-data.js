@@ -1,4 +1,3 @@
-//user-data.js
 const User = require('../models/user');
 const { commentsHelper } = require('../misc/helpers');
 
