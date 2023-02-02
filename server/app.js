@@ -3,7 +3,7 @@ const express = require('express');
 const flash = require('connect-flash');
 const compression = require('compression');
 const router = require('./router');
-const errorHandlers = require('./middlewares/error-handlers');
+const handleCSRFTokenError = require('./middlewares/handle-csrf-token-errors');
 const globalVariables = require('./middlewares/global-variables');
 const userData = require('./middlewares/user-data');
 
@@ -23,8 +23,7 @@ app.use(flash());
 app.use(compression());
 app.use('/favicon.ico', express.static('public/favicon.ico'));
 app.use(globalVariables(app));
-app.use('/contacts/:username', userData(app));
 app.use('/', router);
-app.use(errorHandlers);
+app.use(handleCSRFTokenError);
 
 module.exports = app;
