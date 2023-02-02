@@ -14,29 +14,25 @@ module.exports = function (app) {
         allowedSchemes: ['http', 'https', 'ftp', 'mailto'],
       });
     };
+
     // Make all available from all templates
     res.locals.errors = req.flash('errors');
     res.locals.success = req.flash('success');
     res.locals.user = req.session.user;
+
     // IF PATH IS HOMEPAGE SHOW SCROLL-TO-TOP
     res.locals.path = req.originalUrl;
     res.locals.environment = environment;
+
     // SET DOMAIN
     environment == 'development' ? (res.locals.domain = 'localhost:3000') : (res.locals.domain = 'gssgcontactbook.com');
+
     // GLOBALS FOR WHEN A USER IS LOGGED IN
-    if (req.session.user) {
+    if (res.locals.user) {
       // for use in settings page
-      res.locals.whichPage = whichPage(req.originalUrl, req.session.user.username);
-      await User.findByUsername(req.session.user.username)
-        .then(userDoc => {
-          res.locals.profilesUserLiked = userDoc.likes_given_to;
-          res.locals.emailForComment = userDoc.email;
-          res.locals.photoUrlForComment = userDoc.username;
-        })
-        .catch(err => {
-          console.log('Server line 153 ' + err);
-        });
+      res.locals.whichPage = whichPage(req.originalUrl, res.locals.user.username);
     }
+
     next();
   };
 };
