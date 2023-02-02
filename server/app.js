@@ -5,7 +5,7 @@ const compression = require('compression');
 const router = require('./router');
 const errorHandlers = require('./middlewares/error-handlers');
 const globalVariables = require('./middlewares/global-variables');
-const userData = require('./misc/user-data');
+const userData = require('./middlewares/user-data');
 
 const app = express();
 
