@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "watch": "webpack --watch",
-    "dev-start": "NODE_ENV=dev nodemon db",
-    "start": "nodemon db",
+    "dev-start": "NODE_ENV=dev nodemon database/mongodb",
+    "start": "nodemon database/mongodb",
     "tailwind": "npx tailwindcss -i ./public/tailwindcss/input.css -o ./public/tailwindcss/output.css --watch --minify"
   },
   "repository": {

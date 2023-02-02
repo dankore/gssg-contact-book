@@ -1,4 +1,4 @@
-const usersCollection = require('../../db.js').db().collection('users'),
+const usersCollection = require('../../database/mongodb.js').db().collection('users'),
   validator = require('validator'),
   bcrypt = require('bcryptjs'),
   crypto = require('crypto'),
