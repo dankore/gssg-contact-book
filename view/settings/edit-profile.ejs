@@ -84,50 +84,55 @@
               <div class="col-span-12 sm:col-span-6">
                 <label for="month" class="block text-sm font-medium text-gray-700">month</label>
                 <select id="month" name="month" class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
-                  <option value="January" selected="<%= profile.month === 'January' %>">January</option>
-                  <option value="February" selected="<%= profile.month === 'February' %>">February</option>
-                  <option value="March" selected="<%= profile.month === 'March' %>">March</option>
-                  <option value="April" selected="<%= profile.month === 'April' %>">April</option>
-                  <option value="May" selected="<%= profile.month === 'May' %>">May</option>
-                  <option value="June" selected="<%= profile.month === 'June' %>">June</option>
-                  <option value="July" selected="<%= profile.month === 'July' %>">July</option>
-                  <option value="August" selected="<%= profile.month === 'August' %>">August</option>
-                  <option value="September" selected="<%= profile.month === 'September' %>">September</option>
-                  <option value="October" selected="<%= profile.month === 'October' %>">October</option>
-                  <option value="November" selected="<%= profile.month === 'November' %>">November</option>
-                  <option value="December" selected="<%= profile.month === 'December' %>">December</option>
+                  <option value="">Select Month</option>
+                  <option value="January" <%= profile.month === 'January' ? 'selected' : '' %>>January</option>
+                  <option value="February" <%= profile.month === 'February' ? 'selected' : '' %>>February</option>
+                  <option value="March" <%= profile.month === 'March' ? 'selected' : '' %>>March</option>
+                  <option value="April" <%= profile.month === 'April' ? 'selected' : '' %>>April</option>
+                  <option value="May" <%= profile.month === 'May' ? 'selected' : '' %>>May</option>
+                  <option value="June" <%= profile.month === 'June' ? 'selected' : '' %>>June</option>
+                  <option value="July" <%= profile.month === 'July' ? 'selected' : '' %>>July</option>
+                  <option value="August" <%= profile.month === 'August' ? 'selected' : '' %>>August</option>
+                  <option value="September" <%= profile.month === 'September' ? 'selected' : '' %>>September</option>
+                  <option value="October" <%= profile.month === 'October' ? 'selected' : '' %>>October</option>
+                  <option value="November" <%= profile.month === 'November' ? 'selected' : '' %>>November</option>
+                  <option value="December" <%= profile.month === 'December' ? 'selected' : '' %>>December</option>
                 </select>
               </div>
+
               <div class="col-span-12 sm:col-span-6">
                 <label for="day" class="block text-sm font-medium text-gray-700">Day of Birth</label>
                 <input type="text" name="day" value="<%= profile.day %>" id="day" autocomplete="bday-day" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
               </div>
 
               <div class="col-span-12">
-                <label for="relationship" class="block text-sm font-medium text-gray-700">relationship</label>
+                <label for="relationship" class="block text-sm font-medium text-gray-700">Relationship</label>
                 <select id="relationship" name="relationship" class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
-                  <option value="Single" selected="<%= profile.relationship === 'Single' %>">Single</option>
-                  <option value="Married" selected="<%= profile.relationship === 'Married' %>">Married</option>
-                  <option value="Engaged" selected="<%= profile.relationship === 'Engaged' %>">Engaged</option>
-                  <option value="In a relationship" selected="<%= profile.relationship === 'In a relationship' %>">In a relationship</option>
-                  <option value="In a domestic partnership" selected="<%= profile.relationship === 'In a domestic partnership' %>">In a domestic partnership</option>
-                  <option value="Separated" selected="<%= profile.relationship === 'Separated' %>">Separated</option>
-                  <option value="Divorced" selected="<%= profile.relationship === 'Divorced' %>">Divorced</option>
-                  <option value="In an open relationship" selected="<%= profile.relationship === 'In an open relationship' %>">In an open relationship</option>
-                  <option value="It's complicated" selected="<%= profile.relationship === 'It\'s complicated' %>">It's complicated</option>
-                  <option value="Widowed" selected="<%= profile.relationship === 'Widowed' %>">Widowed</option>
+                  <option value="">Select Relationship</option>
+                  <option value="Single" <%= profile.relationship === 'Single' ? 'selected' : '' %>>Single</option>
+                  <option value="Married" <%= profile.relationship === 'Married' ? 'selected' : '' %>>Married</option>
+                  <option value="Engaged" <%= profile.relationship === 'Engaged' ? 'selected' : '' %>>Engaged</option>
+                  <option value="In a relationship" <%= profile.relationship === 'In a relationship' ? 'selected' : '' %>>In a relationship</option>
+                  <option value="In a domestic partnership" <%= profile.relationship === 'In a domestic partnership' ? 'selected' : '' %>>In a domestic partnership</option>
+                  <option value="Separated" <%= profile.relationship === 'Separated' ? 'selected' : '' %>>Separated</option>
+                  <option value="Divorced" <%= profile.relationship === 'Divorced' ? 'selected' : '' %>>Divorced</option>
+                  <option value="In an open relationship" <%= profile.relationship === 'In an open relationship' ? 'selected' : '' %>>In an open relationship</option>
+                  <option value="It's complicated" <%= profile.relationship === "It's complicated" ? 'selected' : '' %>>It's complicated</option>
+                  <option value="Widowed" <%= profile.relationship === 'Widowed' ? 'selected' : '' %>>Widowed</option>
                 </select>
               </div>
 
               <div class="col-span-12 sm:col-span-6">
-                <label for="social_type_1" class="block text-sm font-medium text-gray-700"> Select Social media type #1</label>
+                <label for="social_type_1" class="block text-sm font-medium text-gray-700">Select Social media type #1</label>
                 <select id="social_type_1" name="social_type_1" class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                  <option value="">Select Select Social media type #1</option>
                   <option value="Twitter" <%= profile.social_type_1 === 'Twitter' ? 'selected' : '' %> >Twitter</option>
                   <option value="Instagram" <%= profile.social_type_1 === 'Instagram' ? 'selected' : '' %> >Instagram</option>
                   <option value="WhatsApp" <%= profile.social_type_1 === 'WhatsApp' ? 'selected' : '' %> >WhatsApp</option>
                   <option value="Facebook" <%= profile.social_type_1 === 'Facebook' ? 'selected' : '' %> >Facebook</option>
                 </select>
               </div>
+
               <div class="col-span-12 sm:col-span-6">
                 <label for="link_social_type_1" class="block text-sm font-medium text-gray-700"> Link to social media #1 </label>
                 <input type="url" name="link_social_type_1" value="<%= profile.link_social_type_1 %>" id="link_social_type_1" autocomplete="url" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />
@@ -136,12 +141,14 @@
               <div class="col-span-12 sm:col-span-6">
                 <label for="social_type_2" class="block text-sm font-medium text-gray-700"> Select Social media type #2</label>
                 <select id="social_type_2" name="social_type_2" class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                  <option value="">Select Select Social media type #2</option>
                   <option value="Twitter" <%= profile.social_type_2 === 'Twitter' ? 'selected' : '' %> >Twitter</option>
                   <option value="Instagram" <%= profile.social_type_2 === 'Instagram' ? 'selected' : '' %> >Instagram</option>
                   <option value="WhatsApp" <%= profile.social_type_2 === 'WhatsApp' ? 'selected' : '' %> >WhatsApp</option>
                   <option value="Facebook" <%= profile.social_type_2 === 'Facebook' ? 'selected' : '' %> >Facebook</option>
                 </select>
               </div>
+              
               <div class="col-span-12 sm:col-span-6">
                 <label for="link_social_type_2" class="block text-sm font-medium text-gray-700"> Link to social media #1 </label>
                 <input type="url" name="link_social_type_2" value="<%= profile.link_social_type_2 %>" id="link_social_type_2" autocomplete="url" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" />

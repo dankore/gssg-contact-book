@@ -1,7 +1,8 @@
 
 <!-- FOOTER -->
 <footer>
-  <input id="gssg-environment" type="hidden" value="<%= locals.environment %>" >
+  <input id="app-env" type="hidden" value="<%= locals.environment %>" >
+  <input id="session-user" type="hidden" value="<%= JSON.stringify(locals.user) %>" >
     <!-- IF HOMEPAGE SHOW SCROLL-TO-TOP -->
   <% if( path == "/" ){ %>
       <div style="scroll-behavior: smooth;" class="flex justify-end"><a href="#main-content"> &#8657 Scroll To Top &#8657</a></div>

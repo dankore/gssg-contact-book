@@ -3,7 +3,7 @@ const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const dotenv = require('dotenv');
 dotenv.config();
-const usersCollection = require('../../db.js').db().collection('users');
+const usersCollection = require('../../database/mongodb.js').db().collection('users');
 
 const { hostname: cloud_name, username: api_key, password: api_secret } = new URL(process.env.CLOUDINARY_URL);
 

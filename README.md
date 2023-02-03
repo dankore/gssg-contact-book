@@ -4,7 +4,7 @@
 
 An open source web application for contact information of present and past students of Government Secondary School, Gwarinpa Abuja, Nigeria.
 
-[![GSS Gwarinpa Contact Book](https://raw.githubusercontent.com/dankore/gssg-contact-book/master/public/homepage-screen-shot.png)](https://www.gssgcontactbook.com)
+[![GSS Gwarinpa Contact Book](https://raw.githubusercontent.com/dankore/gssg-contact-book/master/public/static/repo-banner.png)](https://www.gssgcontactbook.com)
 
 ## On a mission to empower GSS Gwarinpa present and past students
 

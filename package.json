@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "watch": "webpack --watch",
-    "dev-start": "NODE_ENV=dev nodemon db",
-    "start": "nodemon db",
+    "dev-start": "NODE_ENV=dev nodemon database/mongodb",
+    "start": "nodemon database/mongodb",
     "tailwind": "npx tailwindcss -i ./public/tailwindcss/input.css -o ./public/tailwindcss/output.css --watch --minify"
   },
   "repository": {
@@ -23,7 +23,6 @@
     "@babel/core": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
     "aws-sdk": "^2.814.0",
-    "axios": "^0.21.2",
     "babel-loader": "^8.0.6",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",

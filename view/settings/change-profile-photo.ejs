@@ -45,9 +45,9 @@
 
                 <div id="desktop-container" class="relative hidden overflow-hidden rounded-full lg:block">
                   <% if(profile.google_id){ %>
-                  <img loading="lazy" src="<%= profile.google_photo %>" class="relative h-40 w-40 rounded-full from-indigo-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
+                  <img id="profile-photo" loading="lazy" src="<%= profile.google_photo %>" class="relative h-40 w-40 rounded-full from-indigo-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
                   <% } else { %>
-                  <img loading="lazy" src="<%= profile.photo %>" class="relative h-40 w-40 rounded-full from-indigo-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
+                  <img id="profile-photo" loading="lazy" src="<%= profile.photo %>" class="relative h-40 w-40 rounded-full from-indigo-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
                   <%}%>
                   <label for="desktop-user-photo" class="absolute inset-0 flex h-full w-full items-center justify-center bg-black bg-opacity-75 text-sm font-medium text-white opacity-0 focus-within:opacity-100 hover:opacity-100">
                     <span>Change</span>
@@ -60,12 +60,17 @@
           </div>
 
           <div class="divide-y divide-gray-200 pt-6">
-            <div class="mt-4 flex justify-end py-4 px-4 sm:px-6">
-              <a href="/contacts/<%= user.username %>" class="inline-flex justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Cancel</a>
-              <button type="submit" class="ml-5 inline-flex justify-center rounded-md border border-transparent bg-indigo-700 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
+            <div class="mt-4 flex justify-between py-4 px-4 sm:px-6">
+              <button id="preview-button" data-image="<%= profile.photo || profile.google_photo %>" class="ml-5 inline-flex justify-center rounded-md border border-transparent bg-indigo-700 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Preview</button>
+              <div>
+                <a href="/contacts/<%= user.username %>" class="inline-flex justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Cancel</a>
+                <button type="submit" class="ml-5 inline-flex justify-center rounded-md border border-transparent bg-indigo-700 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
+              </div>
             </div>
           </div>
         </form>
+
+        <!-- button to open the image preview -->
       </div>
     </div>
   </div>
