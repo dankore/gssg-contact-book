@@ -693,7 +693,7 @@ User.prototype.resetToken = function (token) {
   });
 };
 
-User.doesEmailExists = email => {
+User.doesEmailExist = email => {
   return new Promise(async (resolve, reject) => {
     if (typeof email != 'string') {
       resolve(false);

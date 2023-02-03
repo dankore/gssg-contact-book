@@ -109,6 +109,7 @@ function whichPage(path, username) {
 const working_url = process.env.NODE_ENV == 'dev' ? 'http://localhost:3000' : 'https://www.gssgcontactbook.com';
 
 const searcheableFields = ['firstName', 'lastName', 'year', 'email', 'nickname', 'residence', 'class', 'relationship', 'occupation', 'month', 'day', 'teacher'];
+const sitemapUrls = ['/', '/about', '/login', '/register', '/google-login', '/privacy', '/contacts'];
 
 module.exports = {
   getHMS,
@@ -121,5 +122,6 @@ module.exports = {
   sortProfiles,
   singlePropArrayFilter,
   commentsHelper,
+  sitemapUrls,
   searcheableFields,
 };

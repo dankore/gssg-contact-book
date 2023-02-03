@@ -47,7 +47,7 @@ router.post('/reset-password/:token', csrfProtection, userController.resetPasswo
 // PRIVACY
 router.get('/privacy', userController.privacy);
 
-router.post('/doesEmailExists', userController.doesEmailExists);
+router.post('/doesEmailExist', userController.doesEmailExist);
 
 // GOOGLE
 router.get('/google-login', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'] }));

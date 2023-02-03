@@ -213,7 +213,6 @@ exports.edit = async (req, res) => {
   }
 };
 
-
 exports.notFound = (req, res) => res.status(404).render('404', { metatags: metatags({ page: 'generic', data: { page_name: '404' } }) });
 
 exports.settingsPage = (req, res) => res.status(404).render('settings', { metatags: metatags({ page: 'generic', data: { page_name: 'Settings', path: `settings/${req.session.user.username}` } }) });
@@ -238,117 +237,153 @@ exports.changeProfilePhotoPage = async (req, res) => {
   }
 };
 
-// todo: refactor like this!
 exports.changeProfilePhoto = async (req, res) => {
   try {
     const imageUrl = await transformImage(req.file.path, req.session.user._id);
     await User.storeImage(imageUrl, req.session.user.username);
 
     // update all comments by user
-    User.updateCommentPhoto(req.session.user.email, imageUrl);
+    await User.updateCommentPhoto(req.session.user.email, imageUrl);
 
     // update session user object with the new photo
     req.session.user.photo = imageUrl;
 
-    req.session.save(async () => res.redirect(`/contacts/${req.session.user.username}`));
+    req.session.save(() => res.redirect(`/contacts/${req.session.user.username}`));
   } catch (error) {
     req.flash('errors', error.message);
-    res.redirect(`/settings/${req.session.user.username}/change-profile-photo`);
+    req.session.save(() => res.redirect(`/settings/${req.session.user.username}/change-profile-photo`));
   }
 };
 
-exports.deleteAccountPage = async (req, res) => res.render('settings/delete-account', { csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Delete Account', path: `settings/${req.session.user.username}/delete-account` } }) });
-
-exports.deleteAccount = (req, res) => {
-  User.delete(req.params.username, req.session.user.username)
-    .then(() => {
-      req.flash('success', 'Account successfully deleted.');
-      req.session.destroy(() => res.redirect('/'));
-    })
-    .catch(() => {
-      req.flash('errors', 'You do not have permission to perform that action.');
-      req.session.save(() => res.redirect('/error'));
+exports.deleteAccountPage = async (req, res) => {
+  try {
+    res.render('settings/delete-account', {
+      csrfToken: req.csrfToken(),
+      metatags: metatags({
+        page: 'generic',
+        data: {
+          page_name: 'Delete Account',
+          path: `settings/${req.session.user.username}/delete-account`,
+        },
+      }),
     });
+  } catch (error) {
+    console.error(error);
+    req.flash('errors', 'An unexpected error occurred, please try again later.');
+    req.session.save(() => res.redirect('/error'));
+  }
 };
 
-exports.privacy = (req, res) => res.render('privacy', { metatags: metatags({ page: 'privacy' }) });
+exports.deleteAccount = async (req, res) => {
+  try {
+    await User.delete(req.params.username, req.session.user.username);
 
-exports.changePasswordPage = (req, res) => res.render('settings/change-password', { username: req.session.user.username, csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Change Your Password' } }) });
+    req.flash('success', 'Account successfully deleted.');
+    req.session.destroy(() => res.redirect('/'));
+  } catch (error) {
+    req.flash('errors', 'You do not have permission to perform that action.');
+    req.session.save(() => res.redirect('/error'));
+  }
+};
 
-exports.changePassword = function (req, res) {
-  let user = new User(req.body, req.session.user.username, req.params.username);
+exports.privacy = (req, res) => {
+  res.render('privacy', {
+    metatags: metatags({ page: 'privacy' }),
+  });
+};
 
-  user
-    .updatePassword()
-    .then(successMessage => {
-      req.flash('success', successMessage);
-      req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
-    })
-    .catch(errors => {
-      errors.forEach(error => {
-        req.flash('errors', error);
-      });
-      req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
+exports.changePasswordPage = (req, res) => {
+  res.render('settings/change-password', {
+    username: req.session.user.username,
+    csrfToken: req.csrfToken(),
+    metatags: metatags({
+      page: 'generic',
+      data: {
+        page_name: 'Change Your Password',
+      },
+    }),
+  });
+};
+
+exports.changePassword = async function (req, res) {
+  try {
+    let user = new User(req.body, req.session.user.username, req.params.username);
+    const successMessage = await user.updatePassword();
+    req.flash('success', successMessage);
+    await req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
+  } catch (errors) {
+    errors.forEach(error => {
+      req.flash('errors', error);
     });
+    await req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
+  }
 };
 
 exports.resetPasswordPage = (req, res) => {
-  req.session.user ? res.redirect('/') : res.render('resetPasswordPage', { csrfToken: req.csrfToken(), metatags: metatags({ page: 'generic', data: { page_name: 'Reset Your Password', path: 'reset-password' } }) });
-};
-
-exports.resetPassword = (req, res) => {
-  let user = new User(req.body);
-
-  user
-    .resetPassword(req.headers.host)
-    .then(successMessage => {
-      req.flash('success', successMessage);
-      res.redirect('/reset-password');
-    })
-    .catch(errors => {
-      errors.forEach(error => {
-        req.flash('errors', error);
-      });
-
-      res.redirect('/reset-password');
+  if (req.session.user) {
+    return res.redirect('/');
+  } else {
+    return res.render('resetPasswordPage', {
+      csrfToken: req.csrfToken(),
+      metatags: metatags({ page: 'generic', data: { page_name: 'Reset Your Password', path: 'reset-password' } }),
     });
+  }
 };
 
-exports.resetPasswordTokenPage = (req, res) => {
-  let user = User.resetTokenExpiryTest(req.params.token);
-
-  user
-    .then(() => {
-      res.render('resetTokenPage', {
-        token: req.params.token,
-        csrfToken: req.csrfToken(),
-        metatags: metatags({ page: 'generic', data: { page_name: 'Change Your Password', path: `reset-password/${req.params.token}` } }),
-      });
-    })
-    .catch(error => {
+exports.resetPassword = async (req, res) => {
+  try {
+    const user = new User(req.body);
+    const successMessage = await user.resetPassword(req.headers.host);
+    req.flash('success', successMessage);
+    res.redirect('/reset-password');
+  } catch (errors) {
+    errors.forEach(error => {
       req.flash('errors', error);
-      res.redirect('/reset-password');
     });
+    res.redirect('/reset-password');
+  }
 };
 
-exports.resetPasswordToken = (req, res) => {
-  let user = new User(req.body);
-
-  user
-    .resetToken(req.params.token)
-    .then(message => {
-      req.flash('success', message);
-      res.redirect('/login');
-    })
-    .catch(error => {
-      req.flash('errors', error);
-      res.redirect(`/reset-password/${req.params.token}`);
+exports.resetPasswordTokenPage = async (req, res) => {
+  try {
+    await User.resetTokenExpiryTest(req.params.token);
+    res.render('resetTokenPage', {
+      token: req.params.token,
+      csrfToken: req.csrfToken(),
+      metatags: metatags({
+        page: 'generic',
+        data: {
+          page_name: 'Change Your Password',
+          path: `reset-password/${req.params.token}`,
+        },
+      }),
     });
+  } catch (error) {
+    req.flash('errors', error);
+    res.redirect('/reset-password');
+  }
 };
 
-exports.doesEmailExists = async (req, res) => {
-  let emailBool = await User.doesEmailExists(req.body.email);
-  res.json(emailBool);
+exports.resetPasswordToken = async (req, res) => {
+  try {
+    let user = new User(req.body);
+    let message = await user.resetToken(req.params.token);
+    req.flash('success', message);
+    res.redirect('/login');
+  } catch (error) {
+    req.flash('errors', error);
+    res.redirect(`/reset-password/${req.params.token}`);
+  }
+};
+
+exports.doesEmailExist = async (req, res) => {
+  try {
+    const emailExists = await User.doesEmailExist(req.body.email);
+    res.json(emailExists);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // GOOGLE LOGIN
@@ -379,64 +414,62 @@ exports.googleLogin = async (req, res) => {
   }
 };
 
-// COMMENTS
 exports.addComment = async (req, res) => {
-  const contactUsername = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
-  const userDoc = await User.findByUsername(req.session.user.username);
-  const commentDate = helpers.getMonthDayYear() + ', ' + helpers.getHMS();
+  try {
+    const userDoc = await User.findByUsername(req.session.user.username);
+    const commentDate = helpers.getMonthDayYear() + ', ' + helpers.getHMS();
 
-  // GET RID OF BOGUS AND SANITIZE DATA
-  const data = {
-    userId: req.session.user._id,
-    ...(userDoc.google_id && { google_id: userDoc.google_id, google_photo: userDoc.photo }),
-    commentId: new ObjectId(),
-    comment: req.body.comment,
-    visitorEmail: req.body.visitorEmail,
-    visitorUsername: userDoc.username,
-    visitorFirstName: userDoc.firstName,
-    profileEmail: req.body.contactEmail,
-    photo: userDoc.photo,
-    commentDate: commentDate,
-  };
+    // SANITIZE AND ADD ONLY NECESSARY DATA
+    const data = {
+      userId: req.session.user._id,
+      commentId: new ObjectId(),
+      comment: req.body.comment.trim(),
+      visitorEmail: req.body.visitorEmail.trim(),
+      visitorUsername: userDoc.username,
+      visitorFirstName: userDoc.firstName,
+      profileEmail: req.body.contactEmail.trim(),
+      photo: userDoc.photo,
+      commentDate,
+    };
 
-  User.saveComment(data)
-    .then(response => {
-      res.json(response);
-    })
-    .catch(error => {
-      res.json(error.message);
-    });
+    // CONDITIONALLY ADD GOOGLE_ID AND GOOGLE_PHOTO
+    if (userDoc.google_id) {
+      data.google_id = userDoc.google_id;
+      data.google_photo = userDoc.photo;
+    }
+
+    const response = await User.saveComment(data);
+    res.json(response);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // UPDATE A COMMENT
-exports.editComment = (req, res) => {
-  const profileUsername = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
-  // GET RID OF BOGUS AND SANITIZE DATA
-  const data = {
-    commentId: req.body.commentId,
-    comment: req.body.comment,
-    profileEmail: req.body.profileEmail,
-    profileUsername,
-  };
+exports.editComment = async (req, res) => {
+  try {
+    const profileUsername = helpers.getUsernameFromHeadersReferrer(req.headers.referer);
+    const data = {
+      commentId: req.body.commentId,
+      comment: req.body.comment.trim(),
+      profileEmail: req.body.profileEmail.trim(),
+      profileUsername,
+    };
 
-  User.updateComment(data)
-    .then(response => {
-      res.json(response);
-    })
-    .catch(error => {
-      res.json(error.message);
-    });
+    const response = await User.updateComment(data);
+    res.json(response);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-// DELETE A COMMENT
-exports.deleteComment = (req, res) => {
-  User.deleteComment(req.body.commentId, req.body.profileEmail)
-    .then(successMessage => {
-      res.json(successMessage);
-    })
-    .catch(error => {
-      res.json(error.message);
-    });
+exports.deleteComment = async (req, res) => {
+  try {
+    const successMessage = await User.deleteComment(req.body.commentId, req.body.profileEmail.trim());
+    res.json(successMessage);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 let sitemap;
@@ -444,6 +477,7 @@ let sitemap;
 exports.sitemap = (req, res) => {
   res.header('Content-Type', 'application/xml');
   res.header('Content-Encoding', 'gzip');
+
   // if we have a cached entry send it
   if (sitemap) {
     res.send(sitemap);
@@ -453,15 +487,9 @@ exports.sitemap = (req, res) => {
   try {
     const smStream = new SitemapStream({ hostname: working_url });
     const pipeline = smStream.pipe(createGzip());
-
-    // pipe your entries or directly write them.
-    smStream.write({ url: '/' });
-    smStream.write({ url: '/about' });
-    smStream.write({ url: '/login' });
-    smStream.write({ url: '/register' });
-    smStream.write({ url: '/google-login' });
-    smStream.write({ url: '/privacy' });
-    smStream.write({ url: '/contacts', changefreq: 'weekly', priority: 0.3 });
+    helpers.sitemapUrls.forEach(url => {
+      smStream.write({ url });
+    });
 
     // cache the response
     streamToPromise(pipeline).then(sm => (sitemap = sm));
