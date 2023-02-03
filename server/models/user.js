@@ -351,45 +351,54 @@ User.prototype.update = function () {
   });
 };
 
-User.prototype.actuallyUpdate = function () {
-  return new Promise(async (resolve, reject) => {
+User.prototype.update = async function () {
+  try {
+    let profile = await User.findByUsername(this.requestedUsername);
+    if (User.isVisitorOwner(this.sessionUsername, profile.username)) {
+      return await this.actuallyUpdate();
+    } else {
+      throw new Error('Visitor is not the owner of the profile');
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+User.prototype.actuallyUpdate = async function () {
+  try {
     this.cleanUp();
     this.validateSomeUserRegistrationInputs();
     this.editValidation();
 
     if (!this.errors.length) {
-      const userDoc = await usersCollection.findOneAndUpdate(
-        { username: this.requestedUsername },
-        {
-          $set: {
-            firstName: this.data.firstName,
-            lastName: this.data.lastName,
-            email: this.data.email,
-            year: this.data.year,
-            nickname: this.data.nickname,
-            username: this.data.username,
-            residence: this.data.residence,
-            class: this.data.class,
-            occupation: this.data.occupation,
-            teacher: this.data.teacher,
-            month: this.data.month,
-            day: this.data.day,
-            phone: this.data.phone,
-            social_type_1: this.data.social_type_1,
-            link_social_type_1: this.data.link_social_type_1,
-            social_type_2: this.data.social_type_2,
-            link_social_type_2: this.data.link_social_type_2,
-            relationship: this.data.relationship,
-          },
-        },
-        { returnOriginal: false }
-      );
-
-      resolve({ status: 'success', userDoc: userDoc.value });
-    } else {
-      resolve('failure');
+      const updateData = {
+        firstName: this.data.firstName,
+        lastName: this.data.lastName,
+        email: this.data.email,
+        year: this.data.year,
+        nickname: this.data.nickname,
+        username: this.data.username,
+        residence: this.data.residence,
+        class: this.data.class,
+        occupation: this.data.occupation,
+        teacher: this.data.teacher,
+        month: this.data.month,
+        day: this.data.day,
+        phone: this.data.phone,
+        social_type_1: this.data.social_type_1,
+        link_social_type_1: this.data.link_social_type_1,
+        social_type_2: this.data.social_type_2,
+        link_social_type_2: this.data.link_social_type_2,
+        relationship: this.data.relationship,
+      };
+      const result = await usersCollection.findOneAndUpdate({ username: this.requestedUsername }, { $set: updateData }, { returnOriginal: false });
+      return { status: 'success', userDoc: User.extractAllowedUserProps(result.value) };
     }
-  });
+    return { status: 'failure' };
+  } catch (error) {
+    console.error(error);
+    return { status: 'failure', error: error };
+  }
 };
 
 User.storeImage = async (imageUrl, username) => {
@@ -431,7 +440,6 @@ User.allProfiles = async function () {
   allProfiles = allProfiles.map(User.extractAllowedUserProps);
   return allProfiles;
 };
-
 
 User.getRecentProfiles = async function () {
   return new Promise(async resolve => {

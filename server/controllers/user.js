@@ -193,38 +193,26 @@ exports.profileScreen = (req, res) => {
 };
 
 exports.edit = async (req, res) => {
-  const profile = new User(req.body, req.session.user.username, req.params.username);
+  try {
+    const profile = new User(req.body, req.session.user.username, req.params.username);
+    const { status, userDoc } = await profile.update();
 
-  profile
-    .update()
-    .then(async ({ status, userDoc }) => {
-      if (status == 'success') {
-        req.flash('success', 'Profile successfully updated.');
+    if (status === 'success') {
+      req.flash('success', 'Profile successfully updated.');
+      req.session.user = { ...req.session.user, ...userDoc };
+      await req.session.save(() => res.redirect(`/contacts/${userDoc.username}`));
 
-        // save these values just in case if they have been changed
-        req.session.user.username = userDoc.username;
-        req.session.user.email = userDoc.email;
-
-        req.session.save(async _ => await res.redirect(`/contacts/${userDoc.username}`));
-
-        // UPDATE USER COMMENTS INFO ACROSS ALL COMMENTS
-        User.updateCommentFirtName(userDoc.email, userDoc.firstName);
-        // UPDATE USER COMMENTS END
-      } else {
-        profile.errors.forEach(error => {
-          req.flash('errors', error);
-        });
-
-        req.session.save(async _ => {
-          await res.redirect(`/settings/${req.session.user.username}/edit-profile`);
-        });
-      }
-    })
-    .catch(() => {
-      req.flash('errors', 'You do not have permission to perform that action.');
-      res.redirect('/error');
-    });
+      User.updateCommentFirtName(userDoc.email, userDoc.firstName);
+    } else {
+      profile.errors.forEach(error => req.flash('errors', error));
+      await req.session.save(() => res.redirect(`/settings/${req.session.user.username}/edit-profile`));
+    }
+  } catch (err) {
+    req.flash('errors', 'You do not have permission to perform that action.');
+    res.redirect('/error');
+  }
 };
+
 
 exports.notFound = (req, res) => res.status(404).render('404', { metatags: metatags({ page: 'generic', data: { page_name: '404' } }) });
 
