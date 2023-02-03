@@ -467,51 +467,30 @@ User.getRecentProfiles = async function () {
 };
 
 User.search = async function (searchedItem) {
+  try {
+    const safeSearchedItem = _.escapeRegExp(searchedItem);
+    const query = [{ firstName: { $regex: new RegExp(safeSearchedItem, 'i') } }, { lastName: { $regex: new RegExp(safeSearchedItem, 'i') } }, { year: { $regex: new RegExp(safeSearchedItem, 'i') } }, { email: { $regex: new RegExp(safeSearchedItem, 'i') } }, { nickname: { $regex: new RegExp(safeSearchedItem, 'i') } }, { residence: { $regex: new RegExp(safeSearchedItem, 'i') } }, { class: { $regex: new RegExp(safeSearchedItem, 'i') } }, { relationship: { $regex: new RegExp(safeSearchedItem, 'i') } }, { occupation: { $regex: new RegExp(safeSearchedItem, 'i') } }, { month: { $regex: new RegExp(safeSearchedItem, 'i') } }, { day: { $regex: new RegExp(safeSearchedItem, 'i') } }, { teacher: { $regex: new RegExp(safeSearchedItem, 'i') } }];
+    const searchedResult = await usersCollection.find({ $or: query }, { $project: { score: { $meta: 'textScore' } }, $sort: { score: { $meta: 'textScore' } } }).toArray();
+
+    return searchedResult.map(eachDoc => User.extractAllowedUserProps(eachDoc));
+  } catch (error) {
+    throw error.message;
+  }
+};
+
+User.search = async function (searchedItem) {
   return new Promise(async (resolve, reject) => {
     try {
       const safeSearchedItem = _.escapeRegExp(searchedItem);
 
+      let searchFields = helpers.searcheableFields.map(field => {
+        return { [field]: { $regex: new RegExp(safeSearchedItem, 'i') } };
+      });
+
       let searchedResult = await usersCollection
         .find(
           {
-            $or: [
-              {
-                firstName: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-              {
-                lastName: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-              {
-                year: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-              {
-                email: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-              {
-                nickname: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-              {
-                residence: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-              {
-                class: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-              {
-                relationship: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-              {
-                occupation: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-              {
-                month: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-              {
-                day: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-              {
-                teacher: { $regex: new RegExp(safeSearchedItem, 'i') },
-              },
-            ],
+            $or: searchFields,
           },
           {
             $project: { score: { $meta: 'textScore' } },
@@ -520,41 +499,9 @@ User.search = async function (searchedItem) {
         )
         .toArray();
 
-      searchedResult = searchedResult.map(eachDoc => {
-        //clean up each document
-        eachDoc = {
-          _id: eachDoc._id,
-          ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
-          firstName: eachDoc.firstName,
-          lastName: eachDoc.lastName,
-          year: eachDoc.year,
-          email: eachDoc.email,
-          photo: eachDoc.photo,
-          nickname: eachDoc.nickname,
-          username: eachDoc.username,
-          residence: eachDoc.residence,
-          class: eachDoc.class,
-          occupation: eachDoc.occupation,
-          teacher: eachDoc.teacher,
-          month: eachDoc.month,
-          day: eachDoc.day,
-          phone: eachDoc.phone,
-          social_type_1: eachDoc.social_type_1,
-          link_social_type_1: eachDoc.link_social_type_1,
-          social_type_2: eachDoc.social_type_2,
-          link_social_type_2: eachDoc.link_social_type_2,
-          relationship: eachDoc.relationship,
-          comments: eachDoc.comments,
-          totalLikes: eachDoc.totalLikes,
-          likes_received_from: eachDoc.likes_received_from,
-          likes_given_to: eachDoc.likes_given_to,
-        };
-        return eachDoc;
-      });
-
-      resolve(searchedResult);
-    } catch {
-      reject();
+      resolve(searchedResult.map(eachDoc => User.extractAllowedUserProps(eachDoc)));
+    } catch (error) {
+      reject(error);
     }
   });
 };

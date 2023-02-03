@@ -14,18 +14,6 @@ const isAlphaNumericDashHyphenPeriod = stringInput => {
   return /^[\w-\.]+$/.test(stringInput);
 };
 
-// STATS : GET YEAR AND NUMBER OF PROFILES PER YEAR.
-const statsByYear = allProfiles => {
-  let yearsArray = allProfiles.map(item => item.year);
-  let obj = {};
-
-  for (var i = 0; i < yearsArray.length; i++) {
-    !obj.hasOwnProperty(yearsArray[i]) ? (obj[yearsArray[i]] = 1) : (obj[yearsArray[i]] += 1);
-  }
-
-  return [Object.keys(obj), Object.values(obj)];
-};
-
 const getUsernameFromHeadersReferrer = urlString => {
   const urlArray = urlString.split('/');
   const username = urlArray[urlArray.length - 1];
@@ -61,45 +49,6 @@ const getMonthDayYear = () => {
   return `${monthFormated}. ${dayFormated}, '${yearFormated}`;
 };
 
-function formatMonth(num) {
-  switch (num) {
-    case 0:
-      return 'Jan';
-      break;
-    case 1:
-      return 'Feb';
-      break;
-    case 2:
-      return 'Mar';
-      break;
-    case 3:
-      return 'Apr';
-      break;
-    case 4:
-      return 'May';
-      break;
-    case 5:
-      return 'Jun';
-      break;
-    case 6:
-      return 'Jul';
-      break;
-    case 7:
-      return 'Aug';
-      break;
-    case 8:
-      return 'Sep';
-      break;
-    case 9:
-      return 'Oct';
-      break;
-    case 10:
-      return 'Nov';
-      break;
-    case 11:
-      return 'Dec';
-  }
-}
 
 const commentsHelper = comments => {
   if (comments.length) {
@@ -130,16 +79,18 @@ function whichPage(path, username) {
 
 const working_url = process.env.NODE_ENV == 'dev' ? 'http://localhost:3000' : 'https://www.gssgcontactbook.com';
 
+const searcheableFields = ['firstName', 'lastName', 'year', 'email', 'nickname', 'residence', 'class', 'relationship', 'occupation', 'month', 'day', 'teacher'];
+
 module.exports = {
+  getHMS,
   whichPage,
   environment: process.env.NODE_ENV == 'dev' ? 'development' : 'production',
   working_url,
   isAlphaNumericDashHyphenPeriod,
-  statsByYear,
   getUsernameFromHeadersReferrer,
-  getHMS,
   getMonthDayYear,
   sortProfiles,
   singlePropArrayFilter,
   commentsHelper,
+  searcheableFields,
 };
