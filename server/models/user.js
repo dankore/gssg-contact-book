@@ -16,6 +16,7 @@ let User = class user {
     this.requestedUsername = requestedUsername;
   }
 };
+
 // CLASS ENDS
 User.prototype.validateEmail = function () {
   return new Promise(async (resolve, reject) => {
@@ -61,6 +62,7 @@ User.prototype.validateUsername = function () {
     resolve();
   });
 };
+
 User.prototype.validatePassword = function () {
   // check for empty box
   if (this.data.password.length == '') {
@@ -71,6 +73,7 @@ User.prototype.validatePassword = function () {
     this.errors.push('Password should be at least 6 characters.');
   }
 };
+
 User.prototype.editValidation = function () {
   // check for non-allowed inputs
   // IF NOT EMPTY
@@ -137,6 +140,7 @@ User.prototype.editValidation = function () {
   }
   // END
 };
+
 User.prototype.validateSomeUserRegistrationInputs = function () {
   // REMOVE UNWATED CHARACTERS
   (this.data.firstName = this.data.firstName.trim()), (this.data.lastName = this.data.lastName.trim()), (this.data.email = this.data.email.trim()), (this.data.year = this.data.year.trim()), (this.data.password = this.data.password);
@@ -264,105 +268,67 @@ User.prototype.register = function () {
   });
 };
 
-User.findByEmail = function (email) {
-  return new Promise(function (resolve, reject) {
-    if (typeof email != 'string') {
-      reject('Email not string. Model line 304');
-      return;
+User.findByEmail = async function (email) {
+  if (typeof email !== 'string') {
+    throw new Error('Email not string.');
+  }
+
+  try {
+    const userDoc = await usersCollection.findOne({ email });
+
+    if (!userDoc) {
+      throw new Error('Cannot find one user_by_email.');
     }
-    usersCollection
-      .findOne({ email })
-      .then(userDoc => {
-        if (userDoc) {
-          userDoc = new User(userDoc);
 
-          userDoc = {
-            _id: userDoc.data._id,
-            firstName: userDoc.data.firstName,
-            lastName: userDoc.data.lastName,
-            year: userDoc.data.year,
-            email: userDoc.data.email,
-            nickname: userDoc.data.nickname,
-            username: userDoc.data.username,
-            photo: userDoc.data.photo,
-            residence: userDoc.data.residence,
-            class: userDoc.data.class,
-            occupation: userDoc.data.occupation,
-            teacher: userDoc.data.teacher,
-            month: userDoc.data.month,
-            day: userDoc.data.day,
-            phone: userDoc.data.phone,
-            social_type_1: userDoc.data.social_type_1,
-            link_social_type_1: userDoc.data.link_social_type_1,
-            social_type_2: userDoc.data.social_type_2,
-            link_social_type_2: userDoc.data.link_social_type_2,
-            relationship: userDoc.data.relationship,
-            comments: userDoc.data.comments,
-            totalLikes: userDoc.data.totalLikes,
-            likes_received_from: userDoc.data.likes_received_from,
-            likes_given_to: userDoc.data.likes_given_to,
-          };
-
-          resolve(userDoc);
-        } else {
-          reject('Cannot find one user_by_email Model line 337');
-        }
-      })
-      .catch(() => {
-        reject('Cannot find one user_by_email Model line 341');
-      });
-  });
+    return User.extractAllowedUserProps(userDoc);
+  } catch (error) {
+    throw new Error(`Cannot find one user_by_email. ${error.message}`);
+  }
 };
 
-User.findByUsername = function (username) {
-  return new Promise(function (resolve, reject) {
-    if (typeof username != 'string') {
-      console.log({ username });
-      reject('Email not string. Model line 304');
-      return;
+User.findByUsername = async function (username) {
+  if (typeof username !== 'string') {
+    throw new Error('Username not string. Model line 304');
+  }
+
+  try {
+    const userDoc = await usersCollection.findOne({ username });
+
+    if (!userDoc) {
+      throw new Error('Cannot find one username. Model line 329');
     }
 
-    usersCollection
-      .findOne({ username })
-      .then(userDoc => {
-        if (userDoc) {
-          userDoc = {
-            _id: userDoc._id,
-            ...(userDoc.google_id && { google_id: userDoc.google_id, google_photo: userDoc.photo }),
-            firstName: userDoc.firstName,
-            lastName: userDoc.lastName,
-            year: userDoc.year,
-            email: userDoc.email,
-            nickname: userDoc.nickname,
-            username: userDoc.username,
-            photo: userDoc.photo,
-            residence: userDoc.residence,
-            class: userDoc.class,
-            occupation: userDoc.occupation,
-            teacher: userDoc.teacher,
-            month: userDoc.month,
-            day: userDoc.day,
-            phone: userDoc.phone,
-            social_type_1: userDoc.social_type_1,
-            link_social_type_1: userDoc.link_social_type_1,
-            social_type_2: userDoc.social_type_2,
-            link_social_type_2: userDoc.link_social_type_2,
-            relationship: userDoc.relationship,
-            comments: userDoc.comments,
-            totalLikes: userDoc.totalLikes,
-            likes_received_from: userDoc.likes_received_from,
-            likes_given_to: userDoc.likes_given_to,
-          };
+    return User.extractAllowedUserProps(userDoc);
+  } catch (error) {
+    throw new Error('Cannot find one username. Model line 334. Error: ${error}');
+  }
+};
 
-          resolve(userDoc);
-        } else {
-          reject('Cannot find one username');
-        }
-      })
-      .catch(() => {
-        reject('Cannot find one username');
-      });
-  });
+User.extractAllowedUserProps = user => {
+  return {
+    _id: user._id,
+    ...(user.google_id && { google_id: user.google_id, google_photo: user.photo }),
+    firstName: user.firstName,
+    lastName: user.lastName,
+    year: user.year,
+    email: user.email,
+    nickname: user.nickname,
+    username: user.username,
+    photo: user.photo,
+    residence: user.residence,
+    class: user.class,
+    occupation: user.occupation,
+    teacher: user.teacher,
+    month: user.month,
+    day: user.day,
+    phone: user.phone,
+    social_type_1: user.social_type_1,
+    link_social_type_1: user.link_social_type_1,
+    social_type_2: user.social_type_2,
+    link_social_type_2: user.link_social_type_2,
+    relationship: user.relationship,
+    comments: user.comments,
+  };
 };
 
 User.prototype.update = function () {
@@ -461,45 +427,11 @@ User.delete = function (requestedUsername, sessionUsername) {
 };
 
 User.allProfiles = async function () {
-  return await new Promise(async resolve => {
-    let allProfiles = await usersCollection.find({}).toArray();
-
-    allProfiles = allProfiles.map(eachDoc => {
-      //clean up each document
-      eachDoc = {
-        _id: eachDoc._id,
-        ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
-        firstName: eachDoc.firstName,
-        lastName: eachDoc.lastName,
-        year: eachDoc.year,
-        email: eachDoc.email,
-        nickname: eachDoc.nickname,
-        username: eachDoc.username,
-        photo: eachDoc.photo,
-        residence: eachDoc.residence,
-        class: eachDoc.class,
-        occupation: eachDoc.occupation,
-        teacher: eachDoc.teacher,
-        month: eachDoc.month,
-        day: eachDoc.day,
-        phone: eachDoc.phone,
-        social_type_1: eachDoc.social_type_1,
-        link_social_type_1: eachDoc.link_social_type_1,
-        social_type_2: eachDoc.social_type_2,
-        link_social_type_2: eachDoc.link_social_type_2,
-        relationship: eachDoc.relationship,
-        comments: eachDoc.comments,
-        totalLikes: eachDoc.totalLikes,
-        likes_received_from: eachDoc.likes_received_from,
-        likes_given_to: eachDoc.likes_given_to,
-      };
-
-      return eachDoc;
-    });
-
-    resolve(allProfiles);
-  });
+  let allProfiles = await usersCollection.find({}).toArray();
+  allProfiles = allProfiles.map(User.extractAllowedUserProps);
+  return allProfiles;
 };
+
 
 User.getRecentProfiles = async function () {
   return new Promise(async resolve => {

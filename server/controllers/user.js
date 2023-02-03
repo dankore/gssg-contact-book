@@ -171,7 +171,26 @@ exports.isVisitorOwner = (req, res, next) => {
   }
 };
 
-exports.profileScreen = (req, res) => res.render('contact', { profile: req.profileUser, metatags: metatags({ page: 'contact', data: req.profileUser }) });
+exports.profileScreen = (req, res) => {
+  try {
+    const { profileUser } = req;
+
+    const data = {
+      profile: {
+        ...profileUser,
+        commentsCount: helpers.commentsHelper(profileUser.comments),
+      },
+      metatags: metatags({ page: 'contact', data: profileUser }),
+    };
+
+    res.render('contact', data);
+  } catch (error) {
+    // log the error
+    console.error(error);
+    // send a 500 error response to the client
+    res.status(500).send('An error occurred while rendering the profile screen');
+  }
+};
 
 exports.edit = async (req, res) => {
   const profile = new User(req.body, req.session.user.username, req.params.username);
