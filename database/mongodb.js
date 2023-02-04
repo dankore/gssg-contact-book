@@ -5,7 +5,7 @@ dotenv.config();
 
 const startMongodb = async () => {
   try {
-    const client = await MongoClient.connect(process.env.CONNECTIONSTRING, {
+    const client = await MongoClient.connect(process.env.LOCAL_CONNECTIONSTRING, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
