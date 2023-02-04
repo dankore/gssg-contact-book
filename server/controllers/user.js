@@ -33,17 +33,13 @@ exports.error = (req, res) => res.render('error', { metatags: metatags({ page: '
 
 exports.contacts = async (req, res) => {
   try {
+    const { q, sort } = req.query;
     let profiles;
 
-    if (req.query.q || req.query.sort) {
-      console.log('search');
-      profiles = await User.search(req.query.q, req.query.sort);
-    }
-
-    if (!req.query.q && !req.query.sort) {
-      console.log('allprofiles');
+    if (q || sort) {
+      profiles = await User.search(q, sort);
+    } else {
       profiles = await User.allProfiles();
-      // SORT BY TOTAL NUMBER OF COMMENTS
       profiles = helpers.sortProfiles(profiles);
     }
 
@@ -53,7 +49,7 @@ exports.contacts = async (req, res) => {
     });
   } catch (error) {
     req.flash('errors', error.message);
-    req.session.save(() => res.redirect('/contacts'));
+    res.redirect('/contacts');
   }
 };
 
@@ -68,28 +64,26 @@ exports.registrationPage = async (req, res) => {
 };
 
 exports.registrationSubmission = async (req, res) => {
-  let user = new User(req.body);
+  try {
+    const user = new User(req.body);
+    const userDoc = await user.register();
 
-  user
-    .register()
-    .then(userDoc => {
-      req.session.user = {
-        _id: userDoc._id,
-        ...(userDoc.google_id && { google_id: userDoc.google_id }),
-        username: user.data.username,
-        email: user.data.email,
-        firstName: user.data.firstName,
-        lastName: user.data.lastName,
-        photo: userDoc.photo,
-      };
+    req.session.user = {
+      _id: userDoc._id,
+      ...(userDoc.google_id && { google_id: userDoc.google_id }),
+      username: user.data.username,
+      email: user.data.email,
+      firstName: user.data.firstName,
+      lastName: user.data.lastName,
+      photo: userDoc.photo,
+    };
 
-      req.flash('success', 'Success, Up GSS Gwarinpa! Add your nickname, birthday, and more below.');
-      req.session.save(async () => await res.redirect(`/settings/${req.session.user.username}/edit-profile`));
-    })
-    .catch(regErrors => {
-      regErrors.forEach(error => req.flash('reqError', error));
-      req.session.save(async () => await res.redirect('/register'));
-    });
+    req.flash('success', 'Success, Up GSS Gwarinpa! Add your nickname, birthday, and more below.');
+    res.redirect(`/settings/${req.session.user.username}/edit-profile`);
+  } catch (error) {
+    req.flash('reqError', error);
+    res.redirect('/register');
+  }
 };
 
 exports.loginPage = (req, res) => {
@@ -98,31 +92,25 @@ exports.loginPage = (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  let user = new User(req.body);
+  try {
+    const user = new User(req.body);
+    const userDoc = await user.login();
 
-  user
-    .login()
-    .then(userDoc => {
-      req.session.user = {
-        _id: userDoc._id,
-        ...(userDoc.google_id && { google_id: userDoc.google_id }),
-        username: userDoc.username,
-        email: userDoc.email,
-        firstName: userDoc.firstName,
-        lastName: userDoc.lastName,
-        photo: userDoc.photo,
-      };
+    req.session.user = {
+      _id: userDoc._id,
+      ...(userDoc.google_id && { google_id: userDoc.google_id }),
+      username: userDoc.username,
+      email: userDoc.email,
+      firstName: userDoc.firstName,
+      lastName: userDoc.lastName,
+      photo: userDoc.photo,
+    };
 
-      req.session.save(() => {
-        res.redirect('/');
-      });
-    })
-    .catch(err => {
-      req.flash('errors', err.message);
-      req.session.save(() => {
-        res.redirect('/login');
-      });
-    });
+    res.redirect('/');
+  } catch (error) {
+    req.flash('errors', error.message);
+    res.redirect('/login');
+  }
 };
 
 exports.logout = function (req, res) {
@@ -132,46 +120,40 @@ exports.logout = function (req, res) {
 };
 
 exports.getProfile = async (req, res) => {
-  const contactUsername = helpers.getUsernameFromHeadersReferrer(req.headers.referer); // GET EMAIL FROM URL
-  await User.findByUsername(contactUsername)
-    .then(userDoc => {
-      res.json(userDoc.likes_received_from);
-    })
-    .catch(() => {
-      res.render('404');
-    });
+  try {
+    const contactUsername = helpers.getUsernameFromHeadersReferrer(req.headers.referer);
+    const userDoc = await User.findByUsername(contactUsername);
+    res.json(userDoc.likes_received_from);
+  } catch (error) {
+    res.render('404');
+  }
 };
 
-exports.ifUserExists = (req, res, next) => {
-  User.findByUsername(req.params.username)
-    .then(userDoc => {
-      req.profileUser = userDoc;
-      next();
-    })
-    .catch(() => {
-      res.render('404');
-    });
+exports.ifUserExists = async (req, res, next) => {
+  try {
+    req.profileUser = await User.findByUsername(req.params.username);
+    next();
+  } catch (error) {
+    res.render('404');
+  }
 };
 
 exports.mustBeLoggedIn = (req, res, next) => {
-  if (req.session.user) {
-    next();
-  } else {
-    req.flash('errors', 'Must be login to perform that action.');
-    req.session.save(_ => {
-      res.redirect('/error');
-    });
+  if (!req.session.user) {
+    req.flash('errors', 'Must be logged in to perform that action.');
+    return res.redirect('/error');
   }
+  next();
 };
 
 exports.isVisitorOwner = (req, res, next) => {
   const visitorIsOwner = User.isVisitorOwner(req.session.user.username, req.params.username);
-  if (visitorIsOwner) {
-    next();
-  } else {
+  if (!visitorIsOwner) {
     req.flash('errors', 'You do not have permission to perform that action.');
-    req.session.save(_ => res.redirect('/error'));
+    req.session.save(() => res.redirect('/error'));
+    return;
   }
+  next();
 };
 
 exports.profileScreen = (req, res) => {
