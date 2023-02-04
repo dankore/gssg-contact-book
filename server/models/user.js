@@ -7,11 +7,15 @@ const usersCollection = require('../../database/mongodb.js').db().collection('us
   ObjectId = require('mongodb').ObjectID,
   _ = require('lodash');
 
-// CLASS
 let User = class user {
   constructor(data, sessionUsername, requestedUsername) {
-    this.data = data;
     this.errors = [];
+
+    if (Object.keys(data).length === 0 && data.constructor === Object) {
+      this.errors.push('Error: Empty data object passed.');
+    }
+
+    this.data = data;
     this.sessionUsername = sessionUsername;
     this.requestedUsername = requestedUsername;
   }
@@ -141,44 +145,6 @@ User.prototype.editValidation = function () {
   // END
 };
 
-User.prototype.validateSomeUserRegistrationInputs = function () {
-  // REMOVE UNWATED CHARACTERS
-  (this.data.firstName = this.data.firstName.trim()), (this.data.lastName = this.data.lastName.trim()), (this.data.email = this.data.email.trim()), (this.data.year = this.data.year.trim()), (this.data.password = this.data.password);
-
-  // check for empty boxes
-  if (this.data.firstName.length == '') {
-    this.errors.push('First name cannot be empty.');
-  }
-  if (this.data.lastName.length == '') {
-    this.errors.push('Last name cannot be empty.');
-  }
-
-  if (this.data.year.length == '') {
-    this.errors.push('Year of graduation is required.');
-  }
-  if (!validator.isLength(this.data.year, { min: 4, max: 4 })) {
-    this.errors.push('Year should be 4 characters in length.');
-  }
-
-  // check for non-allowed inputs
-  if (this.data.firstName.length > 30) {
-    this.errors.push('First name cannot exceed 30 characters.');
-  }
-  if (this.data.firstName.length != '' && !helpers.isAlphaNumericDashHyphenPeriod(this.data.firstName)) {
-    this.errors.push('First name can only contain letters, dashes, undercores, periods, and numbers.');
-  }
-  if (this.data.lastName.length > 30) {
-    this.errors.push('Last name cannot exceed 30 characters.');
-  }
-  if (this.data.lastName.length != '' && !helpers.isAlphaNumericDashHyphenPeriod(this.data.lastName)) {
-    this.errors.push('Last name can only contain letters, dashes, undercores, periods, and numbers.');
-  }
-
-  if (this.data.year.length != '' && !validator.isNumeric(this.data.year)) {
-    this.errors.push('Year can only be numbers.');
-  }
-};
-
 User.prototype.login = async function () {
   try {
     this.cleanUp();
@@ -210,19 +176,53 @@ User.prototype.login = async function () {
   }
 };
 
+User.prototype.validateSomeUserRegistrationInputs = function () {
+  // check for empty boxes
+  if (!this.data.username) {
+    this.errors.push('Username cannot be empty.');
+  }
+  if (!this.data.firstName) {
+    this.errors.push('First name cannot be empty.');
+  }
+  if (!this.data.lastName) {
+    this.errors.push('Last name cannot be empty.');
+  }
+
+  if (!this.data.year) {
+    this.errors.push('Year of graduation is required.');
+  }
+  if (this.data.year && !validator.isLength(this.data.year, { min: 4, max: 4 })) {
+    this.errors.push('Year should be 4 characters in length.');
+  }
+
+  // check for non-allowed inputs
+  if (this.data.username.length > 30) {
+    this.errors.push('Username cannot exceed 20 characters.');
+  }
+  if (this.data.firstName.length > 30) {
+    this.errors.push('First name cannot exceed 30 characters.');
+  }
+  if (this.data.firstName && !helpers.isAlphaNumericDashHyphenPeriod(this.data.firstName)) {
+    this.errors.push('First name can only contain letters, dashes, undercores, periods, and numbers.');
+  }
+  if (this.data.lastName.length > 30) {
+    this.errors.push('Last name cannot exceed 30 characters.');
+  }
+  if (this.data.lastName && !helpers.isAlphaNumericDashHyphenPeriod(this.data.lastName)) {
+    this.errors.push('Last name can only contain letters, dashes, undercores, periods, and numbers.');
+  }
+
+  if (this.data.year && !validator.isNumeric(this.data.year)) {
+    this.errors.push('Year can only be numbers.');
+  }
+};
+
 User.prototype.cleanUp = function () {
-  if (typeof this.data.firstName != 'string') {
-    this.data.firstName = '';
-  }
-  if (typeof this.data.lastName != 'string') {
-    this.data.lastName = '';
-  }
-  if (typeof this.data.email != 'string') {
-    this.data.email = '';
-  }
-  if (typeof this.data.username != 'string') {
-    this.data.username = '';
-  }
+  this.data.username = typeof this.data.username === 'string' ? this.data.username.trim() : '';
+  this.data.firstName = typeof this.data.firstName === 'string' ? this.data.firstName.trim() : '';
+  this.data.lastName = typeof this.data.lastName === 'string' ? this.data.lastName.trim() : '';
+  this.data.email = typeof this.data.email === 'string' ? this.data.email.trim() : '';
+  this.data.username = typeof this.data.username === 'string' ? this.data.username.trim() : '';
 };
 
 User.prototype.register = async function () {

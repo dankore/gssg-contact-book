@@ -66,6 +66,13 @@ exports.registrationPage = async (req, res) => {
 exports.registrationSubmission = async (req, res) => {
   try {
     const user = new User(req.body);
+
+    if (user.errors.length > 0) {
+      req.flash('reqError', user.errors);
+      res.redirect('/register');
+      return;
+    }
+
     const userDoc = await user.register();
 
     req.session.user = {
