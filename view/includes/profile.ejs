@@ -1,10 +1,7 @@
 <li>
   <a href="/contacts/<%= profile.username %>" class="space-y-6 overflow-hidden rounded-full block">
-    <% if(profile.google_id) {%>
-    <img loading="lazy" class="object-contain mx-auto rounded-full h-56 w-56 bg-green-700" src="<%= profile.photo %>" alt="<%= profile.firstName.substring(0,1) %>" />
-    <% } else {%>
-    <img loading="lazy" class="object-contain mx-auto rounded-full h-56 w-56 bg-green-700" src="<%= profile.photo %>" alt="<%= profile.firstName.substring(0,1) %>" />
-    <% } %>
+    <img loading="lazy" class="object-contain mx-auto rounded-full h-56 w-56 bg-green-700" src="<%= profile.google_id ? profile.google_photo : (profile.photo ? profile.photo : `https://robohash.org/${encodeURIComponent(profile.firstName)}.png`) %>" alt="<%= profile.firstName.substring(0,1) %>" />
+    
     <div class="space-y-2">
       <div class="space-y-1 text-lg font-medium leading-6">
         <h3><%= profile.firstName %></h3>
