@@ -1,25 +1,38 @@
-import ToggleProfile from './modules/toggleProfile';
-import ToggleEditPage from './modules/toggleEditPage';
-import ToggleImage from './modules/show_bigger_profile_image';
-import RegistrationFormLiveValidation from './modules/registrationFormLiveValidation';
-import Filter from './modules/filter';
 import AddComment from './modules/addComments';
-import ToggleMobileMenu from './modules/toggleMobileMenu';
+import Filter from './modules/filter';
 import ImagePreview from './modules/image-preview';
 import ImageZoom from './modules/image-zoom';
+import RegistrationFormLiveValidation from './modules/registrationFormLiveValidation';
+import ToggleMobileMenu from './modules/toggleMobileMenu';
 
-document.querySelector('#more-profile-btn') && new ToggleProfile();
-document.querySelector('#btn-optional-fields') && new ToggleEditPage();
-document.querySelector('#profile-image') && new ToggleImage();
-document.querySelector('#registration-form') && new RegistrationFormLiveValidation();
-document.querySelector('#registration-form') && new RegistrationFormLiveValidation();
-document.querySelector('#filter-icon-container') && new Filter();
-document.getElementById('add-comment-button') && new AddComment();
-document.getElementById('open-mobile-menu') && new ToggleMobileMenu();
-document.getElementById('change-profile-photo-form') && new ImagePreview();
+const registrationForm = document.querySelector('#registration-form');
+if (registrationForm) {
+  new RegistrationFormLiveValidation();
+}
 
-if (document.getElementById('preview-button')) {
-  document.getElementById('preview-button').addEventListener('click', event => {
+const filterIconContainer = document.querySelector('#filter-icon-container');
+if (filterIconContainer) {
+  new Filter();
+}
+
+const addCommentButton = document.getElementById('add-comment-button');
+if (addCommentButton) {
+  new AddComment();
+}
+
+const openMobileMenu = document.getElementById('open-mobile-menu');
+if (openMobileMenu) {
+  new ToggleMobileMenu();
+}
+
+const changeProfilePhotoForm = document.getElementById('change-profile-photo-form');
+if (changeProfilePhotoForm) {
+  new ImagePreview();
+}
+
+const previewButton = document.getElementById('preview-button');
+if (previewButton) {
+  previewButton.addEventListener('click', event => {
     event.preventDefault();
     new ImageZoom(event.target.dataset.image);
   });
