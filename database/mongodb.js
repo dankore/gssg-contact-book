@@ -1,11 +1,14 @@
 const dotenv = require('dotenv');
 const { MongoClient } = require('mongodb');
+const { environment } = require('../server/misc/helpers');
 
 dotenv.config();
 
+const DB_CONNECTION_STRING = environment == 'development' ? process.env.LOCAL_CONNECTIONSTRING : process.env.CONNECTIONSTRING;
+
 const startMongodb = async () => {
   try {
-    const client = await MongoClient.connect(process.env.LOCAL_CONNECTIONSTRING, {
+    const client = await MongoClient.connect(DB_CONNECTION_STRING, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -21,7 +24,6 @@ const startMongodb = async () => {
       console.log(`The server is ready to serve all requests with grace and efficiency.`);
       console.log(`Keep an eye on the logs for any incoming requests and their status.`);
     });
-
   } catch (error) {
     console.error(`An error occurred: ${error}`);
     process.exit(1);

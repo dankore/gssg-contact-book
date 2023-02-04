@@ -179,45 +179,35 @@ User.prototype.validateSomeUserRegistrationInputs = function () {
   }
 };
 
-User.prototype.login = function () {
-  return new Promise((resolve, reject) => {
+User.prototype.login = async function () {
+  try {
     this.cleanUp();
-    // CHECK IF NO EMAIL IS PROVIDED
-    if (this.data.email == '' && this.data.password != '') {
-      reject('Please provide an email address.');
+    if (!this.data.email) {
+      throw new Error('Please provide an email address.');
     }
-    // CHECK IF NO EMAIL AND PASSWORD ARE PROVIDED
-    if (this.data.email == '' && this.data.password == '') {
-      reject('Please provide an email address and a password.');
+    if (!this.data.email && !this.data.password) {
+      throw new Error('Please provide an email address and a password.');
     }
 
-    usersCollection
-      .findOne({ email: this.data.email })
-      .then(attemptedUser => {
-        // IF NO MATCHING EMAIL FOUND
-        if (!attemptedUser) {
-          reject("That email has not been registered. Click 'Add Your Contact' above to register.");
-        }
-        // IF MATCHING EMAIL FOUND
-        if (attemptedUser) {
-          if (attemptedUser && this.data.password == '') {
-            reject('Please enter a password.');
-          }
-          // IF USER WITH EMAIL ADDRESS FOUND
-          if (attemptedUser && bcrypt.compareSync(this.data.password, attemptedUser.password)) {
-            // EMAIL WHO LOGINS
-            new Email().whoLoggedIn(attemptedUser.firstName);
-            // EMAIL WHO LOGINS ENDS
-            resolve(attemptedUser);
-          } else {
-            reject('Invalid password!');
-          }
-        }
-      })
-      .catch(() => {
-        reject('Please try again later.');
-      });
-  });
+    const attemptedUser = await usersCollection.findOne({ email: this.data.email });
+
+    if (!attemptedUser) {
+      throw new Error("That email has not been registered. Click 'Add Your Contact' above to register.");
+    }
+
+    if (!attemptedUser.password) {
+      throw new Error('Please enter a password.');
+    }
+
+    if (!bcrypt.compareSync(this.data.password, attemptedUser.password)) {
+      throw new Error('Invalid password!');
+    }
+
+    new Email().whoLoggedIn(attemptedUser.firstName);
+    return attemptedUser;
+  } catch (error) {
+    throw new Error(error.message || 'Please try again later.');
+  }
 };
 
 User.prototype.cleanUp = function () {
@@ -235,37 +225,29 @@ User.prototype.cleanUp = function () {
   }
 };
 
-User.prototype.register = function () {
-  return new Promise(async (resolve, reject) => {
+User.prototype.register = async function () {
+  try {
     this.cleanUp();
     this.validateSomeUserRegistrationInputs();
     this.validatePassword();
-    // check to see if email is taken
     await this.validateEmail();
     await this.validateUsername();
 
-    // Only if there no validation error
-    // then save the user data into the database
-    if (!this.errors.length) {
-      // Hash user password
-      let salt = bcrypt.genSaltSync(10);
-      this.data.password = bcrypt.hashSync(this.data.password, salt);
-      // INITIALIZE THE BELOW FOR EACH REGISTERED USER
-      this.data.photo = '';
-      this.data.comments = [];
-      this.data.likes_received_from = [];
-      this.data.likes_given_to = [];
-
-      const userDoc = await usersCollection.insertOne(this.data);
-
-      resolve(userDoc);
-      // EMAIL USER FOR A SUCCESSFULL REGISTRATION
-      new Email().regSuccessEmail(this.data.email, this.data.firstName);
-      // EMAIL USER FOR A SUCCESSFULL REGISTRATION ENDS
-    } else {
-      reject(this.errors);
+    if (this.errors.length) {
+      throw this.errors;
     }
-  });
+
+    const salt = bcrypt.genSaltSync(10);
+    this.data.password = bcrypt.hashSync(this.data.password, salt);
+    this.data.photo = '';
+    this.data.comments = [];
+
+    const userDoc = await usersCollection.insertOne(this.data);
+    new Email().regSuccessEmail(this.data.email, this.data.firstName);
+    return userDoc;
+  } catch (error) {
+    throw error;
+  }
 };
 
 User.findByEmail = async function (email) {
