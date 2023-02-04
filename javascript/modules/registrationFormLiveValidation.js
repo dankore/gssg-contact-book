@@ -133,7 +133,7 @@ export default class RegistrationFormLiveValidation {
       this.showValidationError(this.email, 'You must provide a valid email address.');
     }
     if (!this.email.errors) {
-      fetch('/doesEmailExists', {
+      fetch('/doesEmailExist', {
         method: 'POST',
         body: JSON.stringify({ email: this.email.value }),
         headers: { 'Content-Type': 'application/json' },
