@@ -22,25 +22,21 @@ let User = class user {
 };
 
 // CLASS ENDS
-User.prototype.validateEmail = function () {
-  return new Promise(async (resolve, reject) => {
-    if (this.data.email.length == '') {
-      this.errors.push('Email is required.');
-    }
-    if (this.data.email.length != '' && !validator.isEmail(this.data.email)) {
-      this.errors.push('Email can only contain letters and numbers. No spaces as well.');
-    }
-    // if email is valid, check to see if it is taken
-    if (validator.isEmail(this.data.email)) {
-      let emailExist = await usersCollection.findOne({
+User.prototype.validateEmail = async function () {
+  try {
+    if (!validator.isEmail(this.data.email)) {
+      this.errors.push('Email is not valid. Please enter a valid email.');
+    } else {
+      const emailExist = await usersCollection.findOne({
         email: this.data.email,
       });
       if (emailExist) {
         this.errors.push('That email is already taken.');
       }
     }
-    resolve();
-  });
+  } catch (error) {
+    this.errors.push(error.message);
+  }
 };
 
 User.prototype.validateUsername = function () {
