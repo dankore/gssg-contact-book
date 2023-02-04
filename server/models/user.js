@@ -466,38 +466,70 @@ User.getRecentProfiles = async function () {
   });
 };
 
-User.search = async function (searchedItem) {
-  try {
-    const safeSearchedItem = _.escapeRegExp(searchedItem);
-    const query = [{ firstName: { $regex: new RegExp(safeSearchedItem, 'i') } }, { lastName: { $regex: new RegExp(safeSearchedItem, 'i') } }, { year: { $regex: new RegExp(safeSearchedItem, 'i') } }, { email: { $regex: new RegExp(safeSearchedItem, 'i') } }, { nickname: { $regex: new RegExp(safeSearchedItem, 'i') } }, { residence: { $regex: new RegExp(safeSearchedItem, 'i') } }, { class: { $regex: new RegExp(safeSearchedItem, 'i') } }, { relationship: { $regex: new RegExp(safeSearchedItem, 'i') } }, { occupation: { $regex: new RegExp(safeSearchedItem, 'i') } }, { month: { $regex: new RegExp(safeSearchedItem, 'i') } }, { day: { $regex: new RegExp(safeSearchedItem, 'i') } }, { teacher: { $regex: new RegExp(safeSearchedItem, 'i') } }];
-    const searchedResult = await usersCollection.find({ $or: query }, { $project: { score: { $meta: 'textScore' } }, $sort: { score: { $meta: 'textScore' } } }).toArray();
+// User.search = async function (searchedItem, ) {
+//   try {
+//     console.log(1, { searchedItem, sort });
+//     const safeSearchedItem = _.escapeRegExp(searchedItem);
+//     const query = [{ firstName: { $regex: new RegExp(safeSearchedItem, 'i') } }, { lastName: { $regex: new RegExp(safeSearchedItem, 'i') } }, { year: { $regex: new RegExp(safeSearchedItem, 'i') } }, { email: { $regex: new RegExp(safeSearchedItem, 'i') } }, { nickname: { $regex: new RegExp(safeSearchedItem, 'i') } }, { residence: { $regex: new RegExp(safeSearchedItem, 'i') } }, { class: { $regex: new RegExp(safeSearchedItem, 'i') } }, { relationship: { $regex: new RegExp(safeSearchedItem, 'i') } }, { occupation: { $regex: new RegExp(safeSearchedItem, 'i') } }, { month: { $regex: new RegExp(safeSearchedItem, 'i') } }, { day: { $regex: new RegExp(safeSearchedItem, 'i') } }, { teacher: { $regex: new RegExp(safeSearchedItem, 'i') } }];
+//     const sort = { score: { $meta: 'textScore' } };
+//     sort.score.$meta = order === 1 ? 'textScore' : -1;
+//     console.log(2, { searchedItem, sort });
+//     const searchedResult = await usersCollection.find({ $or: query }, { $project: { score: { $meta: 'textScore' } }, $sort: sort }).toArray();
+//     return searchedResult.map(eachDoc => User.extractAllowedUserProps(eachDoc));
+//   } catch (error) {
+//     console.log(error);
+//     throw error.message;
+//   }
+// };
 
-    return searchedResult.map(eachDoc => User.extractAllowedUserProps(eachDoc));
-  } catch (error) {
-    throw error.message;
-  }
-};
+// User.search = async function (searchedItem, order = 1) {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       const safeSearchedItem = _.escapeRegExp(searchedItem);
 
-User.search = async function (searchedItem) {
+//       let searchFields = helpers.searcheableFields.map(field => {
+//         return { [field]: { $regex: new RegExp(safeSearchedItem, 'i') } };
+//       });
+
+//       console.log(2, { searchedItem, sort });
+//       let searchedResult = await usersCollection
+//         .find(
+//           {
+//             $or: searchFields,
+//           },
+//           {
+//             $project: { score: { $meta: 'textScore' } },
+//             $sort: { score: { $meta: 'textScore' } },
+//           }
+//         )
+//         .toArray();
+
+//       resolve(searchedResult.map(eachDoc => User.extractAllowedUserProps(eachDoc)));
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// };
+
+User.search = async function (searchedItem, sort = 1) {
   return new Promise(async (resolve, reject) => {
     try {
       const safeSearchedItem = _.escapeRegExp(searchedItem);
-
       let searchFields = helpers.searcheableFields.map(field => {
         return { [field]: { $regex: new RegExp(safeSearchedItem, 'i') } };
       });
 
+      let sortOrder = sort === '-1' ? -1 : 1;
+      console.log(2, { searchedItem, sort, sortOrder });
+
       let searchedResult = await usersCollection
-        .find(
-          {
-            $or: searchFields,
-          },
-          {
-            $project: { score: { $meta: 'textScore' } },
-            $sort: { score: { $meta: 'textScore' } },
-          }
-        )
+        .find({
+          $or: searchFields,
+        })
+        .sort({ _id: sortOrder })
         .toArray();
+
+      //console.log(searchedResult);
 
       resolve(searchedResult.map(eachDoc => User.extractAllowedUserProps(eachDoc)));
     } catch (error) {

@@ -14,7 +14,7 @@ exports.home = async (req, res) => {
     res.render('homePage', { contacts, metatags: metatags({ page: '/' }) });
   } catch (error) {
     console.log(error);
-    req.flash('errors', error);
+    req.flash('errors', error.message);
     req.session.save(() => res.redirect('/error'));
   }
 };
@@ -35,21 +35,24 @@ exports.contacts = async (req, res) => {
   try {
     let profiles;
 
-    if (req.query.sort) {
-      profiles = await User.sortProfiles(req.query.sort);
-    } else if (req.query.q) {
-      profiles = await User.search(req.query.q);
-    } else {
+    if (req.query.q || req.query.sort) {
+      console.log('search');
+      profiles = await User.search(req.query.q, req.query.sort);
+    }
+
+    if (!req.query.q && !req.query.sort) {
+      console.log('allprofiles');
       profiles = await User.allProfiles();
-      // SORT BY TOTAL NUMBER OF COMMENTS AND LIKES
+      // SORT BY TOTAL NUMBER OF COMMENTS
       profiles = helpers.sortProfiles(profiles);
     }
+
     res.render('contacts', {
       profiles,
       metatags: metatags({ page: 'contacts' }),
     });
   } catch (error) {
-    req.flash('errors', error);
+    req.flash('errors', error.message);
     req.session.save(() => res.redirect('/contacts'));
   }
 };
@@ -115,7 +118,7 @@ exports.login = async (req, res) => {
       });
     })
     .catch(err => {
-      req.flash('errors', err);
+      req.flash('errors', err.message);
       req.session.save(() => {
         res.redirect('/login');
       });
@@ -204,7 +207,7 @@ exports.edit = async (req, res) => {
 
       User.updateCommentFirtName(userDoc.email, userDoc.firstName);
     } else {
-      profile.errors.forEach(error => req.flash('errors', error));
+      profile.errors.forEach(error => req.flash('errors', error.message));
       await req.session.save(() => res.redirect(`/settings/${req.session.user.username}/edit-profile`));
     }
   } catch (err) {
@@ -313,7 +316,7 @@ exports.changePassword = async function (req, res) {
     await req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
   } catch (errors) {
     errors.forEach(error => {
-      req.flash('errors', error);
+      req.flash('errors', error.message);
     });
     await req.session.save(() => res.redirect(`/settings/${req.params.username}/change-password`));
   }
@@ -338,7 +341,7 @@ exports.resetPassword = async (req, res) => {
     res.redirect('/reset-password');
   } catch (errors) {
     errors.forEach(error => {
-      req.flash('errors', error);
+      req.flash('errors', error.message);
     });
     res.redirect('/reset-password');
   }
@@ -359,7 +362,7 @@ exports.resetPasswordTokenPage = async (req, res) => {
       }),
     });
   } catch (error) {
-    req.flash('errors', error);
+    req.flash('errors', error.message);
     res.redirect('/reset-password');
   }
 };
@@ -371,7 +374,7 @@ exports.resetPasswordToken = async (req, res) => {
     req.flash('success', message);
     res.redirect('/login');
   } catch (error) {
-    req.flash('errors', error);
+    req.flash('errors', error.message);
     res.redirect(`/reset-password/${req.params.token}`);
   }
 };
@@ -409,7 +412,7 @@ exports.googleLogin = async (req, res) => {
       req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit-profile`));
     }
   } catch (error) {
-    req.flash('errors', error);
+    req.flash('errors', error.message);
     req.session.save(async _ => await res.redirect('/register'));
   }
 };
