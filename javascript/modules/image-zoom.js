@@ -25,7 +25,7 @@ export default class ZoomImage {
     const button = document.createElement('button');
     button.id = 'btn-close-modal';
     button.type = 'button';
-    button.classList.add('inline-flex', 'w-full', 'justify-center', 'rounded-md', 'border', 'border-transparent', 'bg-indigo-600', 'px-4', 'py-2', 'text-base', 'font-medium', 'text-white', 'shadow-sm', 'hover:bg-indigo-700', 'focus:outline-none', 'focus:ring-2', 'focus:ring-indigo-500', 'focus:ring-offset-2', 'sm:text-sm');
+    button.classList.add('inline-flex', 'w-full', 'justify-center', 'rounded-md', 'border', 'border-transparent', 'bg-secondary-600', 'px-4', 'py-2', 'text-base', 'font-medium', 'text-white', 'shadow-sm', 'hover:bg-secondary-700', 'focus:outline-none', 'focus:ring-2', 'focus:ring-secondary-500', 'focus:ring-offset-2', 'sm:text-sm');
     button.textContent = 'Close';
 
     const buttonDiv = document.createElement('div');
@@ -46,6 +46,10 @@ export default class ZoomImage {
     dialogDiv.appendChild(modal);
 
     document.body.appendChild(dialogDiv);
+
+    button.addEventListener('click', function (event) {
+      dialogDiv.remove();
+    });
 
     // Add an event listener to the overlay to remove it when clicked,
     // unless the click event originates from the zoomed image

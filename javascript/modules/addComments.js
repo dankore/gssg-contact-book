@@ -149,7 +149,7 @@ export default class AddComments {
     return `<li id="li-comment">
             <div class="flex space-x-3">
               <p class="flex-shrink-0">
-                <img loading="lazy" src="${session_user.photo ? session_user.photo : `https://robohash.org/${encodeURIComponent(visitorFirstName)}.png`}" class="h-8 w-8 rounded-full from-indigo-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="${visitorFirstName}" />
+                <img loading="lazy" src="${session_user.photo ? session_user.photo : `https://robohash.org/${encodeURIComponent(visitorFirstName)}.png`}" class="h-8 w-8 rounded-full from-secondary-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="${visitorFirstName}" />
               </p>
 
               <div>

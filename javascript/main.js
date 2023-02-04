@@ -31,6 +31,7 @@ if (changeProfilePhotoForm) {
 }
 
 const previewButton = document.getElementById('preview-button');
+
 if (previewButton) {
   previewButton.addEventListener('click', event => {
     event.preventDefault();
