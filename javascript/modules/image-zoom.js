@@ -34,7 +34,7 @@ export default class ZoomImage {
 
     // Create the zoomed image element and add it to the overlay
     var imageToZoom = document.createElement('img');
-    imageToZoom.classList.add('object-contain', 'z-50');
+    imageToZoom.classList.add('object-contain', 'z-50', 'mx-auto', 'rounded-full', 'h-56', 'w-56', 'bg-primary-700');
     imageToZoom.src = this.imageUrl;
     contentDiv.appendChild(imageToZoom);
 
@@ -47,12 +47,6 @@ export default class ZoomImage {
 
     document.body.appendChild(dialogDiv);
 
-    button.addEventListener('click', function (event) {
-      dialogDiv.remove();
-    });
-
-    // Add an event listener to the overlay to remove it when clicked,
-    // unless the click event originates from the zoomed image
     modal.addEventListener('click', function (event) {
       if (event.target !== imageToZoom) {
         dialogDiv.remove();
