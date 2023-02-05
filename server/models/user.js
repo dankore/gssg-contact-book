@@ -453,7 +453,6 @@ User.search = async function (searchedItem, sort = 1) {
       });
 
       let sortOrder = sort === '-1' ? -1 : 1;
-      console.log(2, { searchedItem, sort, sortOrder });
 
       let searchedResult = await usersCollection
         .find({
@@ -461,8 +460,6 @@ User.search = async function (searchedItem, sort = 1) {
         })
         .sort({ _id: sortOrder })
         .toArray();
-
-      //console.log(searchedResult);
 
       resolve(searchedResult.map(eachDoc => User.extractAllowedUserProps(eachDoc)));
     } catch (error) {
