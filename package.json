@@ -2,12 +2,13 @@
   "name": "gss-gwarinpa-contact-book",
   "version": "3.0.0",
   "description": "Discover Present & Past GSS Gwarinpa Students",
-  "main": "server.js",
+  "main": "database/mongodb.js",
   "scripts": {
     "watch": "webpack --watch",
     "dev-start": "NODE_ENV=dev nodemon database/mongodb",
     "start": "nodemon database/mongodb",
-    "tailwind": "npx tailwindcss -i ./public/tailwindcss/input.css -o ./public/tailwindcss/output.css --watch --minify"
+    "tailwind": "npx tailwindcss -i ./public/tailwindcss/input.css -o ./public/tailwindcss/output.css --watch --minify",
+    "seed": "NODE_ENV=dev node ./database/seed.js"
   },
   "repository": {
     "type": "git",

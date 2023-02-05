@@ -419,29 +419,21 @@ User.allProfiles = async function () {
   return allProfiles;
 };
 
-User.getRecentProfiles = async function () {
-  return new Promise(async resolve => {
-    let recentContacts = await usersCollection.find({}).limit(8).sort({ $natural: -1 }).toArray();
+User.getRecentProfiles = async () => {
+  const recentContacts = await usersCollection.find({}).limit(8).sort({ $natural: -1 }).toArray();
 
-    recentContacts = recentContacts.map(eachDoc => {
-      eachDoc = {
-        _id: eachDoc._id,
-        firstName: eachDoc.firstName,
-        lastName: eachDoc.lastName,
-        year: eachDoc.year,
-        email: eachDoc.email,
-        ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
-        nickname: eachDoc.nickname,
-        username: eachDoc.username,
-        photo: eachDoc.photo,
-        phone: eachDoc.phone,
-      };
-
-      return eachDoc;
-    });
-
-    resolve(recentContacts);
-  });
+  return recentContacts.map(({ _id, firstName, lastName, year, email, google_id, nickname, username, photo, phone }) => ({
+    _id,
+    firstName,
+    lastName,
+    year,
+    email,
+    ...(google_id && { google_id }),
+    nickname,
+    username,
+    photo,
+    phone,
+  }));
 };
 
 User.search = async function (searchedItem, sort = 1) {
