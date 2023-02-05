@@ -149,7 +149,7 @@ export default class AddComments {
     return `<li id="li-comment">
             <div class="flex space-x-3">
               <p class="flex-shrink-0">
-                <img loading="lazy" s src="${session_user.photo}" class="w-8 h-8 rounded-full" alt="${visitorFirstName}" />
+                <img loading="lazy" src="${session_user.photo ? session_user.photo : `https://robohash.org/${encodeURIComponent(visitorFirstName)}.png`}" class="h-8 w-8 rounded-full from-secondary-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="${visitorFirstName}" />
               </p>
 
               <div>
@@ -170,10 +170,10 @@ export default class AddComments {
             </div>
 
             <div class="edit-comment-parent modal shadow-2xl" style="display: none">
-              <textarea id="input-comment" data-comment-id="${commentId}" class="w-full p-2 border border-green-400 rounded" style="background-color: #f2f3f5; white-space: pre-wrap; overflow: hidden">${comment}</textarea>
+              <textarea id="input-comment" data-comment-id="${commentId}" class="w-full p-2 border border-primary-400 rounded" style="background-color: #f2f3f5; white-space: pre-wrap; overflow: hidden">${comment}</textarea>
               <div class="flex justify-between py-4">
-                <button id="cancel-comment-button" class="bg-green-700 text-white px-2 rounded hover:bg-green-800">Cancel</button>
-                <button data-comment-id="${commentId}" data-profile-email="${profileEmail}" id="update-comment-button" class="bg-green-700 text-white px-2 rounded hover:bg-green-800">Update</button>
+                <button id="cancel-comment-button" class="bg-primary-700 text-white px-2 rounded hover:bg-primary-800">Cancel</button>
+                <button data-comment-id="${commentId}" data-profile-email="${profileEmail}" id="update-comment-button" class="bg-primary-700 text-white px-2 rounded hover:bg-primary-800">Update</button>
               </div>
             </div>
         </li>`;

@@ -1,17 +1,17 @@
 export default class ToggleMobileMenu {
   constructor() {
-    this.open_monile_menu = document.getElementById('open-mobile-menu');
-    this.close_monile_menu = document.getElementById('close-mobile-menu');
-    this.mobile_menu_container = document.getElementById('mobile-menu-container');
-    this.events();
+    this.openMobileMenu = document.getElementById('open-mobile-menu');
+    this.closeMobileMenu = document.getElementById('close-mobile-menu');
+    this.mobileMenuContainer = document.getElementById('mobile-menu-container');
+    this.attachEventListeners();
   }
 
-  events() {
-    this.open_monile_menu.addEventListener('click', () => this.toggleMenu());
-    this.close_monile_menu.addEventListener('click', () => this.toggleMenu());
+  attachEventListeners() {
+    this.openMobileMenu.addEventListener('click', this.toggleMenu.bind(this));
+    this.closeMobileMenu.addEventListener('click', this.toggleMenu.bind(this));
   }
 
   toggleMenu() {
-    this.mobile_menu_container.classList.toggle('hidden');
+    this.mobileMenuContainer.classList.toggle('hidden');
   }
 }

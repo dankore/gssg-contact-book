@@ -1,19 +1,19 @@
 export default class ImagePreview {
   constructor() {
     this.form = document.getElementById('change-profile-photo-form');
-    this.parent_containers = this.form.querySelectorAll('#mobile-container, #desktop-container');
-    this.events();
+    this.parentContainers = this.form.querySelectorAll('#mobile-container, #desktop-container');
+    this.initEvents();
   }
 
-  events() {
-    this.parent_containers.forEach(parent_elem => {
-      parent_elem.addEventListener('change', e => this.previewImage(e, parent_elem));
+  initEvents() {
+    this.parentContainers.forEach(parentContainer => {
+      parentContainer.addEventListener('change', event => this.handlePreviewImage(event, parentContainer));
     });
   }
 
-  previewImage(e, parent_elem) {
-    const src = URL.createObjectURL(e.target.files[0]);
-    const img = parent_elem.querySelector('img');
+  handlePreviewImage(event, parentContainer) {
+    const src = URL.createObjectURL(event.target.files[0]);
+    const img = parentContainer.querySelector('img');
     img.src = src;
   }
 }

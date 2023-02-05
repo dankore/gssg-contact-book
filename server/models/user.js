@@ -7,36 +7,36 @@ const usersCollection = require('../../database/mongodb.js').db().collection('us
   ObjectId = require('mongodb').ObjectID,
   _ = require('lodash');
 
-// CLASS
 let User = class user {
   constructor(data, sessionUsername, requestedUsername) {
-    this.data = data;
     this.errors = [];
+
+    if (Object.keys(data).length === 0 && data.constructor === Object) {
+      this.errors.push('Error: Empty data object passed.');
+    }
+
+    this.data = data;
     this.sessionUsername = sessionUsername;
     this.requestedUsername = requestedUsername;
   }
 };
 
 // CLASS ENDS
-User.prototype.validateEmail = function () {
-  return new Promise(async (resolve, reject) => {
-    if (this.data.email.length == '') {
-      this.errors.push('Email is required.');
-    }
-    if (this.data.email.length != '' && !validator.isEmail(this.data.email)) {
-      this.errors.push('Email can only contain letters and numbers. No spaces as well.');
-    }
-    // if email is valid, check to see if it is taken
-    if (validator.isEmail(this.data.email)) {
-      let emailExist = await usersCollection.findOne({
+User.prototype.validateEmail = async function () {
+  try {
+    if (!validator.isEmail(this.data.email)) {
+      this.errors.push('Email is not valid. Please enter a valid email.');
+    } else {
+      const emailExist = await usersCollection.findOne({
         email: this.data.email,
       });
       if (emailExist) {
         this.errors.push('That email is already taken.');
       }
     }
-    resolve();
-  });
+  } catch (error) {
+    this.errors.push(error.message);
+  }
 };
 
 User.prototype.validateUsername = function () {
@@ -141,131 +141,109 @@ User.prototype.editValidation = function () {
   // END
 };
 
-User.prototype.validateSomeUserRegistrationInputs = function () {
-  // REMOVE UNWATED CHARACTERS
-  (this.data.firstName = this.data.firstName.trim()), (this.data.lastName = this.data.lastName.trim()), (this.data.email = this.data.email.trim()), (this.data.year = this.data.year.trim()), (this.data.password = this.data.password);
+User.prototype.login = async function () {
+  try {
+    this.cleanUp();
+    if (!this.data.email) {
+      throw new Error('Please provide an email address.');
+    }
+    if (!this.data.email && !this.data.password) {
+      throw new Error('Please provide an email address and a password.');
+    }
 
+    const attemptedUser = await usersCollection.findOne({ email: this.data.email });
+
+    if (!attemptedUser) {
+      throw new Error("That email has not been registered. Click 'Add Your Contact' above to register.");
+    }
+
+    if (!attemptedUser.password) {
+      throw new Error('Please enter a password.');
+    }
+
+    if (!bcrypt.compareSync(this.data.password, attemptedUser.password)) {
+      throw new Error('Invalid password!');
+    }
+
+    new Email().whoLoggedIn(attemptedUser.firstName);
+    return attemptedUser;
+  } catch (error) {
+    throw new Error(error.message || 'Please try again later.');
+  }
+};
+
+User.prototype.validateSomeUserRegistrationInputs = function () {
   // check for empty boxes
-  if (this.data.firstName.length == '') {
+  if (!this.data.username) {
+    this.errors.push('Username cannot be empty.');
+  }
+  if (!this.data.firstName) {
     this.errors.push('First name cannot be empty.');
   }
-  if (this.data.lastName.length == '') {
+  if (!this.data.lastName) {
     this.errors.push('Last name cannot be empty.');
   }
 
-  if (this.data.year.length == '') {
+  if (!this.data.year) {
     this.errors.push('Year of graduation is required.');
   }
-  if (!validator.isLength(this.data.year, { min: 4, max: 4 })) {
+  if (this.data.year && !validator.isLength(this.data.year, { min: 4, max: 4 })) {
     this.errors.push('Year should be 4 characters in length.');
   }
 
   // check for non-allowed inputs
+  if (this.data.username.length > 30) {
+    this.errors.push('Username cannot exceed 20 characters.');
+  }
   if (this.data.firstName.length > 30) {
     this.errors.push('First name cannot exceed 30 characters.');
   }
-  if (this.data.firstName.length != '' && !helpers.isAlphaNumericDashHyphenPeriod(this.data.firstName)) {
+  if (this.data.firstName && !helpers.isAlphaNumericDashHyphenPeriod(this.data.firstName)) {
     this.errors.push('First name can only contain letters, dashes, undercores, periods, and numbers.');
   }
   if (this.data.lastName.length > 30) {
     this.errors.push('Last name cannot exceed 30 characters.');
   }
-  if (this.data.lastName.length != '' && !helpers.isAlphaNumericDashHyphenPeriod(this.data.lastName)) {
+  if (this.data.lastName && !helpers.isAlphaNumericDashHyphenPeriod(this.data.lastName)) {
     this.errors.push('Last name can only contain letters, dashes, undercores, periods, and numbers.');
   }
 
-  if (this.data.year.length != '' && !validator.isNumeric(this.data.year)) {
+  if (this.data.year && !validator.isNumeric(this.data.year)) {
     this.errors.push('Year can only be numbers.');
   }
 };
 
-User.prototype.login = function () {
-  return new Promise((resolve, reject) => {
-    this.cleanUp();
-    // CHECK IF NO EMAIL IS PROVIDED
-    if (this.data.email == '' && this.data.password != '') {
-      reject('Please provide an email address.');
-    }
-    // CHECK IF NO EMAIL AND PASSWORD ARE PROVIDED
-    if (this.data.email == '' && this.data.password == '') {
-      reject('Please provide an email address and a password.');
-    }
-
-    usersCollection
-      .findOne({ email: this.data.email })
-      .then(attemptedUser => {
-        // IF NO MATCHING EMAIL FOUND
-        if (!attemptedUser) {
-          reject("That email has not been registered. Click 'Add Your Contact' above to register.");
-        }
-        // IF MATCHING EMAIL FOUND
-        if (attemptedUser) {
-          if (attemptedUser && this.data.password == '') {
-            reject('Please enter a password.');
-          }
-          // IF USER WITH EMAIL ADDRESS FOUND
-          if (attemptedUser && bcrypt.compareSync(this.data.password, attemptedUser.password)) {
-            // EMAIL WHO LOGINS
-            new Email().whoLoggedIn(attemptedUser.firstName);
-            // EMAIL WHO LOGINS ENDS
-            resolve(attemptedUser);
-          } else {
-            reject('Invalid password!');
-          }
-        }
-      })
-      .catch(() => {
-        reject('Please try again later.');
-      });
-  });
-};
-
 User.prototype.cleanUp = function () {
-  if (typeof this.data.firstName != 'string') {
-    this.data.firstName = '';
-  }
-  if (typeof this.data.lastName != 'string') {
-    this.data.lastName = '';
-  }
-  if (typeof this.data.email != 'string') {
-    this.data.email = '';
-  }
-  if (typeof this.data.username != 'string') {
-    this.data.username = '';
-  }
+  this.data.username = typeof this.data.username === 'string' ? this.data.username.trim() : '';
+  this.data.firstName = typeof this.data.firstName === 'string' ? this.data.firstName.trim() : '';
+  this.data.lastName = typeof this.data.lastName === 'string' ? this.data.lastName.trim() : '';
+  this.data.email = typeof this.data.email === 'string' ? this.data.email.trim() : '';
+  this.data.username = typeof this.data.username === 'string' ? this.data.username.trim() : '';
 };
 
-User.prototype.register = function () {
-  return new Promise(async (resolve, reject) => {
+User.prototype.register = async function () {
+  try {
     this.cleanUp();
     this.validateSomeUserRegistrationInputs();
     this.validatePassword();
-    // check to see if email is taken
     await this.validateEmail();
     await this.validateUsername();
 
-    // Only if there no validation error
-    // then save the user data into the database
-    if (!this.errors.length) {
-      // Hash user password
-      let salt = bcrypt.genSaltSync(10);
-      this.data.password = bcrypt.hashSync(this.data.password, salt);
-      // INITIALIZE THE BELOW FOR EACH REGISTERED USER
-      this.data.photo = '';
-      this.data.comments = [];
-      this.data.likes_received_from = [];
-      this.data.likes_given_to = [];
-
-      const userDoc = await usersCollection.insertOne(this.data);
-
-      resolve(userDoc);
-      // EMAIL USER FOR A SUCCESSFULL REGISTRATION
-      new Email().regSuccessEmail(this.data.email, this.data.firstName);
-      // EMAIL USER FOR A SUCCESSFULL REGISTRATION ENDS
-    } else {
-      reject(this.errors);
+    if (this.errors.length) {
+      throw this.errors;
     }
-  });
+
+    const salt = bcrypt.genSaltSync(10);
+    this.data.password = bcrypt.hashSync(this.data.password, salt);
+    this.data.photo = '';
+    this.data.comments = [];
+
+    const userDoc = await usersCollection.insertOne(this.data);
+    new Email().regSuccessEmail(this.data.email, this.data.firstName);
+    return userDoc;
+  } catch (error) {
+    throw error;
+  }
 };
 
 User.findByEmail = async function (email) {
@@ -466,38 +444,25 @@ User.getRecentProfiles = async function () {
   });
 };
 
-User.search = async function (searchedItem) {
-  try {
-    const safeSearchedItem = _.escapeRegExp(searchedItem);
-    const query = [{ firstName: { $regex: new RegExp(safeSearchedItem, 'i') } }, { lastName: { $regex: new RegExp(safeSearchedItem, 'i') } }, { year: { $regex: new RegExp(safeSearchedItem, 'i') } }, { email: { $regex: new RegExp(safeSearchedItem, 'i') } }, { nickname: { $regex: new RegExp(safeSearchedItem, 'i') } }, { residence: { $regex: new RegExp(safeSearchedItem, 'i') } }, { class: { $regex: new RegExp(safeSearchedItem, 'i') } }, { relationship: { $regex: new RegExp(safeSearchedItem, 'i') } }, { occupation: { $regex: new RegExp(safeSearchedItem, 'i') } }, { month: { $regex: new RegExp(safeSearchedItem, 'i') } }, { day: { $regex: new RegExp(safeSearchedItem, 'i') } }, { teacher: { $regex: new RegExp(safeSearchedItem, 'i') } }];
-    const searchedResult = await usersCollection.find({ $or: query }, { $project: { score: { $meta: 'textScore' } }, $sort: { score: { $meta: 'textScore' } } }).toArray();
-
-    return searchedResult.map(eachDoc => User.extractAllowedUserProps(eachDoc));
-  } catch (error) {
-    throw error.message;
-  }
-};
-
-User.search = async function (searchedItem) {
+User.search = async function (searchedItem, sort = 1) {
   return new Promise(async (resolve, reject) => {
     try {
       const safeSearchedItem = _.escapeRegExp(searchedItem);
-
       let searchFields = helpers.searcheableFields.map(field => {
         return { [field]: { $regex: new RegExp(safeSearchedItem, 'i') } };
       });
 
+      let sortOrder = sort === '-1' ? -1 : 1;
+      console.log(2, { searchedItem, sort, sortOrder });
+
       let searchedResult = await usersCollection
-        .find(
-          {
-            $or: searchFields,
-          },
-          {
-            $project: { score: { $meta: 'textScore' } },
-            $sort: { score: { $meta: 'textScore' } },
-          }
-        )
+        .find({
+          $or: searchFields,
+        })
+        .sort({ _id: sortOrder })
         .toArray();
+
+      //console.log(searchedResult);
 
       resolve(searchedResult.map(eachDoc => User.extractAllowedUserProps(eachDoc)));
     } catch (error) {
@@ -693,7 +658,7 @@ User.prototype.resetToken = function (token) {
   });
 };
 
-User.doesEmailExists = email => {
+User.doesEmailExist = email => {
   return new Promise(async (resolve, reject) => {
     if (typeof email != 'string') {
       resolve(false);
@@ -727,51 +692,6 @@ User.addSocialUser = data => {
       // EMAIL USER FOR A SUCCESSFUL REGISTRATION ENDS
     } catch {
       reject('There was an issue registering your account. Please try again.');
-    }
-  });
-};
-
-User.sortProfiles = q => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let sortedContacts = await usersCollection.find().sort({ _id: +q }).toArray();
-
-      sortedContacts = sortedContacts.map(eachDoc => {
-        //clean up each document
-        eachDoc = {
-          _id: eachDoc._id,
-          ...(eachDoc.google_id && { google_id: eachDoc.google_id }),
-          firstName: eachDoc.firstName,
-          lastName: eachDoc.lastName,
-          year: eachDoc.year,
-          email: eachDoc.email,
-          nickname: eachDoc.nickname,
-          username: eachDoc.username,
-          photo: eachDoc.photo,
-          residence: eachDoc.residence,
-          class: eachDoc.class,
-          occupation: eachDoc.occupation,
-          teacher: eachDoc.teacher,
-          month: eachDoc.month,
-          day: eachDoc.day,
-          phone: eachDoc.phone,
-          social_type_1: eachDoc.social_type_1,
-          link_social_type_1: eachDoc.link_social_type_1,
-          social_type_2: eachDoc.social_type_2,
-          link_social_type_2: eachDoc.link_social_type_2,
-          relationship: eachDoc.relationship,
-          comments: eachDoc.comments,
-          totalLikes: eachDoc.totalLikes,
-          likes_received_from: eachDoc.likes_received_from,
-          likes_given_to: eachDoc.likes_given_to,
-        };
-
-        return eachDoc;
-      });
-
-      resolve(sortedContacts);
-    } catch {
-      reject('Abeg no vex, we are having server issues.');
     }
   });
 };
