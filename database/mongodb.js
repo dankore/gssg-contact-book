@@ -1,10 +1,8 @@
 const dotenv = require('dotenv');
 const { MongoClient } = require('mongodb');
-const { environment } = require('../server/misc/helpers');
+const {  DB_CONNECTION_STRING } = require('../server/misc/helpers');
 
 dotenv.config();
-
-const DB_CONNECTION_STRING = environment == 'development' ? process.env.LOCAL_CONNECTIONSTRING : process.env.CONNECTIONSTRING;
 
 const startMongodb = async () => {
   try {
