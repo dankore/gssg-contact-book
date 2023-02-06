@@ -247,38 +247,30 @@ User.prototype.register = async function () {
 };
 
 User.findByEmail = async function (email) {
-  if (typeof email !== 'string') {
-    throw new Error('Email not string.');
-  }
-
   try {
+    if (typeof email !== 'string') return false;
+
     const userDoc = await usersCollection.findOne({ email });
 
-    if (!userDoc) {
-      throw new Error('Cannot find one user_by_email.');
-    }
+    if (!userDoc) return false;
 
     return User.extractAllowedUserProps(userDoc);
   } catch (error) {
-    throw new Error(`Cannot find one user_by_email. ${error.message}`);
+    return false;
   }
 };
 
 User.findByUsername = async function (username) {
-  if (typeof username !== 'string') {
-    throw new Error('Username not string. Model line 304');
-  }
-
   try {
+    if (typeof username !== 'string') return false;
+
     const userDoc = await usersCollection.findOne({ username });
 
-    if (!userDoc) {
-      throw new Error('Cannot find one username. Model line 329');
-    }
+    if (!userDoc) return false;
 
     return User.extractAllowedUserProps(userDoc);
   } catch (error) {
-    throw new Error('Cannot find one username. Model line 334. Error: ${error}');
+    return false;
   }
 };
 
