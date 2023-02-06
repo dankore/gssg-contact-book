@@ -1,7 +1,6 @@
 const sanitizeHTML = require('sanitize-html');
 const { environment, whichPage } = require('../misc/helpers');
-const { TextAvatar } = require('../misc/toSvg');
-
+const { TextAvatar } = require('../misc/textAvatar');
 
 const globalVariables = app => async (req, res, next) => {
   // Define sanitization function globally
