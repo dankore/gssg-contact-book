@@ -53,7 +53,7 @@
     "sanitize-html": "^2.3.2",
     "sitemap": "^7.1.1",
     "validator": "^13.7.0",
-    "webpack": "^4.41.5",
+    "webpack": "^5.75.0",
     "webpack-cli": "^4.10.0"
   },
   "devDependencies": {
