@@ -388,7 +388,7 @@ exports.googleLogin = async (req, res) => {
       req.session.user._id = userDoc._id;
       req.session.user.google_id = userDoc.google_id;
       req.flash('success', "Success, Up GSS Gwarinpa! Click 'Edit Profile' to add your nickname, birthday, and more.");
-      req.session.save(async _ => await res.redirect(`/contacts/${req.user.username}/edit-profile`));
+      req.session.save(async _ => await res.redirect(`/settings/${req.user.username}/edit-profile`));
     }
   } catch (error) {
     req.flash('errors', error.message);
