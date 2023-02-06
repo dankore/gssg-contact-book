@@ -126,16 +126,6 @@ exports.logout = function (req, res) {
   });
 };
 
-exports.getProfile = async (req, res) => {
-  try {
-    const contactUsername = helpers.getUsernameFromHeadersReferrer(req.headers.referer);
-    const userDoc = await User.findByUsername(contactUsername);
-    res.json(userDoc.likes_received_from);
-  } catch (error) {
-    res.render('404');
-  }
-};
-
 exports.ifUserExists = async (req, res, next) => {
   try {
     req.profileUser = await User.findByUsername(req.params.username);

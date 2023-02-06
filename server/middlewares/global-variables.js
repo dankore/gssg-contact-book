@@ -1,5 +1,6 @@
 const sanitizeHTML = require('sanitize-html');
 const { environment, whichPage } = require('../misc/helpers');
+const { TextAvatar } = require('../misc/textAvatar');
 
 const globalVariables = app => async (req, res, next) => {
   // Define sanitization function globally
@@ -19,6 +20,7 @@ const globalVariables = app => async (req, res, next) => {
   res.locals.user = req.session.user;
   res.locals.path = req.originalUrl;
   res.locals.environment = environment;
+  res.locals.TextAvatar = TextAvatar;
 
   // Set domain based on environment
   res.locals.domain = environment === 'development' ? 'localhost:3000' : 'gssgcontactbook.com';

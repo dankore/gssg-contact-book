@@ -5,10 +5,10 @@
     <!-- Page header -->
     <div class="mx-auto max-w-3xl px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
       <div class="flex items-center space-x-5">
-        <% profilePhoto = profile.google_id ? profile.google_photo : (profile.photo ? profile.photo : `https://robohash.org/${profile.firstName}.png`) %>
+        <% profilePhoto = profile.google_id ? profile.google_photo : (profile.photo ? profile.photo : `data:image/svg+xml;utf8,${encodeURIComponent(new TextAvatar(profile.firstName, 'svg').toString())}`) %>
 
         <div class="relative overflow-hidden rounded-full">
-          <img loading="lazy" src="<%= profilePhoto %>" class="relative h-16 w-16 rounded-full from-secondary-500 via-purple-500 to-pink-500 bg-gradient-to-r" alt="<%= profile.firstName.substring(0,1) %>" />
+          <img loading="lazy" src="<%= profilePhoto %>" class="relative h-16 w-16 rounded-full bg-white border border-red-300" alt="<%= profile.firstName.substring(0,1) %>" />
 
           <button id="preview-button" data-image="<%= profilePhoto %>" class="absolute inset-0 flex h-full w-full items-center justify-center bg-black bg-opacity-75 text-sm font-medium text-white opacity-0 focus-within:opacity-100 hover:opacity-100">
             <span class="pointer-events-none">Zoom</span>
@@ -146,7 +146,7 @@
                     <% profileOwnerComment = comment.visitorUsername === profile.username %>
                     <div class="flex space-x-3">
                       <p class="flex-shrink-0">
-                        <img loading="lazy" src="<%= comment.photo ? comment.photo : `https://robohash.org/${encodeURIComponent(comment.visitorFirstName)}.png` %>" class="overflow-hidden bg-gradient-to-r from-secondary-500 via-purple-500 to-pink-500 w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName.substring(0,1) %>" />
+                        <img loading="lazy" src="<%= comment.photo ? comment.photo : `data:image/svg+xml;utf8,${encodeURIComponent(new TextAvatar(profile.firstName).toString())}` %>" class="overflow-hidden bg-gradient-to-r bg-white border border-red-300 w-8 h-8 rounded-full" alt="<%= comment.visitorFirstName.substring(0,1) %>" />
                       </p>
 
                       <div>
@@ -193,7 +193,7 @@
             <div class="bg-gray-50 px-4 py-6 sm:px-6">
               <div class="flex space-x-3">
                 <div class="flex-shrink-0">
-                  <img loading="lazy" src="<%= user.photo ? user.photo : `https://robohash.org/${encodeURIComponent(user.firstName)}.png` %>" class="overflow-hidden bg-gradient-to-r from-secondary-500 via-purple-500 to-pink-500 h-10 w-10 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
+                  <img loading="lazy" src="<%= user.photo ? user.photo : `data:image/svg+xml;utf8,${encodeURIComponent(new TextAvatar(profile.firstName).toString())}` %>" class="overflow-hidden bg-gradient-to-r bg-white border border-red-300 h-10 w-10 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
                 </div>
 
                 <div class="min-w-0 flex-1">
