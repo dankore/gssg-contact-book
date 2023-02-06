@@ -34,7 +34,7 @@ export default class ZoomImage {
 
     // Create the zoomed image element and add it to the overlay
     var imageToZoom = document.createElement('img');
-    imageToZoom.classList.add('object-contain', 'z-50', 'mx-auto', 'rounded-full', 'h-56', 'w-56', 'bg-primary-700');
+    imageToZoom.classList.add('object-contain', 'z-50', 'mx-auto', 'rounded-full', 'h-56', 'w-56', 'bg-white', 'border', 'border-red-300');
     imageToZoom.src = this.imageUrl;
     contentDiv.appendChild(imageToZoom);
 
