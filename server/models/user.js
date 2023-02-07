@@ -5,6 +5,7 @@ const usersCollection = require('../../database/mongodb.js').db().collection('us
   Email = require('../misc/emailNotifications.js'),
   helpers = require('../misc/helpers.js'),
   ObjectId = require('mongodb').ObjectID,
+  sanitizeHtml = require('sanitize-html'),
   _ = require('lodash');
 
 let User = class user {
@@ -28,7 +29,7 @@ User.prototype.validateEmail = async function () {
       this.errors.push('Email is not valid. Please enter a valid email.');
     } else {
       const emailExist = await usersCollection.findOne({
-        email: this.data.email,
+        email: sanitizeHtml(this.data.email),
       });
       if (emailExist) {
         this.errors.push('That email is already taken.');
@@ -53,7 +54,7 @@ User.prototype.validateUsername = function () {
 
     // if username is valid, check to see if it is taken
     let usernameExists = await usersCollection.findOne({
-      username: this.data.username,
+      username: sanitizeHtml(this.data.username),
     });
 
     if (usernameExists) {
@@ -154,7 +155,7 @@ User.prototype.login = async function () {
     let attemptedUser;
 
     if (validator.isEmail(this.data.email)) {
-      attemptedUser = await usersCollection.findOne({ email: this.data.email });
+      attemptedUser = await usersCollection.findOne({ email: sanitizeHtml(this.data.email) });
     } else {
       throw new Error('Invalid email address');
     }
