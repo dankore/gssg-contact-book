@@ -450,6 +450,8 @@ exports.deleteComment = async (req, res) => {
   }
 };
 
+exports.error = (req, res) => res.render('error', { metatags: metatags({ page: 'generic', data: { page_name: 'error' } }) });
+
 let sitemap;
 
 exports.sitemap = (req, res) => {
