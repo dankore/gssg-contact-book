@@ -9,7 +9,7 @@ const sessionOptions = {
   store: MongoStore.create({ mongoUrl: DB_CONNECTION_STRING }),
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 * 24 * 14, httpOnly: true }, // COOKIES EXPIRE IN 14 DAYS
+  cookie: { maxAge: 1000 * 60 * 60 * 24 * 14, secure: true }, // COOKIES EXPIRE IN 14 DAYS
   secure: process.env.NODE_ENV === 'production',
   httpOnly: true,
   domain: process.env.NODE_ENV === 'production' ? 'gssgcontactbook.com' : undefined,
