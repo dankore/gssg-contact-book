@@ -18,7 +18,7 @@ const app = express();
 require('./misc/passport-config');
 require('./misc/session-config')(app);
 
-app.set('views', 'view');
+app.set('views', 'views');
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
