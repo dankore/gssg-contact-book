@@ -130,7 +130,6 @@ exports.logout = function (req, res) {
 exports.ifUserExists = async (req, res, next) => {
   try {
     const user = await User.findByUsername(req.params.username);
-
     if (user) {
       req.profileUser = user;
       next();
@@ -163,7 +162,7 @@ exports.isVisitorOwner = (req, res, next) => {
 exports.profileScreen = (req, res) => {
   try {
     const { profileUser } = req;
-   
+
     const data = {
       profile: {
         ...profileUser,

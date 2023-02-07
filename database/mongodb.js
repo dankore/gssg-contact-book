@@ -1,7 +1,6 @@
 const dotenv = require('dotenv');
 const { MongoClient } = require('mongodb');
-const {  DB_CONNECTION_STRING } = require('../server/misc/helpers');
-
+const { DB_CONNECTION_STRING } = require('../server/misc/helpers');
 dotenv.config();
 
 const startMongodb = async () => {

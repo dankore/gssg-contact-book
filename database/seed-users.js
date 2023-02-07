@@ -6,7 +6,6 @@ module.exports = {
       year: 1990,
       email: 'john.doe@example.com',
       comments: [],
-      password: 'password',
       username: 'johndoe',
     },
     {
@@ -15,7 +14,6 @@ module.exports = {
       year: 1992,
       email: 'jane.doe@example.com',
       comments: [],
-      password: 'password',
       username: 'janedoe',
     },
     {
@@ -24,7 +22,6 @@ module.exports = {
       year: 1985,
       email: 'jim.smith@example.com',
       comments: [],
-      password: 'password',
       username: 'jimsmith',
     },
     // Add more objects for additional users as needed
