@@ -6,6 +6,7 @@ const ObjectId = require('mongodb').ObjectID;
 const { SitemapStream, streamToPromise } = require('sitemap');
 const { createGzip } = require('zlib');
 const { working_url } = require('../misc/helpers');
+const { render } = require('../app');
 
 exports.home = async (req, res) => {
   try {
@@ -128,10 +129,16 @@ exports.logout = function (req, res) {
 
 exports.ifUserExists = async (req, res, next) => {
   try {
-    req.profileUser = await User.findByUsername(req.params.username);
-    next();
+    const user = await User.findByUsername(req.params.username);
+
+    if (user) {
+      req.profileUser = user;
+      next();
+    } else {
+      return res.status(404).send({ error: 'User not found' });
+    }
   } catch (error) {
-    res.render('404');
+    return res.status(500).send({ error: 'An error occurred while retrieving the user' });
   }
 };
 
@@ -156,7 +163,7 @@ exports.isVisitorOwner = (req, res, next) => {
 exports.profileScreen = (req, res) => {
   try {
     const { profileUser } = req;
-
+   
     const data = {
       profile: {
         ...profileUser,

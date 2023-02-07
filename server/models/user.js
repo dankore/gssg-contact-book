@@ -151,7 +151,13 @@ User.prototype.login = async function () {
       throw new Error('Please provide an email address and a password.');
     }
 
-    const attemptedUser = await usersCollection.findOne({ email: this.data.email });
+    let attemptedUser;
+
+    if (validator.isEmail(this.data.email)) {
+      attemptedUser = await usersCollection.findOne({ email: this.data.email });
+    } else {
+      throw new Error('Invalid email address');
+    }
 
     if (!attemptedUser) {
       throw new Error("That email has not been registered. Click 'Add Your Contact' above to register.");
