@@ -87,10 +87,15 @@ export default class AddComments {
       }),
       headers: { 'Content-Type': 'application/json' },
     })
-      .then(responseData => responseData.json())
-      .then(data => {
-        commentContainerServerSide.innerText = data.comment;
-        timesStampContainerServerSide.innerText = data.commentDate;
+      .then(response => response)
+      .then(async response => {
+        if (response.ok) {
+          const data = await response.json();
+          commentContainerServerSide.innerText = data.comment;
+          timesStampContainerServerSide.innerText = data.commentDate;
+        } else {
+          alert('Sorry, the comment was not updated. Please try again later.');
+        }
       })
       .catch(err => {
         console.log('Error updating comment.', err);
@@ -113,11 +118,17 @@ export default class AddComments {
           profileEmail: e.target.getAttribute('data-profile-email'),
         }),
       })
+        .then(response => response)
         .then(response => {
-          if (response.status === 200) e.target.parentElement.parentElement.parentElement.parentElement.remove();
+          if (response.ok) {
+            e.target.parentElement.parentElement.parentElement.parentElement.remove();
+          } else {
+            throw new Error(response.error);
+          }
         })
         .catch(err => {
-          console.log(err);
+          console.error(err);
+          alert('Sorry, the comment was not deleted. Please try again later.');
         });
     }
   }
@@ -125,8 +136,8 @@ export default class AddComments {
   handleAddCommentClick(e) {
     // IF INPUT BOX IS EMPTY, DO NOT SAVE
     if (!this.userComment) return;
+    console.log(this.userComment);
 
-    // SEND DATA TO DB
     fetch('/add-comment', {
       method: 'POST',
       body: JSON.stringify({ comment: this.userComment, visitorEmail: e.target.getAttribute('data-visitor-email'), contactEmail: e.target.getAttribute('data-contact-email') }),
@@ -134,20 +145,22 @@ export default class AddComments {
     })
       .then(responseData => responseData.json())
       .then(data => {
-        // INSERT INTO DOM
+        if (data.error) {
+          throw new Error(data.error.message);
+        }
+        console.log(data);
         this.commentsContainerUl.insertAdjacentHTML('afterbegin', this.commentHtml(data, e));
-
         this.input.value = '';
         this.input.focus();
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.error(error.message);
       });
   }
 
   commentHtml({ commentId, comment, profileEmail, visitorUsername, visitorFirstName, commentDate }, e) {
     const session_user = JSON.parse(this.sessionUser);
-
+    console.log({ commentId, comment, profileEmail, visitorUsername, visitorFirstName, commentDate });
     return `<li id="li-comment">
             <div class="flex space-x-3">
               <p class="flex-shrink-0">

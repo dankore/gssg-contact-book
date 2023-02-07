@@ -4,7 +4,7 @@ const usersCollection = require('../../database/mongodb.js').db().collection('us
   crypto = require('crypto'),
   Email = require('../misc/emailNotifications.js'),
   helpers = require('../misc/helpers.js'),
-  ObjectId = require('mongodb').ObjectID,
+  ObjectId = require('mongodb').ObjectId,
   sanitizeHtml = require('sanitize-html'),
   _ = require('lodash');
 
@@ -684,36 +684,17 @@ User.addSocialUser = data => {
   });
 };
 
-// ADD COMMENTS
-User.saveComment = data => {
-  return new Promise(async (resolve, reject) => {
-    // CHECK FOR EMPTY AN COMMENT
-    if (!data.comment) return;
-    // FIND OWNER OF PROFILEE AND ADD COMMENT
-    await usersCollection
-      .findOneAndUpdate(
-        { email: data.profileEmail },
-        {
-          $push: {
-            comments: data,
-          },
-        },
-        {
-          projection: { comments: 1 },
-          returnOriginal: false,
-        }
-      )
-      .then(info => {
-        const lastCommentDoc = info.value.comments[info.value.comments.length - 1];
-        resolve(lastCommentDoc);
-        // EMAIL USERS FOR A SUCCESSFULL COMMENT
-        new Email().sendCommentSuccessMessage(info.value.comments, data.visitorFirstName, data.visitorEmail, data.photo, data.commentDate, data.comment, data.profileEmail, info.value.firstName, info.value.lastName);
-        //EMAIL USERS FOR A SUCCESSFULL COMMENT ENDS
-      })
-      .catch(_ => {
-        reject('Comment not added. Please try again. @[then/catch]');
-      });
+User.saveComment = async data => {
+  // Check for empty comment
+  if (!data.comment) throw new Error('Comment cannot be empty');
+  // Find owner of profile and add comment
+  const { value } = await usersCollection.findOneAndUpdate({ email: data.profileEmail }, { $push: { comments: data } }, { projection: { comments: 1 }, returnDocument: 'after' }).catch(err => {
+    throw new Error(`Error adding comment: ${err.message}`);
   });
+
+  // Email users for a successful comment
+  new Email().sendCommentSuccessMessage(value.comments, data.visitorFirstName, data.visitorEmail, data.photo, data.commentDate, data.comment, data.profileEmail, value.firstName, value.lastName);
+  return data;
 };
 
 // UPDATE FIRST NAME IN COMMENTS FOR A USER WHO UPDATES THEIR PROFILE
@@ -762,47 +743,44 @@ User.updateCommentPhoto = (email, photo) => {
   });
 };
 
-// UPDATE A COMMENT
-User.updateComment = data => {
-  return new Promise(async (resolve, reject) => {
-    if (!data) reject();
-
-    usersCollection
-      .findOneAndUpdate(
-        { email: data.profileEmail },
-        {
-          $set: {
-            'comments.$[elem].comment': data.comment,
-            'comments.$[elem].commentDate': `Updated ${helpers.getMonthDayYear()}, ${helpers.getHMS()}`,
-          },
+User.updateComment = async data => {
+  try {
+    if (!data) throw new Error('No data provided');
+    const result = await usersCollection.findOneAndUpdate(
+      { email: data.profileEmail },
+      {
+        $set: {
+          'comments.$[elem].comment': data.comment,
+          'comments.$[elem].commentDate': `Updated ${helpers.getMonthDayYear()}, ${helpers.getHMS()}`,
         },
-        {
-          projection: { comments: 1 },
-          returnOriginal: false,
-          arrayFilters: [{ 'elem.commentId': { $eq: new ObjectId(data.commentId) } }],
-        }
-      )
-      .then(info => {
-        // FILTER ONLY THE COMMENT THAT WAS UPDATED
-        const updatedCommentObject = helpers.singlePropArrayFilter(info.value.comments, data.commentId);
-        resolve(updatedCommentObject);
-      })
-      .catch(() => {
-        reject('Comment was not updated.');
-      });
-  });
+      },
+      {
+        projection: { comments: 1 },
+        returnOriginal: false,
+        arrayFilters: [{ 'elem.commentId': { $eq: new ObjectId(data.commentId) } }],
+        returnDocument: 'after',
+      }
+    );
+
+    // FILTER ONLY THE COMMENT THAT WAS UPDATED
+    const updatedCommentObject = helpers.singlePropArrayFilter(result.value.comments, data.commentId);
+
+    return updatedCommentObject;
+  } catch (error) {
+    console.error(error.message);
+    throw new Error('Comment was not updated.');
+  }
 };
 
 // DELETE A COMMENT
-User.deleteComment = (commentId, profileEmail) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await usersCollection.updateOne({ email: profileEmail }, { $pull: { comments: { commentId: new ObjectId(commentId) } } });
-      resolve('Comment deleted.');
-    } catch {
-      reject('Sorry, comment was not deleted. Please try again.');
-    }
-  });
+User.deleteComment = async (commentId, profileEmail) => {
+  try {
+    await usersCollection.updateOne({ email: profileEmail }, { $pull: { comments: { commentId: new ObjectId(commentId) } } });
+    return 'Comment deleted.';
+  } catch (error) {
+    console.log(error);
+    throw new Error('Sorry, comment was not deleted. Please try again.');
+  }
 };
 
 // LIKES

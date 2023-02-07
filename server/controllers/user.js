@@ -2,10 +2,11 @@ const { metatags } = require('../misc/metatags');
 const { transformImage } = require('../misc/file-upload-cloudinary');
 const User = require('../models/user');
 const helpers = require('../misc/helpers');
-const ObjectId = require('mongodb').ObjectID;
+const ObjectId = require('mongodb').ObjectId;
 const { SitemapStream, streamToPromise } = require('sitemap');
 const { createGzip } = require('zlib');
 const { working_url } = require('../misc/helpers');
+const APIError = require('../misc/api-error');
 
 exports.home = async (req, res) => {
   try {
@@ -419,7 +420,16 @@ exports.addComment = async (req, res) => {
     const response = await User.saveComment(data);
     res.json(response);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    if (!(error instanceof APIError)) {
+      error = new APIError(error.message, 500);
+    }
+
+    console.error(error);
+    res.status(error.status).json({
+      error: {
+        message: error.message,
+      },
+    });
   }
 };
 
@@ -434,10 +444,20 @@ exports.editComment = async (req, res) => {
       profileUsername,
     };
 
+    console.log(data);
+
     const response = await User.updateComment(data);
     res.json(response);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    if (!(error instanceof APIError)) {
+      error = new APIError(error, 500);
+    }
+
+    res.status(error.status).json({
+      error: {
+        message: error.message,
+      },
+    });
   }
 };
 
@@ -446,7 +466,15 @@ exports.deleteComment = async (req, res) => {
     const successMessage = await User.deleteComment(req.body.commentId, req.body.profileEmail.trim());
     res.json(successMessage);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    if (!(error instanceof APIError)) {
+      error = new APIError(error, 500);
+    }
+
+    res.status(error.status).json({
+      error: {
+        message: error.message,
+      },
+    });
   }
 };
 
