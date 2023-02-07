@@ -6,7 +6,6 @@ const ObjectId = require('mongodb').ObjectID;
 const { SitemapStream, streamToPromise } = require('sitemap');
 const { createGzip } = require('zlib');
 const { working_url } = require('../misc/helpers');
-const { render } = require('../app');
 
 exports.home = async (req, res) => {
   try {
@@ -14,9 +13,7 @@ exports.home = async (req, res) => {
 
     res.render('homePage', { contacts, metatags: metatags({ page: '/' }) });
   } catch (error) {
-    console.log(error);
-    req.flash('errors', error.message);
-    req.session.save(() => res.redirect('/error'));
+    return res.render('error', { errorMsg: error.message, status: 404, metatags: metatags({ page: 'generic', data: { page_name: 'Error' } }) });
   }
 };
 
@@ -25,12 +22,9 @@ exports.about = async (req, res) => {
     const count = await User.contactsCount();
     res.render('about', { count, metatags: metatags({ page: 'about' }) });
   } catch (error) {
-    req.flash('errors', error.message);
-    req.session.save(() => res.redirect('/error'));
+    return res.render('error', { errorMsg: error.message, status: 404, metatags: metatags({ page: 'generic', data: { page_name: 'Error' } }) });
   }
 };
-
-exports.error = (req, res) => res.render('error', { metatags: metatags({ page: 'generic', data: { page_name: 'error' } }) });
 
 exports.contacts = async (req, res) => {
   try {
@@ -130,32 +124,32 @@ exports.logout = function (req, res) {
 exports.ifUserExists = async (req, res, next) => {
   try {
     const user = await User.findByUsername(req.params.username);
-    if (user) {
-      req.profileUser = user;
-      next();
-    } else {
-      return res.status(404).send({ error: 'User not found' });
+
+    if (!user) {
+      return res.render('error', { errorMsg: 'User not found', status: 404, metatags: metatags({ page: 'generic', data: { page_name: 'Error' } }) });
     }
+
+    req.profileUser = user;
+    next();
   } catch (error) {
-    return res.status(500).send({ error: 'An error occurred while retrieving the user' });
+    return res.render('error', { errorMsg: 'An error occurred while retrieving this profile', status: 500, metatags: metatags({ page: 'generic', data: { page_name: 'Error' } }) });
   }
 };
 
 exports.mustBeLoggedIn = (req, res, next) => {
   if (!req.session.user) {
-    req.flash('errors', 'Must be logged in to perform that action.');
-    return res.redirect('/error');
+    return res.render('error', { errorMsg: 'You must be logged in to perform that action.', status: 401, metatags: metatags({ page: 'generic', data: { page_name: 'Error' } }) });
   }
+
   next();
 };
 
 exports.isVisitorOwner = (req, res, next) => {
   const visitorIsOwner = User.isVisitorOwner(req.session.user.username, req.params.username);
   if (!visitorIsOwner) {
-    req.flash('errors', 'You do not have permission to perform that action.');
-    req.session.save(() => res.redirect('/error'));
-    return;
+    return res.render('error', { errorMsg: 'You do not have permission to perform that action.', status: 403, metatags: metatags({ page: 'generic', data: { page_name: 'Error' } }) });
   }
+
   next();
 };
 
@@ -196,8 +190,7 @@ exports.edit = async (req, res) => {
       await req.session.save(() => res.redirect(`/settings/${req.session.user.username}/edit-profile`));
     }
   } catch (err) {
-    req.flash('errors', 'You do not have permission to perform that action.');
-    res.redirect('/error');
+    return res.render('error', { errorMsg: 'You do not have permission to perform that action.', status: 403, metatags: metatags({ page: 'generic', data: { page_name: 'Error' } }) });
   }
 };
 
@@ -256,9 +249,7 @@ exports.deleteAccountPage = async (req, res) => {
       }),
     });
   } catch (error) {
-    console.error(error);
-    req.flash('errors', 'An unexpected error occurred, please try again later.');
-    req.session.save(() => res.redirect('/error'));
+    return res.render('error', { errorMsg: 'An unexpected error occurred, please try again later.', status: 500, metatags: metatags({ page: 'generic', data: { page_name: 'Error' } }) });
   }
 };
 
@@ -269,8 +260,7 @@ exports.deleteAccount = async (req, res) => {
     req.flash('success', 'Account successfully deleted.');
     req.session.destroy(() => res.redirect('/'));
   } catch (error) {
-    req.flash('errors', 'You do not have permission to perform that action.');
-    req.session.save(() => res.redirect('/error'));
+    return res.render('error', { errorMsg: 'You do not have permission to perform that action.', status: 403, metatags: metatags({ page: 'generic', data: { page_name: 'Error' } }) });
   }
 };
 
