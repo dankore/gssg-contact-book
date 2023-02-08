@@ -4,11 +4,12 @@
   "description": "Discover Present & Past GSS Gwarinpa Students",
   "main": "database/mongodb.js",
   "scripts": {
-    "watch": "webpack --watch",
+    "webpack": "webpack --watch",
     "dev-start": "NODE_ENV=dev nodemon database/mongodb",
     "start": "nodemon database/mongodb",
     "tailwind": "npx tailwindcss -i ./public/tailwindcss/input.css -o ./public/tailwindcss/output.css --watch --minify",
-    "seed": "NODE_ENV=dev node ./database/seed.js"
+    "seed": "NODE_ENV=dev node ./database/seed.js",
+    "test": "mocha tests/*.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,8 @@
   },
   "homepage": "https://github.com/dankore/gssg-year-book#readme",
   "dependencies": {
+    "@aws-sdk/abort-controller": "^3.267.0",
+    "@aws-sdk/client-s3": "^3.267.0",
     "@babel/core": "^7.8.3",
     "@babel/preset-env": "^7.20.2",
     "aws-sdk": "^2.814.0",
@@ -61,6 +64,7 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.9",
+    "postcss": "^8.4.21",
     "tailwindcss": "^3.2.4"
   }
 }
