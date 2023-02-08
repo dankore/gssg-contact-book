@@ -23,7 +23,7 @@ Emails.prototype.transporter = nodemailer.createTransport({
   },
 });
 
-Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visitorEmail, photoUrl, commentDate, comment, profileOwnerEmail, profileOwnerFirstName, profileOwnerLastName) => {
+Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visitorEmail, photoUrl, commentDate, comment, profileOwnerEmail, profileOwnerFirstName, profileOwnerLastName, profileOwnerUsername) => {
   /**
    * EMAIL USERS FOR A SUCCESSFULL COMMENT
    * TODO: OPTIMIZE GETTING EMAIL BY REMOVING [...NEW SET()]

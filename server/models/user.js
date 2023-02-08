@@ -693,7 +693,7 @@ User.saveComment = async data => {
   });
 
   // Email users for a successful comment
-  new Email().sendCommentSuccessMessage(value.comments, data.visitorFirstName, data.visitorEmail, data.photo, data.commentDate, data.comment, data.profileEmail, value.firstName, value.lastName);
+  new Email().sendCommentSuccessMessage(value.comments, data.visitorFirstName, data.visitorEmail, data.photo, data.commentDate, data.comment, data.profileEmail, value.firstName, value.lastName, value.username);
   return data;
 };
 

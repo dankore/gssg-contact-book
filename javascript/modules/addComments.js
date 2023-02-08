@@ -136,7 +136,6 @@ export default class AddComments {
   handleAddCommentClick(e) {
     // IF INPUT BOX IS EMPTY, DO NOT SAVE
     if (!this.userComment) return;
-    console.log(this.userComment);
 
     fetch('/add-comment', {
       method: 'POST',
@@ -148,7 +147,7 @@ export default class AddComments {
         if (data.error) {
           throw new Error(data.error.message);
         }
-        console.log(data);
+
         this.commentsContainerUl.insertAdjacentHTML('afterbegin', this.commentHtml(data, e));
         this.input.value = '';
         this.input.focus();
@@ -160,7 +159,7 @@ export default class AddComments {
 
   commentHtml({ commentId, comment, profileEmail, visitorUsername, visitorFirstName, commentDate }, e) {
     const session_user = JSON.parse(this.sessionUser);
-    console.log({ commentId, comment, profileEmail, visitorUsername, visitorFirstName, commentDate });
+
     return `<li id="li-comment">
             <div class="flex space-x-3">
               <p class="flex-shrink-0">
