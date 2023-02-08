@@ -8,7 +8,7 @@
         <% profilePhoto = profile.google_id ? profile.google_photo : (profile.photo ? profile.photo : `data:image/svg+xml;utf8,${encodeURIComponent(new TextAvatar(profile.firstName, 'svg').toString())}`) %>
 
         <div class="relative overflow-hidden rounded-full">
-          <img loading="lazy" src="<%= profilePhoto %>" class="relative h-16 w-16 rounded-full bg-white border border-red-300" alt="<%= profile.firstName.substring(0,1) %>" />
+          <img loading="lazy" src="<%= profilePhoto %>" class="relative h-16 w-16 rounded-full" alt="<%= profile.firstName.substring(0,1) %>" />
 
           <button id="preview-button" data-image="<%= profilePhoto %>" class="absolute inset-0 flex h-full w-full items-center justify-center bg-black bg-opacity-75 text-sm font-medium text-white opacity-0 focus-within:opacity-100 hover:opacity-100">
             <span class="pointer-events-none">Zoom</span>
