@@ -399,7 +399,7 @@ exports.addComment = async (req, res) => {
     const commentDate = helpers.getMonthDayYear() + ', ' + helpers.getHMS();
 
     // SANITIZE AND ADD ONLY NECESSARY DATA
-    const data = {
+    let data = {
       userId: req.session.user._id,
       commentId: new ObjectId(),
       comment: req.body.comment.trim(),

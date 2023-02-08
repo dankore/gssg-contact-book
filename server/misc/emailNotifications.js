@@ -23,7 +23,7 @@ Emails.prototype.transporter = nodemailer.createTransport({
 });
 
 Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visitorEmail, photoUrl, commentDate, comment, profileOwnerEmail, profileOwnerFirstName, profileOwnerLastName, profileOwnerUsername) => {
-  const emailListFromComments = comments.filter(c => c.visitorEmail !== visitorEmail).map(c => c.visitorEmail);
+  let emailListFromComments = comments.filter(c => c.visitorEmail !== visitorEmail).map(c => c.visitorEmail);
 
   if (profileOwnerEmail !== visitorEmail) {
     emailListFromComments.push(profileOwnerEmail);
