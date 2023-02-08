@@ -10,9 +10,9 @@ const APIError = require('../misc/api-error');
 
 exports.home = async (req, res) => {
   try {
-    const contacts = await User.getRecentProfiles();
+    const profiles = await User.getRecentProfiles();
 
-    res.render('homePage', { contacts, metatags: metatags({ page: '/' }) });
+    res.render('homePage', { profiles, metatags: metatags({ page: '/' }) });
   } catch (error) {
     return res.render('error', { errorMsg: error.message, status: 404, metatags: metatags({ page: 'generic', data: { page_name: 'Error' } }) });
   }

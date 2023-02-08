@@ -35,19 +35,8 @@
         <p class="text-lg font-semibold text-primary-700">Contacts</p>
         <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Recently added contacts</h2>
       </div>
-      <ul role="list" class="mx-auto space-y-16 sm:grid sm:grid-cols-2 sm:gap-16 sm:space-y-0 md:grid-cols-3 lg:grid-cols-4 lg:max-w-7xl lg:mx-auto">
-        <% if(contacts.length){ %>
-        <!--  -->
-        <% contacts.forEach(contact => { %>
-        <!--  -->
-        <%- include('includes/profile', {profile: contact}) %>
-        <!--  -->
-        <% }) %>
-        <!--  -->
-        <% } else { %>
-        <p>No profile found.</p>
-        <%}%>
-      </ul>
+
+      <%- include('includes/profile', { profiles }) %>
     </div>
   </div>
 </section>
