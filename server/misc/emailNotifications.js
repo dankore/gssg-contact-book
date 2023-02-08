@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
-const dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config();
 
 let Emails = class emails {
   constructor(bcc, from, subject, html) {
@@ -24,40 +23,21 @@ Emails.prototype.transporter = nodemailer.createTransport({
 });
 
 Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visitorEmail, photoUrl, commentDate, comment, profileOwnerEmail, profileOwnerFirstName, profileOwnerLastName, profileOwnerUsername) => {
-  /**
-   * EMAIL USERS FOR A SUCCESSFULL COMMENT
-   * TODO: OPTIMIZE GETTING EMAIL BY REMOVING [...NEW SET()]
-   * @variable [array] info.value.comments
-   */
-  let emailListFromComments = [];
+  const emailListFromComments = comments.filter(c => c.visitorEmail !== visitorEmail).map(c => c.visitorEmail);
 
-  for (let i = 0; i < comments.length; i++) {
-    const currentElement = comments[i];
-
-    // IF CURRENT LOGGED IN USER COMMENT ON THEIR PROFILE. DO NOT SEND HIM/HER EMAIL
-    if (profileOwnerEmail == visitorEmail) {
-      if (currentElement.visitorEmail !== visitorEmail) {
-        emailListFromComments.push(currentElement.visitorEmail);
-      }
-    } else {
-      // IF CURRENT LOGGED IN USER COMMENT ON ANOTHER PROFILE. DO NOT SEND HIM/HER EMAIL
-      if (currentElement.visitorEmail !== visitorEmail) {
-        emailListFromComments.push(currentElement.visitorEmail);
-      }
-
-      emailListFromComments.push(profileOwnerEmail);
-    }
+  if (profileOwnerEmail !== visitorEmail) {
+    emailListFromComments.push(profileOwnerEmail);
   }
 
   // REMOVE DUPLICATE EMAILS FROM LIST
   emailListFromComments = [...new Set(emailListFromComments)];
 
   if (emailListFromComments.length > 0) {
-    for (let i = 0; i < emailListFromComments.length; i++) {
+    emailListFromComments.forEach(email => {
       let data;
-      if (emailListFromComments[i] == profileOwnerEmail) {
+      if (email === profileOwnerEmail) {
         data = {
-          bcc: emailListFromComments[i],
+          bcc: email,
           from: '"GSS Gwarinpa Contact Book 📗" <gssgcontactbook@yahoo.com>',
           subject: `${visitorFirstName} commented on your profile`,
           html: `<div style="width: 320px;">
@@ -80,7 +60,7 @@ Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visito
         };
       } else {
         data = {
-          bcc: emailListFromComments[i],
+          bcc: email,
           from: '"GSS Gwarinpa Contact Book 📗" <gssgcontactbook@yahoo.com>',
           subject: `${visitorFirstName} commented on ${profileOwnerFirstName} ${profileOwnerLastName}'s profile`,
           html: `<div style="width: 320px;">
@@ -106,10 +86,8 @@ Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visito
         if (err) console.log(err);
         else console.log('Comment Success Emails Sent: ' + info.response);
       });
-    }
-    // END OF 1ST IF
+    });
   }
-  // END OF FUNCTION
 };
 
 Emails.prototype.sendResetPasswordConfirmationMessage = (email, firstName) => {
@@ -143,18 +121,23 @@ Emails.prototype.regSuccessEmail = (email, firstName) => {
     bcc: email,
     from: '"GSS Gwarinpa Contact Book 📗" <gssgcontactbook@yahoo.com>',
     subject: `Congratulations, ${firstName}! Registration Success.`,
-    html: `<p>Hello <strong>${firstName},</strong></p>
-        <p>You have successfully created an account and added your profile to GSS Gwarinpa Contact Book.</p>
-        <a 
+    html: `
+      <p>Hello <strong>${firstName},</strong></p>
+      <p>You have successfully created an account and added your profile to GSS Gwarinpa Contact Book.</p>
+      <a 
         href="https://www.gssgcontactbook.com" 
         style="text-decoration: none; padding: 10px; background-color: #38a169; border-radius: 5px; color: white; 
-          font-size: 15px; width: 300px; text-align: center; display:inline-block;">Discover GSS Gwarinpa Contact Book
-        </a>
-        `,
+        font-size: 15px; width: 300px; text-align: center; display:inline-block;">
+        Discover GSS Gwarinpa Contact Book
+      </a>
+    `,
   };
   Emails.prototype.transporter.sendMail(data, (err, info) => {
-    if (err) console.log(err);
-    else console.log('Registration Success Email Sent: ' + info.response);
+    if (err) {
+      console.error('Error sending registration success email:', err);
+    } else {
+      console.log(`Registration Success Email sent to ${email}: ${info.response}`);
+    }
   });
 };
 
@@ -165,9 +148,13 @@ Emails.prototype.whoLoggedIn = attemptedUserFirstName => {
     subject: `Login from ${attemptedUserFirstName}`,
     html: `<p><strong>${attemptedUserFirstName}</strong> just logged in.</p>`,
   };
+
   Emails.prototype.transporter.sendMail(data, (err, info) => {
-    if (err) console.log(err);
-    else console.log('Who Logs in Email Sent: ' + info.response);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(`Who Logs in Email Sent: ${info.response}`);
+    }
   });
 };
 
