@@ -1,5 +1,3 @@
-import FlashMessage from './flash';
-
 export default class DeleteAccount {
   constructor() {
     this.form = document.querySelector('#delete-account-form');
@@ -35,12 +33,13 @@ export default class DeleteAccount {
         throw new Error('Failed to delete account.');
       }
 
-      // Successful request
-      window.location.href = '/';
+      window.location.href = '/success';
     } catch (error) {
       // Error handling
       console.error(error);
-      alert('Failed to delete account.');
+      FlashMessage.error('Failed to delete account.');
     }
   }
+
+  
 }

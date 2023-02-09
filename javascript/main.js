@@ -1,4 +1,4 @@
-import AddComment from './modules/addComments';
+import AddComment from './modules/add-comments';
 import DeleteAccount from './modules/delete-account';
 import Filter from './modules/filter';
 import ImagePreview from './modules/image-preview';
