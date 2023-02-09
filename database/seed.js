@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
 const { DB_CONNECTION_STRING } = require('../server/misc/helpers');
+const bcrypt = require('bcryptjs');
 
 const seedData = async () => {
   try {
@@ -15,6 +16,9 @@ const seedData = async () => {
     const firstNames = ['Hassan', 'Hussain', 'Fatima', 'Aisha', 'Abbas'];
     const lastNames = ['Mohammed', 'Mustapha', 'Yusuf', 'Nura', 'Rabe'];
 
+    const salt = bcrypt.genSaltSync(10);
+    const password = bcrypt.hashSync("asasas", salt);
+
     for (let i = 0; i < 100; i++) {
       users.push({
         firstName: firstNames[i % 5],
@@ -23,6 +27,7 @@ const seedData = async () => {
         email: `${firstNames[i % 5].toLowerCase()}.${lastNames[i % 5].toLowerCase()}${i}@example.com`,
         comments: [],
         username: `${firstNames[i % 5].toLowerCase()}${lastNames[i % 5].toLowerCase()}${i}`,
+        password,
       });
     }
 

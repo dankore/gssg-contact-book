@@ -6,6 +6,7 @@ import ImageZoom from './modules/image-zoom';
 import RegistrationFormLiveValidation from './modules/registrationFormLiveValidation';
 import ToggleMobileMenu from './modules/toggleMobileMenu';
 
+
 const deleteAccount = document.querySelector('#delete-account-form');
 if (deleteAccount) {
   new DeleteAccount();

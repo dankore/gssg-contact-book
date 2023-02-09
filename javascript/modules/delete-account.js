@@ -1,3 +1,5 @@
+import FlashMessage from './flash';
+
 export default class DeleteAccount {
   constructor() {
     this.form = document.querySelector('#delete-account-form');
@@ -38,6 +40,7 @@ export default class DeleteAccount {
     } catch (error) {
       // Error handling
       console.error(error);
+      alert('Failed to delete account.');
     }
   }
 }
