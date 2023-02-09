@@ -256,12 +256,21 @@ exports.deleteAccountPage = async (req, res) => {
 
 exports.deleteAccount = async (req, res) => {
   try {
-    await User.delete(req.params.username, req.session.user.username);
-
-    req.flash('success', 'Account successfully deleted.');
-    req.session.destroy(() => res.redirect('/'));
+    const { account_username } = req.body;
+    const response = await User.delete(account_username);
+    res.json(response);
+    req.session.destroy();
   } catch (error) {
-    return res.render('error', { errorMsg: 'You do not have permission to perform that action.', status: 403, metatags: metatags({ page: 'generic', data: { page_name: 'Error' } }) });
+    if (!(error instanceof APIError)) {
+      error = new APIError(error.message, 500);
+    }
+
+    console.error(error);
+    res.status(error.status).json({
+      error: {
+        message: error.message,
+      },
+    });
   }
 };
 

@@ -19,12 +19,14 @@ export default class DeleteAccount {
     try {
       const formData = new FormData(this.form);
 
-      console.log(formData.get('_csrf'));
-      console.log(formData.get('account_username'));
-
       const response = await fetch(this.form.action, {
         method: 'POST',
-        body: formData,
+        body: JSON.stringify({
+          _csrf: formData.get('_csrf'),
+          account_username: formData.get('account_username'),
+        }),
+
+        headers: { 'Content-Type': 'application/json' },
       });
 
       if (!response.ok) {
@@ -32,7 +34,7 @@ export default class DeleteAccount {
       }
 
       // Successful request
-      console.log('Account deleted successfully.');
+      window.location.href = '/';
     } catch (error) {
       // Error handling
       console.error(error);
