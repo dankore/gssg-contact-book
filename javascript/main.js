@@ -1,9 +1,16 @@
-import AddComment from './modules/addComments';
+import AddComment from './modules/add-comments';
+import DeleteAccount from './modules/delete-account';
 import Filter from './modules/filter';
 import ImagePreview from './modules/image-preview';
 import ImageZoom from './modules/image-zoom';
 import RegistrationFormLiveValidation from './modules/registrationFormLiveValidation';
 import ToggleMobileMenu from './modules/toggleMobileMenu';
+
+
+const deleteAccount = document.querySelector('#delete-account-form');
+if (deleteAccount) {
+  new DeleteAccount();
+}
 
 const registrationForm = document.querySelector('#registration-form');
 if (registrationForm) {

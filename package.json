@@ -8,8 +8,7 @@
     "dev-start": "NODE_ENV=dev nodemon database/mongodb",
     "start": "nodemon database/mongodb",
     "tailwind": "npx tailwindcss -i ./public/tailwindcss/input.css -o ./public/tailwindcss/output.css --watch --minify",
-    "seed": "NODE_ENV=dev node ./database/seed.js",
-    "test": "mocha tests/*.js"
+    "seed": "NODE_ENV=dev node ./database/seed.js"
   },
   "repository": {
     "type": "git",

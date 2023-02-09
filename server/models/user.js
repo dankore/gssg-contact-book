@@ -393,24 +393,20 @@ User.isVisitorOwner = function (sessionUsername, requestedUsername) {
   return sessionUsername == requestedUsername;
 };
 
-User.delete = function (requestedUsername, sessionUsername) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let visistorIsOwner = User.isVisitorOwner(requestedUsername, sessionUsername);
-      if (visistorIsOwner) {
-        // DELETE ACCOUNT
-        await usersCollection.deleteOne({ username: requestedUsername });
-        // NOW DELETE COMMENTS OF THE USER ACROSS ALL DOCS
-        await usersCollection.updateMany({}, { $pull: { comments: { visitorUsername: sessionUsername } } }, { multi: true });
-        resolve();
-      } else {
-        reject();
-      }
-    } catch {
-      reject();
-    }
-  });
+User.delete = async function (username) {
+  try {
+    // DELETE ACCOUNT
+    await usersCollection.deleteOne({ username });
+    // NOW DELETE COMMENTS OF THE USER ACROSS ALL DOCS
+    await usersCollection.updateMany({}, { $pull: { comments: { visitorUsername: username } } }, { multi: true });
+
+    return 'Success';
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
+
 
 User.allProfiles = async function () {
   let allProfiles = await usersCollection.find({}).toArray();

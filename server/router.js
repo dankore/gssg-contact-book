@@ -64,7 +64,8 @@ router.get('/contacts', userController.contacts);
 router.get('/sitemap.xml', userController.sitemap);
 
 // ERROR
-router.get('/error', userController.error);
+router.get('/success', userController.successPage);
+router.get('/error', userController.errorPage);
 
 // NOT FOUND
 router.get('*', userController.notFound);
