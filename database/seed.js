@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const { DB_CONNECTION_STRING } = require('../server/misc/helpers');
+const { DB_CONNECTION_STRING } = require('../src/misc/helpers');
 const bcrypt = require('bcryptjs');
 
 const seedData = async () => {

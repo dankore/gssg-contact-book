@@ -1,4 +1,4 @@
-const { TextAvatar } = require('../../server/misc/textAvatar');
+const { TextAvatar } = require('../../src/misc/textAvatar');
 
 export default class AddComments {
   constructor() {

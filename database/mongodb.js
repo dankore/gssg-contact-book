@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
 const { MongoClient } = require('mongodb');
-const { DB_CONNECTION_STRING } = require('../server/misc/helpers');
+const { DB_CONNECTION_STRING } = require('../src/misc/helpers');
 dotenv.config();
 
 const startMongodb = async () => {
@@ -15,7 +15,7 @@ const startMongodb = async () => {
     await createIndexes(db);
 
     const port = 3000;
-    const server = require('../server/app');
+    const server = require('../src/app');
     server.listen(port, () => {
       console.log(`🚀 🎉 GSS Gwarinpa server is now up and running on port ${port}! 🎉 🚀`);
       console.log(`The server is ready to serve all requests with grace and efficiency.`);
