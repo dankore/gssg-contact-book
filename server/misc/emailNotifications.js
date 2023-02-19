@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const { domain } = require('./helpers');
 require('dotenv').config();
 
 let Emails = class emails {
@@ -50,7 +51,7 @@ Emails.prototype.sendCommentSuccessMessage = (comments, visitorFirstName, visito
                     <p style="font-size: 15px;"><strong>${comment}</strong></p>
                     </div>
                     <a 
-                    href="https://www.gssgcontactbook.com/contacts/${profileOwnerUsername}" 
+                    href="${domain}/contacts/${profileOwnerUsername}" 
                     style="text-decoration: none; padding: 10px; background-color: #38a169; border-radius: 5px; color: white; 
                       font-size: 15px; width: 300px; text-align: center; display:inline-block;">View on GSS Gwarinpa Contact Book
                     </a>

@@ -5,7 +5,7 @@ const helpers = require('../misc/helpers');
 const ObjectId = require('mongodb').ObjectId;
 const { SitemapStream, streamToPromise } = require('sitemap');
 const { createGzip } = require('zlib');
-const { working_url } = require('../misc/helpers');
+const { domain } = require('../misc/helpers');
 const APIError = require('../misc/api-error');
 
 exports.home = async (req, res) => {
@@ -503,7 +503,7 @@ exports.sitemap = (req, res) => {
   }
 
   try {
-    const smStream = new SitemapStream({ hostname: working_url });
+    const smStream = new SitemapStream({ hostname: domain });
     const pipeline = smStream.pipe(createGzip());
     helpers.sitemapUrls.forEach(url => {
       smStream.write({ url });

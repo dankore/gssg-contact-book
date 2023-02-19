@@ -8,7 +8,9 @@
     "dev-start": "NODE_ENV=dev nodemon database/mongodb",
     "start": "nodemon database/mongodb",
     "tailwind": "npx tailwindcss -i ./public/tailwindcss/input.css -o ./public/tailwindcss/output.css --watch --minify",
-    "seed": "NODE_ENV=dev node ./database/seed.js"
+    "seed": "NODE_ENV=dev node ./database/seed.js",
+    "docker-compose-up": "docker compose up -d",
+    "docker-compose-down": "docker compose down"
   },
   "repository": {
     "type": "git",

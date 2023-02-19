@@ -407,7 +407,6 @@ User.delete = async function (username) {
   }
 };
 
-
 User.allProfiles = async function () {
   let allProfiles = await usersCollection.find({}).toArray();
   allProfiles = allProfiles.map(User.extractAllowedUserProps);
@@ -684,7 +683,7 @@ User.saveComment = async data => {
   // Check for empty comment
   if (!data.comment) throw new Error('Comment cannot be empty');
   // Find owner of profile and add comment
-  const { value } = await usersCollection.findOneAndUpdate({ email: data.profileEmail }, { $push: { comments: data } }, { projection: { comments: 1 }, returnDocument: 'after' }).catch(err => {
+  const { value } = await usersCollection.findOneAndUpdate({ email: data.profileEmail }, { $push: { comments: data } }, { projection: { firstName: 1, lastName: 1, username: 1, comments: 1 }, returnDocument: 'after' }).catch(err => {
     throw new Error(`Error adding comment: ${err.message}`);
   });
 

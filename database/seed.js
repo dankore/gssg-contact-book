@@ -11,13 +11,29 @@ const seedData = async () => {
     console.log('Connected successfully to MongoDB');
     const db = client.db();
     const usersCollection = db.collection('users');
+    const salt = bcrypt.genSaltSync(10);
+    const password = bcrypt.hashSync('asasas', salt);
 
-    const users = [];
+    const users = [
+      {
+        firstName: 'Adamu',
+        lastName: 'Muhammad',
+        comments: [],
+        email: 'adamu@dankoresoft.com',
+        username: 'dankore',
+        password,
+      },
+      {
+        firstName: 'kado',
+        lastName: 'Fatima-Adamu',
+        comments: [],
+        email: 'kado@dankoresoft.com',
+        username: 'kado',
+        password,
+      },
+    ];
     const firstNames = ['Hassan', 'Hussain', 'Fatima', 'Aisha', 'Abbas'];
     const lastNames = ['Mohammed', 'Mustapha', 'Yusuf', 'Nura', 'Rabe'];
-
-    const salt = bcrypt.genSaltSync(10);
-    const password = bcrypt.hashSync("asasas", salt);
 
     for (let i = 0; i < 100; i++) {
       users.push({
