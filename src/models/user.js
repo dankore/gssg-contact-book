@@ -368,7 +368,7 @@ User.prototype.actuallyUpdate = async function () {
         link_social_type_2: this.data.link_social_type_2,
         relationship: this.data.relationship,
       };
-      const result = await usersCollection.findOneAndUpdate({ username: this.requestedUsername }, { $set: updateData }, { returnOriginal: false });
+      const result = await usersCollection.findOneAndUpdate({ username: this.requestedUsername }, { $set: updateData }, { returnDocument: 'after' });
       return { status: 'success', userDoc: User.extractAllowedUserProps(result.value) };
     }
     return { status: 'failure' };
@@ -751,7 +751,7 @@ User.updateComment = async data => {
       },
       {
         projection: { comments: 1 },
-        returnOriginal: false,
+        returnDocument: 'after',
         arrayFilters: [{ 'elem.commentId': { $eq: new ObjectId(data.commentId) } }],
         returnDocument: 'after',
       }
@@ -800,7 +800,7 @@ User.storeLikes = data => {
           },
           $inc: { totalLikes: data.like },
         },
-        { returnOriginal: false }
+        { returnDocument: 'after' }
       )
       .then(info => {
         // FILTER ONLY VISITORS INFO
