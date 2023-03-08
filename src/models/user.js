@@ -509,50 +509,48 @@ User.prototype.updatePassword = function () {
   });
 };
 
-User.prototype.resetPassword = function (url) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // CHECK IF EMAIL IS VALID
-      if (!validator.isEmail(this.data.reset_password_email)) {
-        reject(['This is not a valid email.']);
-        return;
-      }
-      // IF VALID EMAIL CHECK DB
-      let userDoc = await usersCollection.findOne({
-        email: this.data.reset_password_email.trim(),
-      });
-      // IF DB RETURNS NOTHING, ALERT USER
-      if (!userDoc) {
-        this.errors.push('No account with that email address exists.');
-      }
-
-      // IF NO ERRORS
-      if (!this.errors.length) {
-        const token = await User.cryptoRandomData();
-        const resetPasswordExpires = Date.now() + 3600000; // 1 HOUR EXPIRY
-        // ADD TOKEN AND EXPIRY TO DB
-        await usersCollection.findOneAndUpdate(
-          { email: userDoc.email },
-          {
-            $set: {
-              resetPasswordToken: token,
-              resetPasswordExpires: resetPasswordExpires,
-            },
-          }
-        );
-        // SEND TOKEN TO USER'S EMAIL
-        new Email().sendResetPasswordToken(userDoc.email, userDoc.firstName, url, token);
-        // SEND TOKEN TO USER'S EMAIL ENDs
-        resolve(`Sucesss! Check your email inbox at ${userDoc.email} for further instruction. Check your SPAM folder too.`);
-      } else {
-        reject(this.errors);
-      }
-    } catch {
-      // TRY BLOCK REJECT
-      reject();
+User.prototype.resetPassword = async function (url) {
+  try {
+    // CHECK IF EMAIL IS VALID
+    if (!validator.isEmail(this.data.reset_password_email)) {
+      return ['This is not a valid email.'];
     }
-  });
+    // IF VALID EMAIL CHECK DB
+    let userDoc = await usersCollection.findOne({
+      email: this.data.reset_password_email.trim(),
+    });
+    // IF DB RETURNS NOTHING, ALERT USER
+    if (!userDoc) {
+      this.errors.push('No account with that email address exists.');
+    }
+
+    // IF NO ERRORS
+    if (!this.errors.length) {
+      const token = await User.cryptoRandomData();
+      const resetPasswordExpires = Date.now() + 3600000; // 1 HOUR EXPIRY
+      // ADD TOKEN AND EXPIRY TO DB
+      await usersCollection.findOneAndUpdate(
+        { email: userDoc.email },
+        {
+          $set: {
+            resetPasswordToken: token,
+            resetPasswordExpires: resetPasswordExpires,
+          },
+        }
+      );
+
+      // SEND TOKEN TO USER'S EMAIL
+      new Email().sendResetPasswordToken(userDoc.email, userDoc.firstName, url, token);
+      // SEND TOKEN TO USER'S EMAIL ENDs
+      return `Sucesss! Check your email inbox at ${userDoc.email} for further instruction. Check your SPAM folder too.`;
+    } else {
+      return this.errors;
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
 };
+
 
 User.cryptoRandomData = function () {
   return new Promise((resolve, reject) => {

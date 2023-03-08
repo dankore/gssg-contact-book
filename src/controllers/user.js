@@ -321,13 +321,12 @@ exports.resetPasswordPage = (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const user = new User(req.body);
-    const successMessage = await user.resetPassword(req.headers.host);
-    req.flash('success', successMessage);
+    const statusMessage = await user.resetPassword(req.headers.host);
+
+    req.flash('success', statusMessage);
     res.redirect('/reset-password');
   } catch (errors) {
-    errors.forEach(error => {
-      req.flash('errors', error.message);
-    });
+    req.flash('errors', 'Sorry, we are having an internal server error. Please try again.');
     res.redirect('/reset-password');
   }
 };
