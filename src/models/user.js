@@ -311,41 +311,23 @@ User.extractAllowedUserProps = user => {
 User.prototype.update = function () {
   return new Promise(async (resolve, reject) => {
     try {
-      let profile = await User.findByUsername(this.requestedUsername);
+      let status = await this.actuallyUpdate();
 
-      const visistorIsOwner = User.isVisitorOwner(this.sessionUsername, profile.username);
-      if (visistorIsOwner) {
-        //Update
-        let status = await this.actuallyUpdate();
-
-        resolve(status);
-      } else {
-        reject();
-      }
+      resolve(status);
     } catch {
       reject();
     }
   });
 };
 
-User.prototype.update = async function () {
-  try {
-    let profile = await User.findByUsername(this.requestedUsername);
-    if (User.isVisitorOwner(this.sessionUsername, profile.username)) {
-      return await this.actuallyUpdate();
-    } else {
-      throw new Error('Visitor is not the owner of the profile');
-    }
-  } catch (error) {
-    throw new Error(error);
-  }
-};
 
 User.prototype.actuallyUpdate = async function () {
   try {
     this.cleanUp();
     this.validateSomeUserRegistrationInputs();
     this.editValidation();
+    await this.validateEmail();
+    await this.validateUsername();
 
     if (!this.errors.length) {
       const updateData = {
