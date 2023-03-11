@@ -178,7 +178,7 @@ exports.profileScreen = (req, res) => {
 exports.edit = async (req, res) => {
   try {
     const profile = new User(req.body, req.session.user.username, req.params.username);
-    const { status, userDoc } = await profile.update();
+    const { status, userDoc } = await profile.update(req.session.user);
 
     if (status === 'success') {
       req.flash('success', 'Profile successfully updated.');

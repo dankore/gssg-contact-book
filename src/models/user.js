@@ -321,13 +321,13 @@ User.prototype.update = function () {
 };
 
 
-User.prototype.actuallyUpdate = async function () {
+User.prototype.actuallyUpdate = async function (sessionData) {
   try {
     this.cleanUp();
     this.validateSomeUserRegistrationInputs();
     this.editValidation();
-    await this.validateEmail();
-    await this.validateUsername();
+     await this.compareEmailDuringProfileUpdate(sessionData.email);
+     await this.compareUsernameDuringProfileUpdate(sessionData.username);
 
     if (!this.errors.length) {
       const updateData = {
@@ -359,6 +359,19 @@ User.prototype.actuallyUpdate = async function () {
     return { status: 'failure', error: error };
   }
 };
+
+User.prototype.compareEmailDuringProfileUpdate = async function (sessionEmail) {
+  if (sessionEmail !== this.data.email) {
+    await this.validateEmail();
+  }
+};
+
+User.prototype.compareUsernameDuringProfileUpdate = async function (sessionUsername) {
+  if (sessionUsername !== this.data.username) {
+    await this.validateUsername();
+  }
+};
+
 
 User.storeImage = async (imageUrl, username) => {
   await usersCollection.findOneAndUpdate(
