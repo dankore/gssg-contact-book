@@ -473,8 +473,12 @@ User.prototype.passwordChangeValidatation = function () {
         username: this.sessionUsername,
       });
 
-      if (!bcrypt.compareSync(this.data.old_password, userDoc.password)) {
-        this.errors.push('Old passwords do not match.');
+      if (!userDoc.password) {
+        this.errors.push('You registered using Google. Changing password not available.');
+      } else {
+        if (!bcrypt.compareSync(this.data.old_password, userDoc.password)) {
+          this.errors.push('Old passwords do not match.');
+        }
       }
     }
     resolve();
